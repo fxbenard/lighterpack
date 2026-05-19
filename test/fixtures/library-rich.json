@@ -1,0 +1,152 @@
+{
+  "version": "0.3",
+  "idMap": {},
+  "items": [
+    {
+      "id": 3,
+      "name": "Backpack",
+      "description": "Main pack",
+      "weight": 880000,
+      "authorUnit": "g",
+      "price": 250,
+      "image": "",
+      "imageUrl": "",
+      "url": "https://example.com/backpack"
+    },
+    {
+      "id": 4,
+      "name": "Rain jacket",
+      "description": "Worn layer",
+      "weight": 138000,
+      "authorUnit": "g",
+      "price": 40,
+      "image": "",
+      "imageUrl": "",
+      "url": "https://example.com/jacket"
+    },
+    {
+      "id": 5,
+      "name": "Fuel canister",
+      "description": "Consumable fuel",
+      "weight": 394000,
+      "authorUnit": "g",
+      "price": 5,
+      "image": "",
+      "imageUrl": "",
+      "url": ""
+    },
+    {
+      "id": 6,
+      "name": "Optional camera",
+      "description": "Zero quantity item",
+      "weight": 500000,
+      "authorUnit": "g",
+      "price": 0,
+      "image": "",
+      "imageUrl": "",
+      "url": ""
+    }
+  ],
+  "categories": [
+    {
+      "id": 2,
+      "name": "Pack",
+      "categoryItems": [
+        {
+          "qty": 1,
+          "worn": 0,
+          "consumable": false,
+          "star": 1,
+          "itemId": 3
+        },
+        {
+          "qty": 0,
+          "worn": 0,
+          "consumable": false,
+          "star": 0,
+          "itemId": 6
+        }
+      ],
+      "subtotalWeight": 880000,
+      "subtotalWornWeight": 0,
+      "subtotalConsumableWeight": 0,
+      "subtotalPrice": 250,
+      "subtotalConsumablePrice": 0,
+      "subtotalQty": 1
+    },
+    {
+      "id": 7,
+      "name": "Clothing",
+      "categoryItems": [
+        {
+          "qty": 1,
+          "worn": true,
+          "consumable": false,
+          "star": 0,
+          "itemId": 4
+        }
+      ],
+      "subtotalWeight": 138000,
+      "subtotalWornWeight": 138000,
+      "subtotalConsumableWeight": 0,
+      "subtotalPrice": 40,
+      "subtotalConsumablePrice": 0,
+      "subtotalQty": 1
+    },
+    {
+      "id": 8,
+      "name": "Cooking",
+      "categoryItems": [
+        {
+          "qty": 1,
+          "worn": 0,
+          "consumable": true,
+          "star": 0,
+          "itemId": 5
+        }
+      ],
+      "subtotalWeight": 394000,
+      "subtotalWornWeight": 0,
+      "subtotalConsumableWeight": 394000,
+      "subtotalPrice": 5,
+      "subtotalConsumablePrice": 5,
+      "subtotalQty": 1
+    }
+  ],
+  "lists": [
+    {
+      "id": 1,
+      "name": "Fixture list",
+      "categoryIds": [
+        2,
+        7,
+        8
+      ],
+      "chart": null,
+      "description": "A realistic fixture for data safety checks.",
+      "externalId": "fixture-list",
+      "totalWeight": 1412000,
+      "totalWornWeight": 138000,
+      "totalConsumableWeight": 394000,
+      "totalBaseWeight": 880000,
+      "totalPackWeight": 1274000,
+      "totalPrice": 295,
+      "totalConsumablePrice": 5,
+      "totalQty": 3
+    }
+  ],
+  "sequence": 8,
+  "defaultListId": 1,
+  "totalUnit": "g",
+  "itemUnit": "g",
+  "showSidebar": true,
+  "showImages": false,
+  "optionalFields": {
+    "images": false,
+    "price": true,
+    "worn": true,
+    "consumable": true,
+    "listDescription": true
+  },
+  "currencySymbol": "$"
+}

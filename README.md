@@ -48,19 +48,19 @@ Run the production build:
 npm run build
 ```
 
-Run the Playwright end-to-end tests:
+Planned later in Phase 1: run the Playwright end-to-end tests:
 
 ```bash
 npm run test:e2e
 ```
 
-Verify library fixtures:
+Planned later in Phase 1: verify library fixtures:
 
 ```bash
 npm run verify:fixtures
 ```
 
-Export a user's library for backup:
+Planned later in Phase 1: export a user's library for backup:
 
 ```bash
 node scripts/export-user-library.js <username> <output-file>

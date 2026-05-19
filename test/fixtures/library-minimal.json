@@ -1,0 +1,72 @@
+{
+  "version": "0.3",
+  "idMap": {},
+  "items": [
+    {
+      "id": 3,
+      "name": "",
+      "description": "",
+      "weight": 0,
+      "authorUnit": "oz",
+      "price": 0,
+      "image": "",
+      "imageUrl": "",
+      "url": ""
+    }
+  ],
+  "categories": [
+    {
+      "id": 2,
+      "name": "",
+      "categoryItems": [
+        {
+          "qty": 1,
+          "worn": 0,
+          "consumable": false,
+          "star": 0,
+          "itemId": 3
+        }
+      ],
+      "subtotalWeight": 0,
+      "subtotalWornWeight": 0,
+      "subtotalConsumableWeight": 0,
+      "subtotalPrice": 0,
+      "subtotalConsumablePrice": 0,
+      "subtotalQty": 1
+    }
+  ],
+  "lists": [
+    {
+      "id": 1,
+      "name": "",
+      "categoryIds": [
+        2
+      ],
+      "chart": null,
+      "description": "",
+      "externalId": "",
+      "totalWeight": 0,
+      "totalWornWeight": 0,
+      "totalConsumableWeight": 0,
+      "totalBaseWeight": 0,
+      "totalPackWeight": 0,
+      "totalPrice": 0,
+      "totalConsumablePrice": 0,
+      "totalQty": 1
+    }
+  ],
+  "sequence": 3,
+  "defaultListId": 1,
+  "totalUnit": "oz",
+  "itemUnit": "oz",
+  "showSidebar": true,
+  "showImages": false,
+  "optionalFields": {
+    "images": false,
+    "price": false,
+    "worn": true,
+    "consumable": true,
+    "listDescription": false
+  },
+  "currencySymbol": "$"
+}

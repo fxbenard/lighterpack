@@ -4,9 +4,9 @@
   "description": "LighterPack =========== LighterPack is a website to track the gear you take on adventures. It is still in Beta.",
   "main": "app.js",
   "scripts": {
-    "dev": "node --max-old-space-size=8192 app.js",
-    "start": "webpack-cli --config ./webpack.config.js && node app.js",
-    "build": "webpack-cli --config ./webpack.config.js",
+    "dev": "NODE_OPTIONS=--openssl-legacy-provider node --max-old-space-size=8192 app.js",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider webpack-cli --config ./webpack.config.js && NODE_OPTIONS=--openssl-legacy-provider node app.js",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider webpack-cli --config ./webpack.config.js",
     "lint:css": "./node_modules/.bin/stylelint \"client/**/*.{scss,vue}\" --fix",
     "lint:js": "./node_modules/.bin/eslint --ext .vue --ext .js ./ --fix"
   },
@@ -36,6 +36,7 @@
     "mailgun-js": "0.22.0",
     "markdown": "^0.5.0",
     "mini-css-extract-plugin": "1.3.3",
+    "mongodb": "^6.21.0",
     "mongojs": "^2.2.2",
     "morgan": "^1.10.0",
     "mustache": "^2.2.1",

@@ -2,12 +2,10 @@ const bcrypt = require('bcryptjs');
 const express = require('express');
 
 const router = express.Router();
-const mongojs = require('mongojs');
 const config = require('config');
 const { logWithRequest } = require('./log.js');
 
-const collections = ['users', 'libraries'];
-const db = mongojs(config.get('databaseUrl'), collections);
+const db = require('./db.js');
 
 const { authenticateModerator } = require('./auth.js');
 

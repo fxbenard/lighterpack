@@ -1,10 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const config = require('config');
-const mongojs = require('mongojs');
-
-const collections = ['users', 'libraries'];
-const db = mongojs(config.get('databaseUrl'), collections);
+const db = require('./db.js');
 
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');

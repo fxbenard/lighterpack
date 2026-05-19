@@ -8,7 +8,6 @@ const router = express.Router();
 const fs = require('fs');
 const request = require('request');
 const formidable = require('formidable');
-const mongojs = require('mongojs');
 const config = require('config');
 const { logWithRequest } = require('./log.js');
 
@@ -20,8 +19,7 @@ if (config.get('mailgunAPIKey')) {
     mailgun = require('mailgun-js')({ apiKey: config.get('mailgunAPIKey'), domain: config.get('mailgunDomain') });
 }
 
-const collections = ['users', 'libraries'];
-const db = mongojs(config.get('databaseUrl'), collections);
+const db = require('./db.js');
 
 const dataTypes = require('../client/dataTypes.js');
 
@@ -69,13 +67,21 @@ router.post('/register', (req, res) => {
     logWithRequest(req, { message: 'Attempting to register', username });
 
     db.users.find({ username }, (err, users) => {
-        if (err || users.length) {
+        if (err) {
+            logWithRequest(req, { message: 'DB error on username lookup', username, error: err.message });
+            return res.status(500).json({ errors: [{ message: 'An error occurred, please try again later.' }] });
+        }
+        if (users.length) {
             logWithRequest(req, { message: 'User exists', username });
             return res.status(400).json({ errors: [{ field: 'username', message: 'That username already exists, please pick a different username.' }] });
         }
 
         db.users.find({ email }, (err, users) => {
-            if (err || users.length) {
+            if (err) {
+                logWithRequest(req, { message: 'DB error on email lookup', email, error: err.message });
+                return res.status(500).json({ errors: [{ message: 'An error occurred, please try again later.' }] });
+            }
+            if (users.length) {
                 logWithRequest(req, { message: 'User email exists', email });
                 return res.status(400).json({ errors: [{ field: 'email', message: 'A user with that email already exists.' }] });
             }

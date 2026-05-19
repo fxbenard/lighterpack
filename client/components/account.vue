@@ -9,7 +9,7 @@
         <form id="accountForm" @submit.prevent="updateAccount()">
             <div class="lpFields">
                 <input type="text" name="username" class="username" disabled :value="username">
-                <input v-model="currentPassword" type="password" placeholder="Current Password" name="currentPassword" class="currentPassword">
+                <input v-model="currentPassword" type="password" placeholder="Current password" name="currentPassword" class="currentPassword">
                 <hr>
                 <input v-model="newEmail" type="email" placeholder="New Email" name="newEmail" class="newEmail">
                 <hr>

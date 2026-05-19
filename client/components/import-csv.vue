@@ -15,7 +15,7 @@
 <template>
     <div id="importCSV">
         <modal id="importValidate" :shown="shown" @hide="shown = false">
-            <h2>Confirm your import</h2>
+            <h2>Confirm your import <span v-if="importItemCount">({{ importItemCount }} items)</span></h2>
             <div id="importData">
                 <ul class="lpTable lpDataTable">
                     <li class="lpRow lpHeader">
@@ -25,14 +25,22 @@
                         <span class="lpCell">Qty</span>
                         <span class="lpCell">Weight</span>
                         <span class="lpCell">Unit</span>
+                        <span class="lpCell">Link</span>
+                        <span class="lpCell">Price</span>
+                        <span class="lpCell">Worn</span>
+                        <span class="lpCell">Consumable</span>
                     </li>
-                    <li v-for="row in importData.data" class="lpRow">
+                    <li v-for="(row, index) in importData.data" :key="index" class="lpRow">
                         <span class="lpCell">{{ row.name }}</span>
                         <span class="lpCell">{{ row.category }}</span>
                         <span class="lpCell">{{ row.description }}</span>
                         <span class="lpCell">{{ row.qty }}</span>
                         <span class="lpCell">{{ row.weight }}</span>
                         <span class="lpCell">{{ row.unit }}</span>
+                        <span class="lpCell">{{ row.url ? 'Yes' : '' }}</span>
+                        <span class="lpCell">{{ row.price }}</span>
+                        <span class="lpCell">{{ row.worn ? 'Yes' : '' }}</span>
+                        <span class="lpCell">{{ row.consumable ? 'Yes' : '' }}</span>
                     </li>
                 </ul>
             </div>
@@ -48,6 +56,8 @@
 <script>
 import modal from './modal.vue';
 
+const csvImportUtils = require('../utils/csv-import.js');
+
 export default {
     name: 'ImportCsv',
     components: {
@@ -58,15 +68,15 @@ export default {
             csvInput: false,
             listId: false,
             importData: {},
-            fullUnitToUnit: {
-                ounce: 'oz', ounces: 'oz', oz: 'oz', pound: 'lb', pounds: 'lb', lb: 'lb', lbs: 'lb', gram: 'g', grams: 'g', g: 'g', kilogram: 'kg', kilograms: 'kg', kg: 'kg', kgs: 'kg',
-            },
             shown: false,
         };
     },
     computed: {
         library() {
             return this.$store.state.library;
+        },
+        importItemCount() {
+            return this.importData.data ? this.importData.data.length : 0;
         },
     },
     mounted() {
@@ -81,8 +91,6 @@ export default {
         importCSV(evt) {
             const file = evt.target.files[0];
             const name = file.name;
-            const size = file.size;
-            const type = file.type;
 
             if (file.name.length < 1) {
                 return;
@@ -91,70 +99,20 @@ export default {
                 alert('File is too big');
                 return;
             }
-            if (name.substring(name.length - 4).toLowerCase() != '.csv') {
+            if (name.substring(name.length - 4).toLowerCase() !== '.csv') {
                 alert('Please select a CSV.');
                 return;
             }
             const reader = new FileReader();
 
             reader.onload = ((theFile) => {
-                this.validateImport(theFile.target.result, file.name.substring(0, file.name.length - 4).replace(/\_/g, ' '));
+                this.validateImport(theFile.target.result, file.name.substring(0, file.name.length - 4).replace(/_/g, ' '));
             });
 
             reader.readAsText(file);
         },
-        CSVToArray(strData) {
-            const strDelimiter = ',';
-            const arrData = [[]];
-            let arrMatches = null;
-
-
-            const objPattern = new RegExp(
-                (
-                    `(\\${strDelimiter}|\\r?\\n|\\r|^)`
-                    + '(?:"([^"]*(?:""[^"]*)*)"|'
-                    + `([^"\\${strDelimiter}\\r\\n]*))`
-                ), 'gi',
-            );
-
-            while (arrMatches = objPattern.exec(strData)) {
-                const strMatchedDelimiter = arrMatches[1];
-                if (strMatchedDelimiter.length && (strMatchedDelimiter != strDelimiter)) {
-                    arrData.push([]);
-                }
-
-                if (arrMatches[2]) {
-                    var strMatchedValue = arrMatches[2].replace(new RegExp('""', 'g'), '"');
-                } else {
-                    var strMatchedValue = arrMatches[3];
-                }
-
-                arrData[arrData.length - 1].push(strMatchedValue);
-            }
-
-            return arrData;
-        },
         validateImport(input, name) {
-            const csv = this.CSVToArray(input);
-            this.importData = { data: [], name };
-
-            for (const i in csv) {
-                const row = csv[i];
-                if (row.length < 6) continue;
-                if (row[0].toLowerCase() == 'item name') continue;
-                if (isNaN(parseInt(row[3]))) continue;
-                if (isNaN(parseInt(row[4]))) continue;
-                if (typeof this.fullUnitToUnit[row[5]] === 'undefined') continue;
-
-                this.importData.data.push({
-                    name: row[0],
-                    category: row[1],
-                    description: row[2],
-                    qty: parseFloat(row[3]),
-                    weight: parseFloat(row[4]),
-                    unit: this.fullUnitToUnit[row[5]],
-                });
-            }
+            this.importData = csvImportUtils.parseImportCsv(input, name);
 
             if (!this.importData.data.length) {
                 alert('Unable to load spreadsheet - please verify the format.');

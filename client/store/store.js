@@ -212,13 +212,13 @@ const store = new Vuex.Store({
             const newCategories = {};
             let item;
             let categoryItem;
-            let row;
-            let i;
+            let hasPrice = false;
+            let hasWorn = false;
+            let hasConsumable = false;
 
             list.name = importData.name;
 
-            for (i in importData.data) {
-                row = importData.data[i];
+            importData.data.forEach((row) => {
                 if (newCategories[row.category]) {
                     category = newCategories[row.category];
                 } else {
@@ -231,11 +231,35 @@ const store = new Vuex.Store({
 
                 item.name = row.name;
                 item.description = row.description;
+                item.url = row.url;
+                item.price = row.price;
                 categoryItem.qty = parseFloat(row.qty);
+                categoryItem.worn = row.worn;
+                categoryItem.consumable = row.consumable;
                 item.weight = weightUtils.WeightToMg(parseFloat(row.weight), row.unit);
                 item.authorUnit = row.unit;
                 category.name = row.category;
+
+                if (item.price) {
+                    hasPrice = true;
+                }
+                if (categoryItem.worn) {
+                    hasWorn = true;
+                }
+                if (categoryItem.consumable) {
+                    hasConsumable = true;
+                }
+            });
+            if (hasPrice) {
+                Vue.set(state.library.optionalFields, 'price', true);
             }
+            if (hasWorn) {
+                Vue.set(state.library.optionalFields, 'worn', true);
+            }
+            if (hasConsumable) {
+                Vue.set(state.library.optionalFields, 'consumable', true);
+            }
+            bus.$emit('optionalFieldChanged');
             list.calculateTotals();
             state.library.defaultListId = list.id;
         },

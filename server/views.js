@@ -344,10 +344,18 @@ const renderItem = function (item, args) {
     const unitSelect = renderUnitSelect(unit, args.unitSelectTemplate, item.weight);
 
     const starClass = item.star ? `lpStar${item.star}` : '';
-    const out = {
-        classes, unit, displayWeight, unitSelect, showImages: args.showImages, showPrices: args.showPrices, starClass, displayPrice, currencySymbol: args.currencySymbol,
-    };
-    Vue.util.extend(out, item);
+    const out = Vue.util.extend({}, item);
+    Vue.util.extend(out, {
+        classes,
+        unit,
+        displayWeight,
+        unitSelect,
+        showImages: args.showImages,
+        showPrices: args.showPrices,
+        starClass,
+        displayPrice,
+        currencySymbol: args.currencySymbol,
+    });
 
     return Mustache.render(args.itemTemplate, out);
 };
@@ -358,7 +366,12 @@ const renderCategory = function (category, args) {
         const categoryItem = category.categoryItems[i];
         const item = category.library.getItemById(categoryItem.itemId);
         extend(item, categoryItem);
-        items += renderItem(item, args);
+        const rowClasses = [];
+        if (args.classes) rowClasses.push(args.classes);
+        if (parseFloat(categoryItem.qty) <= 0) rowClasses.push('lpQtyZero');
+        const renderArgs = Vue.util.extend({}, args);
+        renderArgs.classes = rowClasses.join(' ').trim();
+        items += renderItem(item, renderArgs);
     }
 
     category.calculateSubtotal();

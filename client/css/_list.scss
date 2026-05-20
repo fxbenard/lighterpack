@@ -89,14 +89,34 @@ input.lpCategoryName { /* specificity */
 .lpItemsHeader,
 .lpItemsFooter {
     align-items: center;
-    border-top: 1px dotted #aaa;
+    border-top: 1px solid #d6d9d2;
     display: flex;
     flex-direction: row;
     justify-content: stretch;
+    min-height: 42px;
 
     &.gu-mirror {
         background: #f7f7f7;
         border: 1px solid #999;
+    }
+
+    &.lpQtyZero {
+        background: #f5f3ed;
+        color: #6e7168;
+
+        .lpName,
+        .lpDescription,
+        .lpWeightCell,
+        .lpQtyCell,
+        .lpPriceCell,
+        .lpUnitSelect,
+        .lpHref {
+            color: inherit;
+        }
+
+        .lpActionsCell {
+            opacity: 0.8;
+        }
     }
 
     .lpHandleCell {
@@ -173,13 +193,13 @@ input.lpCategoryName { /* specificity */
 
 .lpItemsHeader {
     align-items: flex-end;
-    border-bottom: 1px solid #aaa;
+    border-bottom: 1px solid #8f9487;
     border-top: none;
     height: 31px;
 }
 
 .lpItemsFooter {
-    border-top-style: solid;
+    border-top: 1px solid #8f9487;
     justify-content: flex-end;
 }
 
@@ -191,7 +211,7 @@ input.lpCategoryName { /* specificity */
     .lpStar {
         cursor: pointer;
         margin-right: 8px;
-        opacity: 0.5;
+        opacity: 0.35;
         visibility: hidden;
 
         &:hover {
@@ -205,6 +225,13 @@ input.lpCategoryName { /* specificity */
             opacity: 1;
             visibility: visible;
         }
+    }
+
+    .lpLink.lpActive,
+    .lpWorn.lpActive,
+    .lpConsumable.lpActive {
+        opacity: 0.95;
+        visibility: visible;
     }
 
     i:last-child {

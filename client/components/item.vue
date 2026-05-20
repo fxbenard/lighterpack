@@ -52,7 +52,7 @@
 </style>
 
 <template>
-    <li :id="item.id" :class="'lpItem '+ item.classes">
+    <li :id="item.id" :class="itemRowClasses">
         <span class="lpHandleCell">
             <div class="lpItemHandle lpHandle" title="Reorder this item" />
         </span>
@@ -137,6 +137,15 @@ export default {
                 return this.item.imageUrl;
             }
             return '';
+        },
+        itemRowClasses() {
+            return [
+                'lpItem',
+                this.item.classes || '',
+                {
+                    lpQtyZero: parseFloat(this.categoryItem.qty) <= 0,
+                },
+            ];
         },
     },
     watch: {

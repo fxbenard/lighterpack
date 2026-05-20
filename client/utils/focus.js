@@ -1,7 +1,5 @@
 import Vue from 'vue';
-import uniqueId from 'lodash/uniqueId';
-
-import store from '../store/store.js';
+import eventBus from '../services/event-bus';
 
 Vue.directive('select-on-focus', {
     inserted(el) {
@@ -21,17 +19,35 @@ Vue.directive('focus-on-create', {
 
 Vue.directive('focus-on-bus', {
     inserted(el, binding) {
-        bus.$on(binding.value, () => {
+        const handler = () => {
             el.focus();
-        });
+        };
+
+        el.__lpFocusOnBus = handler;
+        eventBus.on(binding.value, handler);
+    },
+    unbind(el, binding) {
+        if (el.__lpFocusOnBus) {
+            eventBus.off(binding.value, el.__lpFocusOnBus);
+            delete el.__lpFocusOnBus;
+        }
     },
 });
 
 Vue.directive('select-on-bus', {
     inserted(el, binding) {
-        bus.$on(binding.value, () => {
+        const handler = () => {
             el.select();
-        });
+        };
+
+        el.__lpSelectOnBus = handler;
+        eventBus.on(binding.value, handler);
+    },
+    unbind(el, binding) {
+        if (el.__lpSelectOnBus) {
+            eventBus.off(binding.value, el.__lpSelectOnBus);
+            delete el.__lpSelectOnBus;
+        }
     },
 });
 
@@ -64,15 +80,12 @@ Vue.directive('click-outside', {
         };
 
         window.addEventListener('click', handler);
-
-        // Store handler to clean up later
-        el.dataset.clickoutside = uniqueId();
-        store.commit('addDirectiveInstance', { key: el.dataset.clickoutside, value: handler });
+        el.__lpClickOutside = handler;
     },
     unbind(el) {
-        // clean up event handlers
-        const handler = store.state.directiveInstances[el.dataset.clickoutside];
-        store.commit('removeDirectiveInstance', el.dataset.clickoutside);
-        window.removeEventListener('click', handler);
+        if (el.__lpClickOutside) {
+            window.removeEventListener('click', el.__lpClickOutside);
+            delete el.__lpClickOutside;
+        }
     },
 });

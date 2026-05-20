@@ -14,6 +14,10 @@ function loadFixture(fileName) {
     return JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
 }
 
+function findById(collection, id) {
+    return collection.find((candidate) => candidate.id === id);
+}
+
 function verifyFixture(fileName) {
     const input = loadFixture(fileName);
     const library = new Library();
@@ -33,20 +37,25 @@ function verifyFixture(fileName) {
         throw new Error(`${fileName}: expected optionalFields`);
     }
 
-    const list = saved.lists.find((candidate) => candidate.id === saved.defaultListId);
-    if (!list) {
+    const defaultList = findById(saved.lists, saved.defaultListId);
+    if (!defaultList) {
         throw new Error(`${fileName}: defaultListId does not point to a list`);
     }
 
-    list.categoryIds.forEach((categoryId) => {
-        const category = saved.categories.find((candidate) => candidate.id === categoryId);
-        if (!category) {
-            throw new Error(`${fileName}: missing category ${categoryId}`);
-        }
+    saved.lists.forEach((list) => {
+        list.categoryIds.forEach((categoryId) => {
+            const category = findById(saved.categories, categoryId);
+            if (!category) {
+                throw new Error(`${fileName}: list ${list.id} references missing category ${categoryId}`);
+            }
+        });
+    });
+
+    saved.categories.forEach((category) => {
         category.categoryItems.forEach((categoryItem) => {
-            const item = saved.items.find((candidate) => candidate.id === categoryItem.itemId);
+            const item = findById(saved.items, categoryItem.itemId);
             if (!item) {
-                throw new Error(`${fileName}: missing item ${categoryItem.itemId}`);
+                throw new Error(`${fileName}: category ${category.id} references missing item ${categoryItem.itemId}`);
             }
         });
     });

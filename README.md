@@ -48,13 +48,13 @@ Run the production build:
 npm run build
 ```
 
-Planned later in Phase 1: run the Playwright end-to-end tests:
+Run the Playwright end-to-end tests:
 
 ```bash
 npm run test:e2e
 ```
 
-Planned later in Phase 1: verify library fixtures:
+Verify library fixtures:
 
 ```bash
 npm run verify:fixtures
@@ -67,6 +67,7 @@ node scripts/export-user-library.js <username> <output-file>
 ```
 
 The export script writes only the user's `library` document. It does not export password hashes, tokens, email addresses, or account metadata.
+It fails if the output file already exists.
 
 Example:
 

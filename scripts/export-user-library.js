@@ -35,7 +35,7 @@ async function main() {
         }
 
         const resolvedOutputPath = path.resolve(outputPath);
-        fs.writeFileSync(resolvedOutputPath, `${JSON.stringify(user.library, null, 2)}\n`, 'utf8');
+        fs.writeFileSync(resolvedOutputPath, `${JSON.stringify(user.library, null, 2)}\n`, { encoding: 'utf8', flag: 'wx' });
         console.log(`Exported ${username} library to ${resolvedOutputPath}`);
     } finally {
         await client.close();

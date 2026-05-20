@@ -4,6 +4,8 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 import routes from './routes';
+import eventBus, { legacyEventBus } from './services/event-bus';
+import { setRouter, redirect, legacyNavigation } from './services/navigation';
 import store from './store/store';
 
 const focusDirectives = require('./utils/focus.js');
@@ -19,14 +21,18 @@ Vue.use(VueRouter);
 const utils = require('./utils/utils.js');
 
 window.Vue = Vue; // surfacing Vue globally for utils methods
-window.bus = new Vue(); // global event bus
-window.router = new VueRouter({
+const router = new VueRouter({
     mode: 'history',
     routes,
 });
 
-bus.$on('unauthorized', (error) => {
-    window.location = '/signin';
+setRouter(router);
+
+window.bus = legacyEventBus; // temporary Vue 2 compatibility for existing components
+window.router = legacyNavigation; // temporary Vue 2 compatibility for existing components
+
+eventBus.on('unauthorized', () => {
+    redirect('/signin');
 });
 
 store.dispatch('init')

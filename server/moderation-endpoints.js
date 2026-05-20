@@ -58,15 +58,14 @@ function resetPassword(req, res) {
     const username = String(req.body.username).toLowerCase().trim();
     logWithRequest(req, { message: 'MODERATION Reset password start', username });
 
-    db.users.find({ username }, (err, users) => {
+    db.users.findOne({ username }, (err, user) => {
         if (err) {
             logWithRequest(req, { message: 'MODERATION Reset password lookup error', username });
             return res.status(500).json({ message: 'An error occurred' });
-        } if (!users.length) {
+        } if (!user) {
             logWithRequest(req, { message: 'MODERATION Reset password for unknown', username });
             return res.status(500).json({ message: 'An error occurred.' });
         }
-        const user = users[0];
         require('crypto').randomBytes(12, (ex, buf) => {
             const newPassword = buf.toString('hex');
 
@@ -91,15 +90,14 @@ function clearSession(req, res) {
     const username = String(req.body.username).toLowerCase().trim();
     logWithRequest(req, { message: 'MODERATION Clear session start', username });
 
-    db.users.find({ username }, (err, users) => {
+    db.users.findOne({ username }, (err, user) => {
         if (err) {
             logWithRequest(req, { message: 'MODERATION Clear session lookup error', username });
             return res.status(500).json({ message: 'An error occurred' });
-        } if (!users.length) {
+        } if (!user) {
             logWithRequest(req, { message: 'MODERATION Clear session for unknown', username });
             return res.status(500).json({ message: 'An error occurred.' });
         }
-        const user = users[0];
         user.token = '';
         db.users.save(user);
         logWithRequest(req, { message: 'MODERATION  Clear session succeeded', username });

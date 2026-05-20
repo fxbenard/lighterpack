@@ -88,24 +88,24 @@ router.get('/r/:id', (req, res) => {
         res.status(400).send('No list specified!');
         return;
     }
-    db.users.find({ 'library.lists.externalId': id }, (err, users) => {
+    db.users.findOne({ 'library.lists.externalId': id }, (err, user) => {
         if (err) {
             res.status(500).send('An error occurred.');
             return;
         }
-        if (!users.length) {
+        if (!user) {
             res.status(400).send('Invalid list specified.');
             return;
         }
         const library = new Library();
         let list;
 
-        if (!users[0] || typeof (users[0].library) === 'undefined') {
+        if (!user || typeof (user.library) === 'undefined') {
             logWithRequest(req, `Undefined users[0] for library with list ID ${id}`);
             res.status(500).send('Unknown error.');
         }
 
-        library.load(users[0].library);
+        library.load(user.library);
         for (const i in library.lists) {
             if (library.lists[i].externalId && library.lists[i].externalId == id) {
                 library.defaultListId = library.lists[i].id;
@@ -149,13 +149,13 @@ router.get('/e/:id', (req, res) => {
         return;
     }
 
-    db.users.find({ 'library.lists.externalId': id }, (err, users) => {
+    db.users.findOne({ 'library.lists.externalId': id }, (err, user) => {
         if (err) {
             res.status(500).send('An error occurred.');
             return;
         }
 
-        if (!users.length) {
+        if (!user) {
             res.status(400).send('Invalid list specified.');
             return;
         }
@@ -163,12 +163,12 @@ router.get('/e/:id', (req, res) => {
         const library = new Library();
         let list;
 
-        if (!users[0] || typeof (users[0].library) === 'undefined') {
+        if (!user || typeof (user.library) === 'undefined') {
             logWithRequest(req, `Undefined users[0] for library with list ID ${id}`);
             res.status(500).send('Unknown error.');
         }
 
-        library.load(users[0].library);
+        library.load(user.library);
         for (const i in library.lists) {
             if (library.lists[i].externalId && library.lists[i].externalId == id) {
                 library.defaultListId = library.lists[i].id;
@@ -216,13 +216,13 @@ router.get('/csv/:id', (req, res) => {
         return;
     }
 
-    db.users.find({ 'library.lists.externalId': id }, (err, users) => {
+    db.users.findOne({ 'library.lists.externalId': id }, (err, user) => {
         if (err) {
             res.status(500).send('An error occurred.');
             return;
         }
 
-        if (!users.length) {
+        if (!user) {
             res.status(400).send('Invalid list specified.');
             return;
         }
@@ -230,12 +230,12 @@ router.get('/csv/:id', (req, res) => {
         const library = new Library();
         let list;
 
-        if (!users[0] || typeof (users[0].library) === 'undefined') {
+        if (!user || typeof (user.library) === 'undefined') {
             logWithRequest(req, `Undefined users[0] for library with list ID ${id}`);
             res.status(500).send('Unknown error.');
         }
 
-        library.load(users[0].library);
+        library.load(user.library);
         for (var i in library.lists) {
             if (library.lists[i].externalId && library.lists[i].externalId == id) {
                 library.defaultListId = library.lists[i].id;

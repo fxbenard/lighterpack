@@ -49,6 +49,8 @@ Duration: weeks 3-4.
 
 Purpose: make the workflows that move or expose user data predictable.
 
+Implementation plan: `docs/superpowers/plans/2026-05-20-phase-2-csv-workflows.md`.
+
 Scope:
 
 - Complete CSV import/export round-trip testing.

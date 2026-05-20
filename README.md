@@ -60,6 +60,21 @@ Verify library fixtures:
 npm run verify:fixtures
 ```
 
+Verify CSV import/export fixtures:
+
+```bash
+npm run verify:csv
+npm run verify:csv:export
+```
+
+Run the CSV browser workflow:
+
+```bash
+npm run test:e2e:csv -- --project=chromium --reporter=line
+```
+
+The CSV checks protect item name, category, description, quantity, weight, unit, URL, price, worn, and consumable fields.
+
 Export a user's library for backup:
 
 ```bash

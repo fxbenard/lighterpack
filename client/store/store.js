@@ -1,6 +1,8 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
 import debounce from 'lodash/debounce';
+import eventBus from '../services/event-bus';
+import { arrayMove, createCookie, fetchJson, readCookie } from '../utils/utils';
 
 const weightUtils = require('../utils/weight.js');
 const dataTypes = require('../dataTypes.js');
@@ -179,13 +181,13 @@ const store = new Vuex.Store({
             const item = state.library.getItemById(args.item.id);
             item.imageUrl = args.imageUrl;
             state.library.optionalFields.images = true;
-            bus.$emit('optionalFieldChanged');
+            eventBus.emit('optionalFieldChanged');
         },
         updateItemImage(state, args) {
             const item = state.library.getItemById(args.item.id);
             item.image = args.image;
             state.library.optionalFields.images = true;
-            bus.$emit('optionalFieldChanged');
+            eventBus.emit('optionalFieldChanged');
         },
         updateItemUnit(state, unit) {
             state.library.itemUnit = unit;
@@ -259,7 +261,7 @@ const store = new Vuex.Store({
             if (hasConsumable) {
                 Vue.set(state.library.optionalFields, 'consumable', true);
             }
-            bus.$emit('optionalFieldChanged');
+            eventBus.emit('optionalFieldChanged');
             list.calculateTotals();
             state.library.defaultListId = list.id;
         },
@@ -308,7 +310,7 @@ const store = new Vuex.Store({
                 })
                 .catch((response) => {
                     if (response.status == 401) {
-                        bus.$emit('unauthorized');
+                eventBus.emit('unauthorized');
                     } else {
                         return new Promise((resolve, reject) => {
                             reject('An error occurred while fetching your data, please try again later.');
@@ -371,7 +373,7 @@ const store = new Vuex.Store({
                                 error = response.json.status;
                             }
                             if (response.status == 401) {
-                                bus.$emit('unauthorized', error);
+                                eventBus.emit('unauthorized', error);
                             } else {
                                 alert(error); // TODO
                             }

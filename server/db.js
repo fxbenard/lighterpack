@@ -12,47 +12,113 @@ async function connect() {
     _db = _client.db(dbName);
 }
 
-connect().catch((err) => {
+const ready = connect();
+
+ready.catch((err) => {
     console.error('MongoDB connection failed:', err);
     process.exit(1);
 });
 
+function normalizeId(value) {
+    return typeof value === 'string' ? new ObjectId(value) : value;
+}
+
+function getCollection(name) {
+    return ready.then(() => _db.collection(name));
+}
+
 function collection(name) {
+    function deleteOne(filter) {
+        return getCollection(name)
+            .then((mongoCollection) => mongoCollection.deleteOne(filter._id ? { _id: normalizeId(filter._id) } : filter));
+    }
+
+    function deleteMany(filter) {
+        return getCollection(name)
+            .then((mongoCollection) => mongoCollection.deleteMany(filter));
+    }
+
     return {
         find(query, callback) {
-            _db.collection(name).find(query).toArray()
+            if (!callback) {
+                throw new TypeError('db.collection.find requires a callback. Use findMany for promise-based reads.');
+            }
+
+            return getCollection(name)
+                .then((mongoCollection) => mongoCollection.find(query).toArray())
                 .then((docs) => callback(null, docs))
                 .catch((err) => callback(err, null));
         },
+        findMany(query) {
+            return getCollection(name)
+                .then((mongoCollection) => mongoCollection.find(query).toArray());
+        },
         findOne(query, callback) {
-            _db.collection(name).findOne(query)
+            const op = getCollection(name)
+                .then((mongoCollection) => mongoCollection.findOne(query));
+
+            if (!callback) {
+                return op;
+            }
+
+            return op
                 .then((doc) => callback(null, doc))
                 .catch((err) => callback(err, null));
         },
         save(doc, callback) {
             const { _id, ...rest } = doc;
-            const filter = _id ? { _id: typeof _id === 'string' ? new ObjectId(_id) : _id } : { _id: new ObjectId() };
+            const filter = _id ? { _id: normalizeId(_id) } : { _id: new ObjectId() };
             const update = { $set: rest };
             const options = { upsert: true, returnDocument: 'after' };
-            _db.collection(name).findOneAndUpdate(filter, update, options)
+
+            const op = getCollection(name)
+                .then((mongoCollection) => mongoCollection.findOneAndUpdate(filter, update, options))
                 .then((result) => {
-                    if (!doc._id && result) doc._id = result._id;
+                    if (!doc._id && result && result._id) doc._id = result._id;
                     if (callback) callback(null, result);
-                })
-                .catch((err) => { if (callback) callback(err); });
+                    return result;
+                });
+
+            if (!callback) {
+                op.catch(() => {});
+                return op;
+            }
+
+            return op.catch((err) => {
+                callback(err);
+                return null;
+            });
+        },
+        deleteOne(filter) {
+            return deleteOne(filter);
+        },
+        deleteMany(filter) {
+            return deleteMany(filter);
         },
         remove(doc, justOne, callback) {
-            const filter = doc._id ? { _id: typeof doc._id === 'string' ? new ObjectId(doc._id) : doc._id } : doc;
-            const op = justOne
-                ? _db.collection(name).deleteOne(filter)
-                : _db.collection(name).deleteMany(filter);
-            op.then((r) => { if (callback) callback(null, r); })
-                .catch((err) => { if (callback) callback(err); });
+            const filter = doc._id ? { _id: normalizeId(doc._id) } : doc;
+            const op = justOne ? deleteOne(filter) : deleteMany(filter);
+
+            if (!callback) {
+                op.catch(() => {});
+                return op;
+            }
+
+            return op
+                .then((result) => {
+                    callback(null, result);
+                    return result;
+                })
+                .catch((err) => {
+                    callback(err);
+                    return null;
+                });
         },
     };
 }
 
 module.exports = {
+    ready,
     users: collection('users'),
     libraries: collection('libraries'),
 };

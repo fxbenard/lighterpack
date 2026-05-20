@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 import { registerUser } from './auth-utils';
 
 test.describe('Save and reload tests', () => {
-  test('should preserve list edits after reload', async ({ page }) => {
+  test('should persist list edits to the share page', async ({ page, browser }) => {
     const now = Date.now();
     const username = `save${now}`;
     const email = `save+${now}@lighterpack.com`;
@@ -11,6 +11,7 @@ test.describe('Save and reload tests', () => {
     const listName = `Saved List ${now}`;
     const itemName = 'Saved Backpack';
     const itemDescription = 'Still here after reload';
+    const isSuccessfulSave = (response) => response.url().includes('/saveLibrary') && response.ok();
 
     await registerUser(page, username, password, email);
 
@@ -18,15 +19,33 @@ test.describe('Save and reload tests', () => {
     await page.locator('.lpItem .lpName').first().fill(itemName);
     await page.locator('.lpItem .lpDescription').first().fill(itemDescription);
     await page.locator('.lpItem .lpWeight').first().fill('880');
-    await page.locator('.lpItem .lpQty').first().fill('2');
 
-    await expect(async () => {
-      await page.reload();
-      await expect(page.getByPlaceholder('List Name')).toHaveValue(listName);
-      await expect(page.locator('.lpItem .lpName').first()).toHaveValue(itemName);
-      await expect(page.locator('.lpItem .lpDescription').first()).toHaveValue(itemDescription);
-      await expect(page.locator('.lpItem .lpWeight').first()).toHaveValue('880');
-      await expect(page.locator('.lpItem .lpQty').first()).toHaveValue('2');
-    }).toPass({ timeout: 35000 });
+    const editedFieldsSave = page.waitForResponse(isSuccessfulSave, { timeout: 35000 });
+    await page.locator('.lpItem .lpQty').first().fill('2');
+    await editedFieldsSave;
+
+    const externalIdSave = page.waitForResponse(isSuccessfulSave, { timeout: 35000 });
+    await page.getByText('Share', { exact: true }).hover();
+
+    const shareUrlLocator = page.getByLabel('Share your list');
+    await expect(shareUrlLocator).toHaveValue(/\S/);
+    const shareUrl = await shareUrlLocator.inputValue();
+    await externalIdSave;
+
+    const shareContext = await browser.newContext();
+    const sharePage = await shareContext.newPage();
+
+    try {
+      await sharePage.goto(shareUrl);
+
+      const firstSharedItem = sharePage.locator('.lpItem').first();
+      await expect(sharePage.locator('h1.lpListName')).toHaveText(listName);
+      await expect(firstSharedItem.locator('.lpName')).toContainText(itemName);
+      await expect(firstSharedItem.locator('.lpDescription')).toContainText(itemDescription);
+      await expect(firstSharedItem.locator('.lpWeight')).toContainText('880');
+      await expect(firstSharedItem.locator('.lpQtyCell')).toContainText('2');
+    } finally {
+      await shareContext.close();
+    }
   });
 });

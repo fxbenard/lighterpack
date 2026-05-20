@@ -46,5 +46,10 @@ assertEqual(rainJacket.worn, true, 'worn marker');
 
 const invalid = parseImportCsv(readFixture('import-invalid.csv'), 'import invalid');
 assertEqual(invalid.data.length, 1, 'invalid fixture accepted item count');
+assertEqual(invalid.acceptedRows, 1, 'invalid fixture accepted row count');
+assertEqual(invalid.rejectedRows.length, 3, 'invalid fixture rejected row count');
+assertEqual(invalid.rejectedRows[0].reason, 'missing item name', 'missing name reason');
+assertEqual(invalid.rejectedRows[1].reason, 'invalid quantity', 'invalid quantity reason');
+assertEqual(invalid.rejectedRows[2].reason, 'unsupported unit', 'unsupported unit reason');
 
 console.log('csv roundtrip fixtures: ok');

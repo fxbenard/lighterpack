@@ -60,11 +60,13 @@ Planned later in Phase 1: verify library fixtures:
 npm run verify:fixtures
 ```
 
-Planned later in Phase 1: export a user's library for backup:
+Export a user's library for backup:
 
 ```bash
 node scripts/export-user-library.js <username> <output-file>
 ```
+
+The export script writes only the user's `library` document. It does not export password hashes, tokens, email addresses, or account metadata.
 
 Example:
 

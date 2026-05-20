@@ -115,6 +115,7 @@ During this roadmap:
 - Define backup/export requirements.
 - Identify a PostgreSQL JSONB target schema.
 - Define non-regression checks for a future migration.
+- Phase 4 implementation plan: `docs/superpowers/plans/2026-05-20-phase-4-mongo-access-layer.md`.
 
 The actual database migration should be a separate project after this roadmap.
 

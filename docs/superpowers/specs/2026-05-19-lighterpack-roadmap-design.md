@@ -73,6 +73,8 @@ Duration: weeks 5-6.
 
 Purpose: make the existing interface clearer and more modern without changing the product model.
 
+Implementation plan: `docs/superpowers/plans/2026-05-20-phase-3-conservative-visual-refresh.md`.
+
 Scope:
 
 - Improve typography, spacing, contrast, and row density.

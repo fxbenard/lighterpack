@@ -10,13 +10,15 @@
 }
 
 .lpLibraryList {
-    border-top: 1px dotted #999;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #eef2e7;
     display: flex;
     list-style: none;
     margin: 0 10px;
     overflow-y: auto;
-    padding: 6px 0;
+    padding: 8px 10px;
     position: relative;
+    transition: background 0.1s ease, color 0.1s ease;
 
     &:first-child {
         border-top: none;
@@ -28,7 +30,8 @@
     }
 
     &.lpActive {
-        color: $yellow1;
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff6bf;
         font-weight: bold;
 
         .lpRemove {
@@ -52,6 +55,10 @@
         visibility: visible;
     }
 
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
     .lpListName {
         flex: 1 1 auto;
         overflow: hidden;
@@ -73,6 +80,7 @@
 .listContainerHeader {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 8px;
 }
 
 #addListFlyout {

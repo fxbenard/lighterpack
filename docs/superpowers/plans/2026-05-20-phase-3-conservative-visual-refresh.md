@@ -38,7 +38,7 @@
 - Modify: `client/css/_list.scss`
 - Modify: `client/css/_share.scss`
 
-- [ ] **Step 1: Add a focused browser test**
+- [x] **Step 1: Add a focused browser test**
 
 Create `test/e2e/visual-refresh.spec.ts` with a scenario that:
 
@@ -47,7 +47,7 @@ Create `test/e2e/visual-refresh.spec.ts` with a scenario that:
 3. Confirms the `Rain jacket` row in edit mode has class `lpQtyZero`.
 4. Opens the share URL and confirms the same row has class `lpQtyZero`.
 
-- [ ] **Step 2: Run the test to see the failure**
+- [x] **Step 2: Run the test to see the failure**
 
 Run:
 
@@ -57,7 +57,7 @@ npm run test:e2e:visual -- --project=chromium --reporter=line
 
 Expected: FAIL because no `lpQtyZero` class is rendered yet.
 
-- [ ] **Step 3: Add the row classes**
+- [x] **Step 3: Add the row classes**
 
 Update `client/components/item.vue` so the root `<li>` uses an object binding that preserves `item.classes` and adds `lpQtyZero` when `parseFloat(displayQty) <= 0` or `categoryItem.qty <= 0`.
 
@@ -65,7 +65,7 @@ Update `server/views.js` so `renderCategory()` appends `lpQtyZero` when `categor
 
 Update `templates/t_itemShare.mustache` to render the passed class string unchanged on the root `.lpItem`.
 
-- [ ] **Step 4: Style the zero-quantity state**
+- [x] **Step 4: Style the zero-quantity state**
 
 In `client/css/_list.scss` and `client/css/_share.scss`, add a `.lpItem.lpQtyZero` state that:
 
@@ -74,7 +74,7 @@ In `client/css/_list.scss` and `client/css/_share.scss`, add a `.lpItem.lpQtyZer
 - adds a subtle desaturated background
 - keeps link, worn, consumable, and star indicators visible enough to scan
 
-- [ ] **Step 5: Re-run the focused test**
+- [x] **Step 5: Re-run the focused test**
 
 Run:
 
@@ -84,7 +84,7 @@ npm run test:e2e:visual -- --project=chromium --reporter=line
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add client/components/item.vue client/css/_list.scss client/css/_share.scss server/views.js templates/t_itemShare.mustache test/e2e/visual-refresh.spec.ts package.json
@@ -97,19 +97,19 @@ git commit -m "feat: gray out zero qty rows"
 - Modify: `client/css/_list.scss`
 - Modify: `client/css/_share.scss`
 
-- [ ] **Step 1: Tighten row rhythm**
+- [x] **Step 1: Tighten row rhythm**
 
 Adjust list row spacing, border color, and header/footer contrast in `client/css/_list.scss` so category tables read more like dense gear tables and less like loose form rows.
 
-- [ ] **Step 2: Make item states easier to scan**
+- [x] **Step 2: Make item states easier to scan**
 
 Increase visibility of active link, worn, consumable, and star states while keeping inactive icons quiet.
 
-- [ ] **Step 3: Mirror the read-only styling**
+- [x] **Step 3: Mirror the read-only styling**
 
 Apply equivalent density and state styling in `client/css/_share.scss` so public share pages visually match the edit view.
 
-- [ ] **Step 4: Run build and focused browser tests**
+- [x] **Step 4: Run build and focused browser tests**
 
 Run:
 
@@ -121,7 +121,7 @@ npm run test:e2e:visual -- --project=chromium --reporter=line
 
 Expected: all commands pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add client/css/_list.scss client/css/_share.scss
@@ -133,15 +133,15 @@ git commit -m "update: refine list row styling"
 **Files:**
 - Modify: `client/components/import-csv.vue`
 
-- [ ] **Step 1: Restyle the modal summary**
+- [x] **Step 1: Restyle the modal summary**
 
 Add badge-like accepted/rejected counts and improve spacing above the preview table.
 
-- [ ] **Step 2: Improve preview table scanning**
+- [x] **Step 2: Improve preview table scanning**
 
 Make the table header sticky within the modal, align numeric columns consistently, and add subtle row zebra/background treatment.
 
-- [ ] **Step 3: Run build and CSV browser tests**
+- [x] **Step 3: Run build and CSV browser tests**
 
 Run:
 
@@ -152,7 +152,7 @@ npm run test:e2e:csv -- --project=chromium --reporter=line
 
 Expected: both commands pass.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add client/components/import-csv.vue
@@ -165,7 +165,7 @@ git commit -m "update: polish csv preview"
 - Modify: `README.md`
 - Modify: `docs/superpowers/specs/2026-05-19-lighterpack-roadmap-design.md`
 
-- [ ] **Step 1: Add the visual test command**
+- [x] **Step 1: Add the visual test command**
 
 Document:
 
@@ -173,7 +173,7 @@ Document:
 npm run test:e2e:visual -- --project=chromium --reporter=line
 ```
 
-- [ ] **Step 2: Link the plan from the roadmap**
+- [x] **Step 2: Link the plan from the roadmap**
 
 Add:
 
@@ -181,7 +181,7 @@ Add:
 Phase 3 implementation plan: `docs/superpowers/plans/2026-05-20-phase-3-conservative-visual-refresh.md`.
 ```
 
-- [ ] **Step 3: Run final verification**
+- [x] **Step 3: Run final verification**
 
 Run:
 
@@ -194,7 +194,7 @@ npm run test:e2e:visual -- --project=chromium --reporter=line
 
 Expected: all commands pass.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add README.md docs/superpowers/specs/2026-05-19-lighterpack-roadmap-design.md

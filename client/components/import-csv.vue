@@ -12,8 +12,9 @@
 
     .importSummary {
         display: flex;
+        flex-wrap: wrap;
         gap: 10px;
-        margin-bottom: 14px;
+        margin-bottom: 16px;
     }
 
     .importErrors {
@@ -48,6 +49,8 @@
     }
 
     .lpTable {
+        border-collapse: separate;
+        border-spacing: 0;
         width: 100%;
     }
 
@@ -61,12 +64,27 @@
         z-index: 1;
 
         .lpCell {
-            background: #eef2e7;
+            background: #e9eee2;
+            border-top: none;
+            box-shadow: inset 0 -1px 0 #cbd2c0;
+            font-size: 12px;
+            font-weight: 700;
         }
     }
 
     .lpRow:nth-child(even):not(.lpHeader) .lpCell {
         background: rgba(245, 247, 241, 0.8);
+    }
+
+    .lpRow:not(.lpHeader) .lpCell:nth-child(4),
+    .lpRow:not(.lpHeader) .lpCell:nth-child(5),
+    .lpRow:not(.lpHeader) .lpCell:nth-child(8) {
+        text-align: right;
+    }
+
+    .lpRow:not(.lpHeader) .lpCell:nth-child(9),
+    .lpRow:not(.lpHeader) .lpCell:nth-child(10) {
+        text-align: center;
     }
 }
 
@@ -91,11 +109,11 @@
                         <span class="lpCell">Item Name</span>
                         <span class="lpCell">Category</span>
                         <span class="lpCell">Description</span>
-                        <span class="lpCell">Qty</span>
-                        <span class="lpCell">Weight</span>
+                        <span class="lpCell lpNumber">Qty</span>
+                        <span class="lpCell lpNumber">Weight</span>
                         <span class="lpCell">Unit</span>
                         <span class="lpCell">Link</span>
-                        <span class="lpCell">Price</span>
+                        <span class="lpCell lpNumber">Price</span>
                         <span class="lpCell">Worn</span>
                         <span class="lpCell">Consumable</span>
                     </li>

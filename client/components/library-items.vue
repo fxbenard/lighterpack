@@ -12,21 +12,24 @@
 }
 
 #librarySearch {
-    background: #666;
-    border: 1px solid #888;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
     color: #fff;
     margin-bottom: 15px;
-    padding: 3px 6px;
+    padding: 6px 8px;
 }
 
 .lpLibraryItem {
-    border-top: 1px dotted #999;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #eef2e7;
     list-style: none;
-    margin: 0 10px 5px;
+    margin: 0 10px 4px;
     min-height: 43px;
     overflow: hidden;
-    padding: 5px 5px 0 15px;
+    padding: 7px 8px 4px 15px;
     position: relative;
+    transition: background 0.1s ease, color 0.1s ease;
 
     &:first-child {
         border-top: none;
@@ -41,6 +44,10 @@
         background: #606060;
         border: 1px solid #999;
         color: #fff;
+    }
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
     }
 
     .lpName {
@@ -58,7 +65,7 @@
 
     .lpDescription {
         clear: both;
-        color: #ccc;
+        color: #cbd2c7;
         display: block;
         overflow: hidden;
         text-overflow: ellipsis;

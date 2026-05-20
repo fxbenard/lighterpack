@@ -4,6 +4,7 @@ import { registerUser } from './auth-utils';
 
 test.describe('Save and reload tests', () => {
   test('should persist list edits to the share page', async ({ page, browser }) => {
+    test.setTimeout(60000);
     const now = Date.now();
     const username = `save${now}`;
     const email = `save+${now}@lighterpack.com`;

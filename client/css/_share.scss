@@ -4,13 +4,16 @@
 
 .lpShare {
     .lpCategoryName {
+        color: #31362d;
         font-size: 18px;
         margin: 0;
     }
 
     .lpItem {
+        border-top-color: #d7dbd1;
+
         &:hover {
-            background: #fff;
+            background: #fbfcf8;
         }
 
         .lpActionsCell {
@@ -22,7 +25,7 @@
         }
 
         &.lpQtyZero {
-            background: #f5f3ed;
+            background: #f3f1ea;
             color: #6e7168;
 
             .lpName,
@@ -39,6 +42,23 @@
                 opacity: 0.8;
             }
         }
+    }
+
+    .lpItemsHeader {
+        background: #edf1e8;
+        border-bottom: 1px solid #9aa191;
+        color: #41473f;
+    }
+
+    .lpItemsFooter {
+        background: #f6f7f2;
+        border-top: 1px solid #c4cabe;
+    }
+
+    .lpWeightCell,
+    .lpQtyCell,
+    .lpPriceCell {
+        color: #383d36;
     }
 
     #lpListDescription {

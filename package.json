@@ -11,6 +11,7 @@
     "test:e2e:critical": "playwright test test/e2e/auth.spec.ts test/e2e/list.spec.ts test/e2e/save-load.spec.ts",
     "verify:fixtures": "node scripts/verify-library-fixtures.js",
     "verify:csv": "node scripts/verify-csv-roundtrip.js",
+    "verify:csv:export": "node scripts/verify-csv-export.js",
     "lint:css": "./node_modules/.bin/stylelint \"client/**/*.{scss,vue}\" --fix",
     "lint:js": "./node_modules/.bin/eslint --ext .vue --ext .js ./ --fix"
   },

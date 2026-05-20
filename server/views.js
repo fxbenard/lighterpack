@@ -9,6 +9,7 @@ const extend = require('node.extend');
 const markdown = require('markdown').markdown;
 const config = require('config');
 const { logWithRequest, logger } = require('./log.js');
+const { escapeCsvField } = require('./csv.js');
 
 const db = require('./db.js');
 
@@ -268,14 +269,7 @@ router.get('/csv/:id', (req, res) => {
                         itemRow.push(categoryItem.worn ? 'Worn' : '');
                         itemRow.push(categoryItem.consumable ? 'Consumable' : '');
 
-                        for (const k in itemRow) {
-                            const field = itemRow[k];
-                            if (k > 0) out += ',';
-                            if (typeof (field) === 'string') {
-                                if (field.indexOf(',') > -1) out += `"${field.replace(/\"/g, '""')}"`;
-                                else out += field;
-                            } else out += field;
-                        }
+                        out += itemRow.map(escapeCsvField).join(',');
                         out += '\n';
                     }
                 }

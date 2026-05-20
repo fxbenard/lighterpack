@@ -23,6 +23,7 @@
 
 <script>
 import modal from './modal.vue';
+import eventBus from '../services/event-bus';
 
 export default {
     name: 'Speedbump',
@@ -43,7 +44,7 @@ export default {
         };
     },
     beforeMount() {
-        bus.$on('initSpeedbump', (callback, options) => {
+        eventBus.on('initSpeedbump', (callback, options) => {
             this.initSpeedbump(callback, options);
         });
     },

@@ -142,6 +142,7 @@
 
 <script>
 import modal from './modal.vue';
+import eventBus from '../services/event-bus';
 
 const csvImportUtils = require('../utils/csv-import.js');
 
@@ -176,7 +177,7 @@ export default {
         this.csvInput = document.getElementById('csv');
         this.csvInput.onchange = this.importCSV;
 
-        bus.$on('importCSV', () => {
+        eventBus.on('importCSV', () => {
             this.csvInput.click();
         });
     },

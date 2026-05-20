@@ -44,6 +44,7 @@
 
 <script>
 import modal from './modal.vue';
+import eventBus from '../services/event-bus';
 
 export default {
     name: 'ItemImage',
@@ -59,7 +60,7 @@ export default {
         };
     },
     mounted() {
-        bus.$on('updateItemImage', (item) => {
+        eventBus.on('updateItemImage', (item) => {
             this.shown = true;
             this.item = item;
             this.imageUrl = item.imageUrl;

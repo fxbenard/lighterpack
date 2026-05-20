@@ -32,6 +32,7 @@
 <script>
 import errors from './errors.vue';
 import modal from './modal.vue';
+import eventBus from '../services/event-bus';
 
 export default {
     name: 'Account',
@@ -54,7 +55,7 @@ export default {
         },
     },
     beforeMount() {
-        bus.$on('showDeleteAccount', () => {
+        eventBus.on('showDeleteAccount', () => {
             this.shown = true;
         });
     },

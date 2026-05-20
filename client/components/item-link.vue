@@ -15,6 +15,7 @@
 
 <script>
 import modal from './modal.vue';
+import eventBus from '../services/event-bus';
 
 export default {
     name: 'ItemLink',
@@ -29,7 +30,7 @@ export default {
         };
     },
     beforeMount() {
-        bus.$on('updateItemLink', (item) => {
+        eventBus.on('updateItemLink', (item) => {
             this.shown = true;
             this.item = item;
             this.url = item.url;

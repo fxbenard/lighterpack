@@ -29,6 +29,7 @@
 
 <script>
 import modal from './modal.vue';
+import eventBus from '../services/event-bus';
 
 export default {
     name: 'Help',
@@ -41,7 +42,7 @@ export default {
         };
     },
     beforeMount() {
-        bus.$on('showHelp', () => {
+        eventBus.on('showHelp', () => {
             this.shown = true;
         });
     },

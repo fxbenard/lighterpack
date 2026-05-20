@@ -26,6 +26,7 @@
 <script>
 import errors from './errors.vue';
 import spinner from './spinner.vue';
+import eventBus from '../services/event-bus';
 
 export default {
     name: 'SigninForm',
@@ -78,7 +79,7 @@ export default {
                 })
                 .catch((err) => {
                     this.errors = err;
-                    bus.$emit('focus-signin-password');
+                    eventBus.emit('focus-signin-password');
                     this.password = '';
                     this.fetching = false;
                 });

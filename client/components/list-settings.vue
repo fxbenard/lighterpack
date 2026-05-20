@@ -60,6 +60,7 @@
 
 <script>
 import PopoverHover from './popover-hover.vue';
+import eventBus from '../services/event-bus';
 
 export default {
     name: 'ListSettings',
@@ -108,7 +109,7 @@ export default {
         this.updateOptionalFieldValues();
     },
     mounted() {
-        bus.$on('optionalFieldChanged', () => {
+        eventBus.on('optionalFieldChanged', () => {
             this.updateOptionalFieldValues();
         });
     },

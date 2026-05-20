@@ -8,6 +8,16 @@
     .lpButton {
         margin-bottom: 30px;
     }
+
+    .importSummary {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .importErrors {
+        color: #9b2c2c;
+        margin-bottom: 20px;
+    }
 }
 
 </style>
@@ -16,6 +26,14 @@
     <div id="importCSV">
         <modal id="importValidate" :shown="shown" @hide="shown = false">
             <h2>Confirm your import <span v-if="importItemCount">({{ importItemCount }} items)</span></h2>
+            <p class="importSummary">
+                {{ acceptedRowCount }} accepted<span v-if="rejectedRowCount">, {{ rejectedRowCount }} rejected</span>
+            </p>
+            <ul v-if="rejectedRowCount" class="importErrors">
+                <li v-for="row in importData.rejectedRows" :key="row.rowNumber">
+                    Row {{ row.rowNumber }}: {{ row.reason }}
+                </li>
+            </ul>
             <div id="importData">
                 <ul class="lpTable lpDataTable">
                     <li class="lpRow lpHeader">
@@ -77,6 +95,12 @@ export default {
         },
         importItemCount() {
             return this.importData.data ? this.importData.data.length : 0;
+        },
+        acceptedRowCount() {
+            return this.importData.acceptedRows || this.importItemCount;
+        },
+        rejectedRowCount() {
+            return this.importData.rejectedRows ? this.importData.rejectedRows.length : 0;
         },
     },
     mounted() {

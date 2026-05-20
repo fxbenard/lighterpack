@@ -1,22 +1,17 @@
-const config = require('config');
 const request = require('request');
-const mongojs = require('mongojs');
 
 const newDataTypes = require('../client/dataTypes.js');
-
-const collections = ['users_prod', 'libraries'];
+const { withDb } = require('./_mongo');
 
 const oldBaseUrl = 'http://dev.lighterpack.com:3001';
 const newBaseUrl = 'http://dev.lighterpack.com:8080';
 
-const db = mongojs(config.get('databaseUrl'), collections);
-
 let workingListIds = [];
 let originalIdsLength;
 
-console.log('loading lists....');
-
-getAllIds()
+withDb(async (db) => {
+    console.log('loading lists....');
+    await getAllIds(db)
     .then(compareNextListRender)
     .then(() => {
         console.log('done.');
@@ -25,38 +20,44 @@ getAllIds()
         console.log('top level error.');
         console.log(err);
     });
+}).catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 
-function getAllIds() {
+function getAllIds(db) {
     return new Promise((resolve, reject) => {
-        db.users_prod.find({}, (err, users) => {
-            if (!users.length) {
-                console.log('no users found');
-                return;
-            }
-            console.log(`found ${users.length} users`);
+        db.collection('users_prod').find({}).toArray()
+            .then((users) => {
+                if (!users.length) {
+                    console.log('no users found');
+                    return;
+                }
+                console.log(`found ${users.length} users`);
 
 
-            users.forEach((user) => {
-                user.library.categories.forEach((category) => {
-                    console.log(category.id);
+                users.forEach((user) => {
+                    user.library.categories.forEach((category) => {
+                        console.log(category.id);
+                    });
+
+                    const userListIds = user.library.lists.map(list => list.externalId).filter((listId) => {
+                        if (!listId) {
+                            return false;
+                        }
+                        return true;
+                    });
+                    workingListIds = workingListIds.concat(userListIds);
                 });
 
-                const userListIds = user.library.lists.map(list => list.externalId).filter((listId) => {
-                    if (!listId) {
-                        return false;
-                    }
-                    return true;
-                });
-                workingListIds = workingListIds.concat(userListIds);
-            });
+                console.log('loading complete.');
+                console.log(`found ${workingListIds.length} lists.`);
 
-            console.log('loading complete.');
-            console.log(`found ${workingListIds.length} lists.`);
+                originalIdsLength = workingListIds.length;
 
-            originalIdsLength = workingListIds.length;
-
-            resolve();
-        });
+                resolve();
+            })
+            .catch(reject);
     });
 }
 

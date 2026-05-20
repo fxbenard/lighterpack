@@ -1,21 +1,17 @@
-const config = require('config');
 const request = require('request');
-const mongojs = require('mongojs');
 
 const newDataTypes = require('../client/dataTypes.js');
+const { withDb } = require('./_mongo');
 
 const NewLibrary = newDataTypes.Library;
-
-const collections = ['users_prod', 'libraries'];
-
-const db = mongojs(config.get('databaseUrl'), collections);
 
 let successfulUsersCount = 0;
 let erroredUsersCount = 0;
 const erroredUsers = [];
 
-console.log('loading users....');
-db.users_prod.find({}, (err, users) => {
+withDb(async (db) => {
+    console.log('loading users....');
+    const users = await db.collection('users_prod').find({}).toArray();
     if (!users.length) {
         console.log('no users found');
         return;
@@ -41,4 +37,7 @@ db.users_prod.find({}, (err, users) => {
     console.log(`errored users: ${erroredUsersCount}`);
     console.log('---');
     console.log(erroredUsers);
+}).catch((err) => {
+    console.error(err);
+    process.exit(1);
 });

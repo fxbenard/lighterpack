@@ -1,16 +1,11 @@
-const config = require('config');
-const mongojs = require('mongojs');
-
 const newDataTypes = require('../client/dataTypes.js');
-
-const collections = ['users_prod', 'libraries'];
-
-const db = mongojs(config.get('databaseUrl'), collections);
+const { withDb } = require('./_mongo');
 
 const erroredUsers = [];
 
-console.log('loading users....');
-db.users_prod.find({}, (err, users) => {
+withDb(async (db) => {
+    console.log('loading users....');
+    const users = await db.collection('users_prod').find({}).toArray();
     if (!users.length) {
         console.log('no users found');
         return;
@@ -60,4 +55,7 @@ db.users_prod.find({}, (err, users) => {
     console.log(`total # of errored users: ${erroredUsers.length}`);
     console.log('---');
     console.log(erroredUsers);
+}).catch((err) => {
+    console.error(err);
+    process.exit(1);
 });

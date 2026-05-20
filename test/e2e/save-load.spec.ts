@@ -25,6 +25,7 @@ test.describe('Save and reload tests', () => {
       await expect(page.getByPlaceholder('List Name')).toHaveValue(listName);
       await expect(page.locator('.lpItem .lpName').first()).toHaveValue(itemName);
       await expect(page.locator('.lpItem .lpDescription').first()).toHaveValue(itemDescription);
+      await expect(page.locator('.lpItem .lpWeight').first()).toHaveValue('880');
       await expect(page.locator('.lpItem .lpQty').first()).toHaveValue('2');
     }).toPass({ timeout: 35000 });
   });

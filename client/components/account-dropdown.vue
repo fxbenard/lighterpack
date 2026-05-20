@@ -19,6 +19,7 @@
 
 <script>
 import PopoverHover from './popover-hover.vue';
+import eventBus from '../services/event-bus';
 
 export default {
     name: 'AccountDropdown',
@@ -35,14 +36,14 @@ export default {
     },
     methods: {
         showAccount() {
-            bus.$emit('showAccount');
+            eventBus.emit('showAccount');
         },
         showHelp() {
-            bus.$emit('showHelp');
+            eventBus.emit('showHelp');
         },
         signout() {
             this.$store.commit('signout');
-            router.push('/signin');
+            this.$router.push('/signin');
         },
     },
 };

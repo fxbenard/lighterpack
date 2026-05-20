@@ -18,6 +18,7 @@
 
 <script>
 import modal from './modal.vue';
+import eventBus from '../services/event-bus';
 
 export default {
     name: 'ItemViewImage',
@@ -31,7 +32,7 @@ export default {
         };
     },
     mounted() {
-        bus.$on('viewItemImage', (imageUrl) => {
+        eventBus.on('viewItemImage', (imageUrl) => {
             this.shown = true;
             this.imageUrl = imageUrl;
         });

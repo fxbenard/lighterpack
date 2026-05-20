@@ -35,6 +35,7 @@
 import errors from './errors.vue';
 import modal from './modal.vue';
 import spinner from './spinner.vue';
+import eventBus from '../services/event-bus';
 
 export default {
     name: 'Account',
@@ -63,7 +64,7 @@ export default {
         },
     },
     beforeMount() {
-        bus.$on('showAccount', () => {
+        eventBus.on('showAccount', () => {
             this.shown = true;
         });
     },
@@ -124,7 +125,7 @@ export default {
         },
         showDeleteAccount() {
             this.shown = false;
-            bus.$emit('showDeleteAccount');
+            eventBus.emit('showDeleteAccount');
         },
     },
 };

@@ -25,6 +25,7 @@
 
 <script>
 import PopoverHover from './popover-hover.vue';
+import eventBus from '../services/event-bus';
 
 export default {
     name: 'Share',
@@ -74,14 +75,14 @@ export default {
                     .then((response) => {
                         this.$store.commit('setExternalId', { externalId: response.externalId, list: this.list });
                         setTimeout(() => {
-                            bus.$emit('show-share-box');
+                            eventBus.emit('show-share-box');
                         }, 0);
                     })
                     .catch((response) => {
                         alert('An error occurred while attempting to get an ID for your list. Please try again later.'); // TODO
                     });
             }
-            bus.$emit('show-share-box');
+            eventBus.emit('show-share-box');
         },
     },
 };

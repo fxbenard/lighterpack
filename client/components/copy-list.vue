@@ -22,6 +22,7 @@
 
 <script>
 import modal from './modal.vue';
+import eventBus from '../services/event-bus';
 
 export default {
     name: 'CopyList',
@@ -40,7 +41,7 @@ export default {
         },
     },
     beforeMount() {
-        bus.$on('copyList', () => {
+        eventBus.on('copyList', () => {
             this.shown = true;
         });
     },

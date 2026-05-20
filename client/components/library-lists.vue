@@ -122,6 +122,7 @@
 
 <script>
 import PopoverHover from './popover-hover.vue';
+import eventBus from '../services/event-bus';
 
 const dragula = require('dragula');
 
@@ -152,10 +153,10 @@ export default {
             this.$store.commit('newList');
         },
         copyList() {
-            bus.$emit('copyList');
+            eventBus.emit('copyList');
         },
         importCSV() {
-            bus.$emit('importCSV');
+            eventBus.emit('importCSV');
         },
         handleListReorder() {
             const $lists = document.getElementById('lists');
@@ -179,7 +180,7 @@ export default {
             const speedbumpOptions = {
                 body: 'Are you sure you want to delete this list? This cannot be undone.',
             };
-            bus.$emit('initSpeedbump', callback, speedbumpOptions);
+            eventBus.emit('initSpeedbump', callback, speedbumpOptions);
         },
     },
 };

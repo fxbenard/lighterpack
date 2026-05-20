@@ -20,6 +20,25 @@
         &.lpItemHasImage .lpImageCell {
             padding-right: 5px;
         }
+
+        &.lpQtyZero {
+            background: #f5f3ed;
+            color: #6e7168;
+
+            .lpName,
+            .lpDescription,
+            .lpWeightCell,
+            .lpQtyCell,
+            .lpPriceCell,
+            .lpHref,
+            .lpUnitSelect {
+                color: inherit;
+            }
+
+            .lpActionsCell {
+                opacity: 0.8;
+            }
+        }
     }
 
     #lpListDescription {

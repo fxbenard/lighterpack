@@ -4,19 +4,69 @@
     height: 500px;
     overflow-y: scroll;
     width: 650px;
+    background: #f8f6ef;
 
     .lpButton {
         margin-bottom: 30px;
     }
 
     .importSummary {
-        font-weight: bold;
-        margin-bottom: 10px;
+        display: flex;
+        gap: 10px;
+        margin-bottom: 14px;
     }
 
     .importErrors {
         color: #9b2c2c;
         margin-bottom: 20px;
+    }
+
+    .importBadge {
+        background: #e7ebdf;
+        border: 1px solid #c8cfbb;
+        border-radius: 999px;
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        padding: 4px 10px;
+        text-transform: uppercase;
+
+        &.isRejected {
+            background: #f6e2de;
+            border-color: #d9a39a;
+            color: #8c2f1c;
+        }
+    }
+
+    #importData {
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid #d7dccd;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .lpTable {
+        width: 100%;
+    }
+
+    .lpCell {
+        padding: 8px 10px;
+    }
+
+    .lpHeader {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+
+        .lpCell {
+            background: #eef2e7;
+        }
+    }
+
+    .lpRow:nth-child(even):not(.lpHeader) .lpCell {
+        background: rgba(245, 247, 241, 0.8);
     }
 }
 
@@ -27,7 +77,8 @@
         <modal id="importValidate" :shown="shown" @hide="shown = false">
             <h2>Confirm your import <span v-if="importItemCount">({{ importItemCount }} items)</span></h2>
             <p class="importSummary">
-                {{ acceptedRowCount }} accepted<span v-if="rejectedRowCount">, {{ rejectedRowCount }} rejected</span>
+                <span class="importBadge">{{ acceptedRowCount }} accepted</span>
+                <span v-if="rejectedRowCount" class="importBadge isRejected">{{ rejectedRowCount }} rejected</span>
             </p>
             <ul v-if="rejectedRowCount" class="importErrors">
                 <li v-for="row in importData.rejectedRows" :key="row.rowNumber">

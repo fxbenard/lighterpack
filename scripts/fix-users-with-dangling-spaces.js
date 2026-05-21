@@ -1,11 +1,8 @@
 const config = require('config');
 const { withDb } = require('./_mongo');
+const { sendMail } = require('../server/mailgun.js');
 
 let db;
-
-if (config.get('mailgunAPIKey')) {
-    var mailgun = require('mailgun-js')({ apiKey: config.get('mailgunAPIKey'), domain: config.get('mailgunDomain') });
-}
 
 const autoFixableMessage = "Hello ${originalUsername},\n\nWhile performing some system updates we noticed your username had some extra spaces at the beginning or end of it. We were able to rename your username to remove the extraneous spaces. Your new username is ${newUsername}. \n\nYou will have to reset your password to be able log in again which can be done at https://lighterpack.com/forgot-password \n\nApologies for any inconvenience, and if you have any isssues please reply to this email with details. \n\nThanks! \n\nThe LighterPack team";
 
@@ -160,13 +157,11 @@ function messageUser(user, originalUsername, messageTemplate) {
         };
         
 
-        mailgun.messages().send(mailOptions, (error, response) => {
-            if (error) {
-                reject(error);
-                return;
-            }
-            resolve();
-        });
+        sendMail(mailOptions)
+            .then(() => {
+                resolve();
+            })
+            .catch(reject);
     });
 }
 

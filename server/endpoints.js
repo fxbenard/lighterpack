@@ -10,14 +10,9 @@ const fs = require('fs');
 const formidable = require('formidable');
 const config = require('config');
 const { logWithRequest } = require('./log.js');
+const { sendMail } = require('./mailgun.js');
 
 const { authenticateUser, verifyPassword } = require('./auth.js');
-
-let mailgun;
-
-if (config.get('mailgunAPIKey')) {
-    mailgun = require('mailgun-js')({ apiKey: config.get('mailgunAPIKey'), domain: config.get('mailgunDomain') });
-}
 
 const db = require('./db.js');
 
@@ -240,16 +235,15 @@ router.post('/forgotPassword', (req, res) => {
                     };
 
                     logWithRequest(req, { message: 'Attempting to send new password', email });
-                    mailgun.messages().send(mailOptions, (error, response) => {
-                        if (error) {
-                            logWithRequest(req, error);
-                            return res.status(500).json({ message: 'An error occurred' });
-                        }
+                    sendMail(mailOptions).then((response) => {
                         db.users.save(user);
                         const out = { username };
                         logWithRequest(req, { message: 'Message sent', response: response.message });
                         logWithRequest(req, { message: 'password changed for user', username });
                         return res.status(200).json(out);
+                    }).catch((error) => {
+                        logWithRequest(req, error);
+                        return res.status(500).json({ message: 'An error occurred' });
                     });
                 });
             });
@@ -286,15 +280,14 @@ router.post('/forgotUsername', (req, res) => {
         };
 
         logWithRequest(req, { message: 'Attempting to send username', email, username });
-        mailgun.messages().send(mailOptions, (error, response) => {
-            if (error) {
-                logWithRequest(req, error);
-                return res.status(500).json({ message: 'An error occurred' });
-            }
+        sendMail(mailOptions).then((response) => {
             const out = { email };
             logWithRequest(req, { message: 'Message sent', response: response.message });
             logWithRequest(req, { message: 'sent username message for user', username, email });
             return res.status(200).json(out);
+        }).catch((error) => {
+            logWithRequest(req, error);
+            return res.status(500).json({ message: 'An error occurred' });
         });
     });
 });

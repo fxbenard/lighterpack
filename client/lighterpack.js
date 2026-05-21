@@ -17,10 +17,6 @@ const List = dataTypes.List;
 const Library = dataTypes.Library;
 
 Vue.use(VueRouter);
-
-const utils = require('./utils/utils.js');
-
-window.Vue = Vue; // surfacing Vue globally for utils methods
 const router = new VueRouter({
     mode: 'history',
     routes,

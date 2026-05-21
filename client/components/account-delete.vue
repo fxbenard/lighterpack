@@ -33,6 +33,7 @@
 import errors from './errors.vue';
 import modal from './modal.vue';
 import eventBus from '../services/event-bus';
+import { fetchJson } from '../utils/utils';
 
 export default {
     name: 'Account',

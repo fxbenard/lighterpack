@@ -58,11 +58,11 @@ export default {
     methods: {
         initSpeedbump(callback, options) {
             this.callback = callback;
-            this.messages = Vue.util.extend({}, this.defaultMessages);
+            this.messages = { ...this.defaultMessages };
             if (typeof options === 'string') {
                 this.messages.body = options;
             } else {
-                this.messages = Vue.util.extend(this.messages, options);
+                this.messages = { ...this.messages, ...options };
             }
             this.shown = true;
         },

@@ -25,6 +25,7 @@
 import errors from './errors.vue';
 import spinner from './spinner.vue';
 import { push } from '../services/navigation';
+import { fetchJson } from '../utils/utils';
 
 const dataTypes = require('../dataTypes.js');
 

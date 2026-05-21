@@ -59,6 +59,7 @@
 
 <script>
 import { push } from '../services/navigation';
+import { fetchJson } from '../utils/utils';
 
 export default {
     name: 'Admin',

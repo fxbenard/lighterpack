@@ -54,6 +54,7 @@ import blackoutFooter from '../components/blackout-footer.vue';
 import errors from '../components/errors.vue';
 import modal from '../components/modal.vue';
 import { push } from '../services/navigation';
+import { fetchJson } from '../utils/utils';
 
 export default {
     name: 'ForgotPassword',

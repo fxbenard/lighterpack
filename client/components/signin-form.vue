@@ -27,6 +27,7 @@
 import errors from './errors.vue';
 import spinner from './spinner.vue';
 import eventBus from '../services/event-bus';
+import { fetchJson } from '../utils/utils';
 
 export default {
     name: 'SigninForm',

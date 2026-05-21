@@ -124,7 +124,7 @@ export default {
     },
     watch: {
         categories() {
-            Vue.nextTick(() => {
+            this.$nextTick(() => {
                 this.handleItemReorder();
             });
         },

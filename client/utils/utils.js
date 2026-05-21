@@ -123,9 +123,3 @@ export function arrayMove(inputArray, oldIndex, newIndex) {
     array.splice(newIndex, 0, element);
     return array;
 }
-
-window.fetchJson = fetchJson;
-window.readCookie = readCookie;
-window.createCookie = createCookie;
-window.getElementIndex = getElementIndex;
-window.arrayMove = arrayMove;

@@ -26,6 +26,7 @@
 <script>
 import PopoverHover from './popover-hover.vue';
 import eventBus from '../services/event-bus';
+import { fetchJson } from '../utils/utils';
 
 export default {
     name: 'Share',

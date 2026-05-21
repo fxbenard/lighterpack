@@ -380,18 +380,25 @@ router.post('/imageUpload', (req, res) => {
 });
 
 function imageUpload(req, res, user) {
-    const form = new formidable.IncomingForm();
+    const form = formidable({
+        maxFiles: 1,
+        maxFileSize: 2500000,
+    });
+
     form.parse(req, async (err, fields, files) => {
         if (err) {
             logWithRequest(req, 'form parse error');
+            logWithRequest(req, err);
             return res.status(500).json({ message: 'An error occurred' });
         }
-        if (!files || !files.image) {
+
+        const imageFile = Array.isArray(files.image) ? files.image[0] : files.image;
+        if (!imageFile || !imageFile.filepath) {
             logWithRequest(req, 'No image in upload');
             return res.status(500).json({ message: 'An error occurred' });
         }
 
-        const imagePath = files.image.path;
+        const imagePath = imageFile.filepath;
 
         try {
             const imageBuffer = await readFile(imagePath);

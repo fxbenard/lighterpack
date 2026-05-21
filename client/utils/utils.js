@@ -1,5 +1,4 @@
 import assignIn from 'lodash/assignIn';
-import eventBus from '../services/event-bus';
 
 class lpError extends Error {
     constructor(response, statusCode = null) {
@@ -7,6 +6,8 @@ class lpError extends Error {
 
         this.message = 'An error occurred, please try again later.';
         this.statusCode = statusCode;
+        this.status = statusCode;
+        this.isUnauthorized = statusCode === 401 || statusCode === 403;
         this.errors = null;
         this.id = null;
         this.metadata = null;
@@ -68,8 +69,8 @@ export function fetchJson(url, options) {
                     return resolve(response.json);
                 }
                 if (response.status && (response.status === 401 || response.status === 403)) {
-                    eventBus.emit('unauthorized');
-                    return;
+                    const error = new lpError(response.json || response, response.status);
+                    return reject(error);
                 }
 
                 if (response.json) {

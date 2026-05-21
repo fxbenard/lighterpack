@@ -45,6 +45,7 @@
 <script>
 import modal from './modal.vue';
 import eventBus from '../services/event-bus';
+import { showGlobalAlert } from '../services/user-feedback';
 import { fetchJson } from '../utils/utils';
 
 export default {
@@ -84,7 +85,7 @@ export default {
         },
         uploadImage(evt) {
             if (!FormData) {
-                alert('Your browser is not supported for file uploads. Please update to a more modern browser.');
+                showGlobalAlert('Your browser is not supported for file uploads. Please update to a more modern browser.');
                 return;
             }
             const file = evt.target.files[0];
@@ -96,11 +97,11 @@ export default {
                 return;
             }
             if (size > 2500000) {
-                alert('Please upload a file less than 2.5mb');
+                showGlobalAlert('Please upload a file less than 2.5mb');
                 return;
             }
             if (type != 'image/png' && type != 'image/jpg' && !type != 'image/gif' && type != 'image/jpeg') {
-                alert('File doesnt match png, jpg or gif.');
+                showGlobalAlert('File doesnt match png, jpg or gif.');
                 return;
             }
             const formData = new FormData(this.$refs.imageUploadForm);
@@ -116,9 +117,9 @@ export default {
                     this.uploading = false;
                     this.$store.commit('updateItemImage', { image: response.data.id, item: this.item });
                     this.shown = false;
-                }).catch((response) => {
+                }).catch(() => {
                     this.uploading = false;
-                    alert('Upload failed! If this issue persists please file a bug.');
+                    showGlobalAlert('Upload failed! If this issue persists please file a bug.');
                 });
         },
         removeItemImage() {

@@ -26,6 +26,7 @@
 <script>
 import PopoverHover from './popover-hover.vue';
 import eventBus from '../services/event-bus';
+import { showGlobalAlert } from '../services/user-feedback';
 import { fetchJson } from '../utils/utils';
 
 export default {
@@ -79,8 +80,8 @@ export default {
                             eventBus.emit('show-share-box');
                         }, 0);
                     })
-                    .catch((response) => {
-                        alert('An error occurred while attempting to get an ID for your list. Please try again later.'); // TODO
+                    .catch(() => {
+                        showGlobalAlert('An error occurred while attempting to get an ID for your list. Please try again later.');
                     });
             }
             eventBus.emit('show-share-box');

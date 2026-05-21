@@ -4,8 +4,8 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 import routes from './routes';
-import eventBus, { legacyEventBus } from './services/event-bus';
-import { setRouter, redirect, legacyNavigation } from './services/navigation';
+import eventBus from './services/event-bus';
+import { setRouter, redirect } from './services/navigation';
 import store from './store/store';
 
 const focusDirectives = require('./utils/focus.js');
@@ -27,9 +27,6 @@ const router = new VueRouter({
 });
 
 setRouter(router);
-
-window.bus = legacyEventBus; // temporary Vue 2 compatibility for existing components
-window.router = legacyNavigation; // temporary Vue 2 compatibility for existing components
 
 eventBus.on('unauthorized', () => {
     redirect('/signin');

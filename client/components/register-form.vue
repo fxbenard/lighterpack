@@ -24,6 +24,7 @@
 <script>
 import errors from './errors.vue';
 import spinner from './spinner.vue';
+import { push } from '../services/navigation';
 
 const dataTypes = require('../dataTypes.js');
 
@@ -53,14 +54,14 @@ export default {
     methods: {
         loadLocal() {
             if (this.isLocalSaving) {
-                router.push('/');
+                push('/');
                 return;
             }
             const library = new Library();
             this.$store.commit('loadLibraryData', JSON.stringify(library.save()));
             this.$store.commit('setSaveType', 'local');
             this.$store.commit('setLoggedIn', false);
-            router.push('/');
+            push('/');
         },
         submit() {
             this.errors = [];
@@ -123,7 +124,7 @@ export default {
                         delete localStorage.library;
                     }
                     this.saving = false;
-                    router.push('/');
+                    push('/');
                 })
                 .catch((err) => {
                     this.saving = false;

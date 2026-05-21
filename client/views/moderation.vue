@@ -58,6 +58,8 @@
 </template>
 
 <script>
+import { push } from '../services/navigation';
+
 export default {
     name: 'Admin',
     components: {
@@ -78,7 +80,7 @@ export default {
     },
     beforeMount() {
         if (false) {
-            router.push('/welcome');
+            push('/welcome');
         }
     },
     methods: {

@@ -182,7 +182,7 @@ export default {
             this.csvInput.click();
         });
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.csvInput) {
             this.csvInput.onchange = null;
         }

@@ -69,7 +69,7 @@ export default {
             this.shown = true;
         });
     },
-    beforeDestroy() {
+    beforeUnmount() {
         unregisterDialogOpener('account');
     },
     methods: {

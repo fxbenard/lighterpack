@@ -68,7 +68,7 @@ export default {
             this.imageUrl = item.imageUrl;
         });
     },
-    beforeDestroy() {
+    beforeUnmount() {
         unregisterDialogOpener('itemImage');
     },
     methods: {

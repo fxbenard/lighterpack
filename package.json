@@ -52,17 +52,17 @@
     "sass": "1.32.0",
     "sass-loader": "10.1.0",
     "uuid": "^8.3.2",
-    "vue": "2.6.12",
-    "vue-loader": "15.9.6",
-    "vue-router": "^3.4.9",
-    "vue-template-compiler": "2.6.12",
-    "vuex": "3.6.0",
+    "vue": "^3.5.0",
+    "vue-loader": "^17.4.2",
+    "vue-router": "^4.5.0",
+    "vuex": "^4.1.0",
     "webpack": "5.11.1",
     "whatwg-fetch": "^2.0.3",
     "winston": "^3.3.3"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.1",
+    "@vue/compiler-sfc": "^3.5.0",
     "@types/node": "^22.7.9",
     "eslint": "7.23.0",
     "eslint-config-airbnb-base": "14.2.1",
@@ -74,6 +74,7 @@
     "webpack-cli": "^4.3.0",
     "webpack-dev-middleware": "4.0.2",
     "webpack-dev-server": "3.11.1",
-    "webpack-hot-middleware": "2.25.0"
+    "webpack-hot-middleware": "2.25.0",
+    "vue-style-loader": "^4.1.3"
   }
 }

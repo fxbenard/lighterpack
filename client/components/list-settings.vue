@@ -36,8 +36,8 @@
 <template>
     <span v-if="isSignedIn" id="settings" class="headerItem hasPopover">
         <PopoverHover>
-            <span slot="target"><i class="lpSprite lpSettings" /> Settings</span>
-            <div slot="content">
+            <template #target><span><i class="lpSprite lpSettings" /> Settings</span></template>
+            <template #content><div>
                 <ul id="lpOptionalFields">
                     <li v-for="optionalField in optionalFieldsLookup" :key="optionalField.name" class="lpOptionalField">
                         <label>
@@ -53,7 +53,7 @@
                         <input id="currencySymbol" type="text" maxlength="4" :value="library.currencySymbol" @input="updateCurrencySymbol($event)">
                     </label>
                 </div>
-            </div>
+            </div></template>
         </PopoverHover>
     </span>
 </template>

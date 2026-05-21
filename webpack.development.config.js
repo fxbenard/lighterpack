@@ -1,6 +1,16 @@
 const path = require('path');
 const webpack = require('webpack');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const { VueLoaderPlugin } = require('vue-loader');
+
+const devServerHost = process.env.DEV_SERVER_HOST || '127.0.0.1';
+const devServerPort = process.env.DEV_SERVER_PORT || '8080';
+const devServerUrl = `http://${devServerHost}:${devServerPort}/`;
+
+const vueFeatureFlags = {
+    __VUE_OPTIONS_API__: JSON.stringify(true),
+    __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
+};
 
 module.exports = {
     mode: 'development',
@@ -8,14 +18,14 @@ module.exports = {
         app: [
             'whatwg-fetch',
             'webpack/hot/dev-server',
-            'webpack-dev-server/client?http://local.lighterpack.com:8080/',
+            `webpack-dev-server/client?${devServerUrl}`,
             './client/css/lighterpack.scss',
             './client/lighterpack.js',
         ],
         share: [
             './client/css/share.scss',
             'webpack/hot/dev-server',
-            'webpack-dev-server/client?http://local.lighterpack.com:8080/',
+            `webpack-dev-server/client?${devServerUrl}`,
         ],
     },
     output: {
@@ -56,11 +66,7 @@ module.exports = {
             },
         ],
     },
-    resolve: {
-        alias: {
-            vue$: 'vue/dist/vue.esm.js',
-        },
-    },
+    resolve: {},
     devServer: {
         historyApiFallback: true,
         noInfo: true,
@@ -72,5 +78,6 @@ module.exports = {
     plugins: [
         new VueLoaderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
+        new webpack.DefinePlugin(vueFeatureFlags),
     ],
 };

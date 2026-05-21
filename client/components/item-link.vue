@@ -36,7 +36,7 @@ export default {
             this.url = item.url;
         });
     },
-    beforeDestroy() {
+    beforeUnmount() {
         unregisterDialogOpener('itemLink');
     },
     methods: {

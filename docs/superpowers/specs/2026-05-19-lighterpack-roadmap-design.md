@@ -106,6 +106,7 @@ During this roadmap:
 - Increase e2e coverage before any future framework migration.
 - Phase 5 implementation plan: `docs/superpowers/plans/2026-05-20-phase-5-vue3-readiness.md`.
 - Phase 6 implementation plan: `docs/superpowers/plans/2026-05-21-phase-6-pre-migration-ui-isolation.md`.
+- Phase 8 migration-prep plan: `docs/superpowers/plans/2026-05-21-phase-8-runtime-migration-prep.md`.
 
 ### MongoDB To PostgreSQL JSONB
 

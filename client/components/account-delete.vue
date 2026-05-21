@@ -60,7 +60,7 @@ export default {
             this.shown = true;
         });
     },
-    beforeDestroy() {
+    beforeUnmount() {
         unregisterDialogOpener('deleteAccount');
     },
     methods: {

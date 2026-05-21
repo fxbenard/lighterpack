@@ -112,7 +112,7 @@ export default {
             { eventName: 'click', handler: this.closeOnClick },
         ];
     },
-    beforeDestroy() {
+    beforeUnmount() {
         this.unbindCloseListeners();
     },
     methods: {

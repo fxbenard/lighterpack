@@ -52,7 +52,7 @@
 </style>
 
 <template>
-    <li :id="item.id" :class="itemRowClasses">
+    <li :id="item.id" :data-item-id="item.id" :class="itemRowClasses">
         <span class="lpHandleCell">
             <div class="lpItemHandle lpHandle" title="Reorder this item" />
         </span>

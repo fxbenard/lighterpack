@@ -128,7 +128,7 @@
 import utilsMixin from '../mixins/utils-mixin.js';
 import eventBus from '../services/event-bus';
 import { getElementIndex } from '../utils/utils';
-import { createDragDrop, queryContainers } from '../services/drag-drop';
+import { createDragDrop, getDatasetInt, queryContainers } from '../services/drag-drop';
 
 export default {
     name: 'LibraryItem',
@@ -222,13 +222,17 @@ export default {
                 },
             });
             drake.on('drag', ($el, $target, $source, $sibling) => {
-                this.itemDragId = parseInt($el.dataset.itemId); // fragile
+                this.itemDragId = getDatasetInt($el, 'itemId');
             });
             drake.on('drop', ($el, $target, $source, $sibling) => {
                 if (!$target || $target.id === 'library') {
                     return;
                 }
-                const categoryId = parseInt($target.parentElement.id); // fragile
+                const categoryId = getDatasetInt($target, 'categoryId');
+                if (this.itemDragId === null || categoryId === null) {
+                    drake.cancel(true);
+                    return;
+                }
                 this.$store.commit('addItemToCategory', { itemId: this.itemDragId, categoryId, dropIndex: getElementIndex($el) - 1 });
                 drake.cancel(true);
             });

@@ -87,7 +87,7 @@
 import category from './category.vue';
 import listSummary from './list-summary.vue';
 import { getElementIndex } from '../utils/utils';
-import { createDragDrop, queryContainers } from '../services/drag-drop';
+import { createDragDrop, getDatasetInt, queryContainers } from '../services/drag-drop';
 
 export default {
     name: 'List',
@@ -167,10 +167,14 @@ export default {
                 },
             });
             drake.on('drag', ($el, $target, $source, $sibling) => {
-                this.itemDragId = parseInt($el.id); // fragile
+                this.itemDragId = getDatasetInt($el, 'itemId');
             });
             drake.on('drop', ($el, $target, $source, $sibling) => {
-                const categoryId = parseInt($target.parentElement.id); // fragile
+                const categoryId = getDatasetInt($target, 'categoryId');
+                if (this.itemDragId === null || categoryId === null) {
+                    drake.cancel(true);
+                    return;
+                }
                 this.$store.commit('reorderItem', {
                     list: this.list, itemId: this.itemDragId, categoryId, dropIndex: getElementIndex($el) - 1,
                 });

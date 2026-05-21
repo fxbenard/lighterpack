@@ -4,7 +4,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 import routes from './routes';
-import eventBus from './services/event-bus';
+import { registerAppEventHandlers } from './services/app-events';
 import { setRouter, redirect } from './services/navigation';
 import { showGlobalAlert } from './services/user-feedback';
 import store from './store/store';
@@ -25,15 +25,16 @@ const router = new VueRouter({
 
 setRouter(router);
 
-eventBus.on('unauthorized', (message) => {
-    if (message) {
-        store.commit('pushGlobalAlert', { message });
-    }
-    redirect('/signin');
-});
-
-eventBus.on('globalAlert', (alert) => {
-    store.commit('pushGlobalAlert', alert);
+registerAppEventHandlers({
+    onUnauthorized(message) {
+        if (message) {
+            store.commit('pushGlobalAlert', { message });
+        }
+        redirect('/signin');
+    },
+    onGlobalAlert(alert) {
+        store.commit('pushGlobalAlert', alert);
+    },
 });
 
 store.dispatch('init')

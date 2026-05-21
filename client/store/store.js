@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
 import debounce from 'lodash/debounce';
-import eventBus from '../services/event-bus';
+import { notifyGlobalAlert, notifyUnauthorized } from '../services/app-events';
 import { clearCookie, getLocalLibrary, hasLocalLibrary, readCookie, setLocalLibrary } from '../services/browser-storage';
 import { arrayMove, fetchJson } from '../utils/utils';
 
@@ -325,7 +325,7 @@ const store = new Vuex.Store({
                 })
                 .catch((error) => {
                     if (error && error.statusCode === 401) {
-                        eventBus.emit('unauthorized', error.message);
+                        notifyUnauthorized(error.message);
                         return Promise.resolve();
                     }
 
@@ -391,9 +391,9 @@ const store = new Vuex.Store({
                             }
 
                             if (error && error.statusCode === 401) {
-                                eventBus.emit('unauthorized', errorMessage);
+                                notifyUnauthorized(errorMessage);
                             } else {
-                                eventBus.emit('globalAlert', { message: errorMessage });
+                                notifyGlobalAlert({ message: errorMessage });
                             }
                         });
                 };

@@ -1,11 +1,11 @@
-import eventBus from './event-bus';
+import { notifyGlobalAlert } from './app-events';
 
 export function showGlobalAlert(message) {
     if (!message) {
         return;
     }
 
-    eventBus.emit('globalAlert', { message });
+    notifyGlobalAlert({ message });
 }
 
 export default {

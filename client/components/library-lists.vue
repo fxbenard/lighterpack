@@ -108,7 +108,7 @@
                 </div>
             </PopoverHover>
         </div>
-        <ul id="lists">
+        <ul id="lists" ref="lists">
             <li v-for="list in library.lists" :key="list.id" class="lpLibraryList" :class="{lpActive: (library.defaultListId == list.id)}">
                 <div class="lpHandle" title="Reorder this item" />
                 <span class="lpLibraryListSwitch lpListName" @click="setDefaultList(list)">
@@ -123,8 +123,8 @@
 <script>
 import PopoverHover from './popover-hover.vue';
 import eventBus from '../services/event-bus';
-
-const dragula = require('dragula');
+import { getElementIndex } from '../utils/utils';
+import { createDragDrop } from '../services/drag-drop';
 
 export default {
     name: 'LibraryList',
@@ -142,8 +142,20 @@ export default {
             return this.$store.state.library;
         },
     },
+    data() {
+        return {
+            dragStartIndex: null,
+            drake: null,
+        };
+    },
     mounted() {
         this.handleListReorder();
+    },
+    beforeDestroy() {
+        if (this.drake) {
+            this.drake.destroy();
+            this.drake = null;
+        }
     },
     methods: {
         setDefaultList(list) {
@@ -159,8 +171,11 @@ export default {
             eventBus.emit('importCSV');
         },
         handleListReorder() {
-            const $lists = document.getElementById('lists');
-            const drake = dragula([$lists], {
+            if (this.drake) {
+                this.drake.destroy();
+            }
+
+            const drake = createDragDrop([this.$refs.lists], {
                 moves($el, $source, $handle, $sibling) {
                     return $handle.classList.contains('lpHandle');
                 },
@@ -172,6 +187,7 @@ export default {
                 this.$store.commit('reorderList', { before: this.dragStartIndex, after: getElementIndex($el) });
                 drake.cancel(true);
             });
+            this.drake = drake;
         },
         removeList(list) {
             const callback = function () {

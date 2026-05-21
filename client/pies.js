@@ -17,6 +17,7 @@ module.exports = function (args) {
     const firstRing = { inner: 25, outer: 70 };
     const secondRing = { inner: 80, outer: 120 };
     let tooltip;
+    let eventsAttached = false;
     const isAnimating = false;
     const frameRate = 10;
 
@@ -45,9 +46,9 @@ module.exports = function (args) {
         if (args.hoverCallback) hoverCallback = args.hoverCallback;
         drawGraph();
 
-        tooltip = document.createElement('div');
+        tooltip = container.ownerDocument.createElement('div');
         tooltip.classList.add('tooltip');
-        document.getElementsByTagName('body')[0].appendChild(tooltip);
+        container.ownerDocument.body.appendChild(tooltip);
     }
 
     function update(args) {
@@ -245,8 +246,31 @@ module.exports = function (args) {
     }
 
     function attachEvents() {
+        if (eventsAttached) {
+            return;
+        }
         container.addEventListener('mousemove', hoverHandle);
         container.addEventListener('click', clickHandle);
+        eventsAttached = true;
+    }
+
+    function detachEvents() {
+        if (!eventsAttached) {
+            return;
+        }
+        container.removeEventListener('mousemove', hoverHandle);
+        container.removeEventListener('click', clickHandle);
+        eventsAttached = false;
+    }
+
+    function destroy() {
+        detachEvents();
+
+        if (tooltip && tooltip.parentNode) {
+            tooltip.parentNode.removeChild(tooltip);
+        }
+
+        tooltip = null;
     }
 
     function hoverHandle(evt) {
@@ -423,5 +447,5 @@ module.exports = function (args) {
     }
 
     init();
-    return { update, open, close };
+    return { update, open, close, destroy };
 };

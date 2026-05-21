@@ -53,6 +53,7 @@ export default {
             newPassword: '',
             confirmNewPassword: '',
             shown: false,
+            openAccount: null,
         };
     },
     computed: {
@@ -63,10 +64,16 @@ export default {
             return this.$store.state.loggedIn;
         },
     },
-    beforeMount() {
-        eventBus.on('showAccount', () => {
+    mounted() {
+        this.openAccount = () => {
             this.shown = true;
-        });
+        };
+        eventBus.on('showAccount', this.openAccount);
+    },
+    beforeDestroy() {
+        if (this.openAccount) {
+            eventBus.off('showAccount', this.openAccount);
+        }
     },
     methods: {
         updateAccount() {

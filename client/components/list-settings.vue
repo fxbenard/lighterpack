@@ -95,6 +95,7 @@ export default {
                 cssClass: 'lpShowListDescription',
                 value: false,
             }],
+            refreshOptionalFields: null,
         };
     },
     computed: {
@@ -109,9 +110,15 @@ export default {
         this.updateOptionalFieldValues();
     },
     mounted() {
-        eventBus.on('optionalFieldChanged', () => {
+        this.refreshOptionalFields = () => {
             this.updateOptionalFieldValues();
-        });
+        };
+        eventBus.on('optionalFieldChanged', this.refreshOptionalFields);
+    },
+    beforeDestroy() {
+        if (this.refreshOptionalFields) {
+            eventBus.off('optionalFieldChanged', this.refreshOptionalFields);
+        }
     },
     methods: {
         toggleOptionalField(evt, optionalField) {

@@ -33,6 +33,7 @@ export default {
         return {
             listId: false,
             shown: false,
+            openCopyList: null,
         };
     },
     computed: {
@@ -40,10 +41,16 @@ export default {
             return this.$store.state.library;
         },
     },
-    beforeMount() {
-        eventBus.on('copyList', () => {
+    mounted() {
+        this.openCopyList = () => {
             this.shown = true;
-        });
+        };
+        eventBus.on('copyList', this.openCopyList);
+    },
+    beforeDestroy() {
+        if (this.openCopyList) {
+            eventBus.off('copyList', this.openCopyList);
+        }
     },
     methods: {
         copyList() {

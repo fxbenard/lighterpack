@@ -39,12 +39,19 @@ export default {
     data() {
         return {
             shown: false,
+            openHelp: null,
         };
     },
-    beforeMount() {
-        eventBus.on('showHelp', () => {
+    mounted() {
+        this.openHelp = () => {
             this.shown = true;
-        });
+        };
+        eventBus.on('showHelp', this.openHelp);
+    },
+    beforeDestroy() {
+        if (this.openHelp) {
+            eventBus.off('showHelp', this.openHelp);
+        }
     },
 };
 </script>

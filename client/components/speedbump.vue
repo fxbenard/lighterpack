@@ -41,12 +41,19 @@ export default {
             messages: {},
             callback: null,
             shown: false,
+            openSpeedbump: null,
         };
     },
-    beforeMount() {
-        eventBus.on('initSpeedbump', (callback, options) => {
+    mounted() {
+        this.openSpeedbump = (callback, options) => {
             this.initSpeedbump(callback, options);
-        });
+        };
+        eventBus.on('initSpeedbump', this.openSpeedbump);
+    },
+    beforeDestroy() {
+        if (this.openSpeedbump) {
+            eventBus.off('initSpeedbump', this.openSpeedbump);
+        }
     },
     methods: {
         initSpeedbump(callback, options) {

@@ -29,13 +29,20 @@ export default {
         return {
             imageUrl: '',
             shown: false,
+            openItemImageViewer: null,
         };
     },
     mounted() {
-        eventBus.on('viewItemImage', (imageUrl) => {
+        this.openItemImageViewer = (imageUrl) => {
             this.shown = true;
             this.imageUrl = imageUrl;
-        });
+        };
+        eventBus.on('viewItemImage', this.openItemImageViewer);
+    },
+    beforeDestroy() {
+        if (this.openItemImageViewer) {
+            eventBus.off('viewItemImage', this.openItemImageViewer);
+        }
     },
 };
 </script>

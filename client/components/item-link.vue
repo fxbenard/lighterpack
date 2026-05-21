@@ -27,14 +27,21 @@ export default {
             url: '',
             item: false,
             shown: false,
+            openItemLink: null,
         };
     },
-    beforeMount() {
-        eventBus.on('updateItemLink', (item) => {
+    mounted() {
+        this.openItemLink = (item) => {
             this.shown = true;
             this.item = item;
             this.url = item.url;
-        });
+        };
+        eventBus.on('updateItemLink', this.openItemLink);
+    },
+    beforeDestroy() {
+        if (this.openItemLink) {
+            eventBus.off('updateItemLink', this.openItemLink);
+        }
     },
     methods: {
         addLink() {

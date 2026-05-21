@@ -57,14 +57,21 @@ export default {
             item: false,
             uploading: false,
             shown: false,
+            openItemImage: null,
         };
     },
     mounted() {
-        eventBus.on('updateItemImage', (item) => {
+        this.openItemImage = (item) => {
             this.shown = true;
             this.item = item;
             this.imageUrl = item.imageUrl;
-        });
+        };
+        eventBus.on('updateItemImage', this.openItemImage);
+    },
+    beforeDestroy() {
+        if (this.openItemImage) {
+            eventBus.off('updateItemImage', this.openItemImage);
+        }
     },
     methods: {
         saveImageUrl() {

@@ -47,6 +47,7 @@ export default {
             confirmationText: '',
             currentPassword: '',
             shown: false,
+            openDeleteAccount: null,
         };
     },
     computed: {
@@ -54,10 +55,16 @@ export default {
             return this.confirmationText.toLocaleLowerCase() === 'delete my account';
         },
     },
-    beforeMount() {
-        eventBus.on('showDeleteAccount', () => {
+    mounted() {
+        this.openDeleteAccount = () => {
             this.shown = true;
-        });
+        };
+        eventBus.on('showDeleteAccount', this.openDeleteAccount);
+    },
+    beforeDestroy() {
+        if (this.openDeleteAccount) {
+            eventBus.off('showDeleteAccount', this.openDeleteAccount);
+        }
     },
     methods: {
         deleteAccount() {

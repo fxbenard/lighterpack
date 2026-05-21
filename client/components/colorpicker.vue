@@ -1,22 +1,48 @@
 <style lang="scss">
+.lpNativeColorInput {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    height: 28px;
+    padding: 0;
+    width: 28px;
 
+    &::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+
+    &::-webkit-color-swatch {
+        border: 0;
+        border-radius: 4px;
+    }
+
+    &::-moz-color-swatch {
+        border: 0;
+        border-radius: 4px;
+    }
+}
 </style>
 
 <template>
     <Popover id="lpPickerContainer" :shown="shown" @hide="shown = false">
         <span slot="target" class="lpLegend" :style="{'background-color': color}" @click="shown = true" />
-        <ColorWheelPicker slot="content" :width="150" :height="150" :disabled="false" :start-color="color" @color-change="onColorChange" />
+        <input
+            slot="content"
+            class="lpNativeColorInput"
+            type="color"
+            :value="normalizedColor"
+            @input="onColorChange($event.target.value)"
+        >
     </Popover>
 </template>
 
 <script>
 import Popover from './popover.vue';
-import ColorWheelPicker from './color-wheel-picker.vue';
 
 export default {
     name: 'ColorPicker',
     components: {
-        ColorWheelPicker,
         Popover,
     },
     props: [
@@ -26,6 +52,11 @@ export default {
         return {
             shown: false,
         };
+    },
+    computed: {
+        normalizedColor() {
+            return this.color || '#000000';
+        },
     },
     methods: {
         onColorChange(newColor) {

@@ -53,7 +53,6 @@
     "sass-loader": "10.1.0",
     "uuid": "^8.3.2",
     "vue": "2.6.12",
-    "vue-color-picker-wheel": "0.4.3",
     "vue-loader": "15.9.6",
     "vue-router": "^3.4.9",
     "vue-template-compiler": "2.6.12",

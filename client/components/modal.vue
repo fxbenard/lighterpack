@@ -95,6 +95,8 @@
 </template>
 
 <script>
+import { addWindowListener, removeWindowListener } from '../services/window-events';
+
 export default {
     name: 'Modal',
     props: {
@@ -128,10 +130,10 @@ export default {
             this.$emit('hide');
         },
         bindEscape() {
-            window.addEventListener('keyup', this.closeOnEscape);
+            addWindowListener('keyup', this.closeOnEscape);
         },
         unbindEscape() {
-            window.removeEventListener('keyup', this.closeOnEscape);
+            removeWindowListener('keyup', this.closeOnEscape);
         },
         closeOnEscape(evt) {
             if (this.shown && evt.keyCode === 27) {

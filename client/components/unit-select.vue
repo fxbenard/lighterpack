@@ -88,6 +88,8 @@
 </template>
 
 <script>
+import { bindWindowListeners, unbindWindowListeners } from '../services/window-events';
+
 export default {
     name: 'UnitSelect',
     props: ['weight', 'unit', 'onChange'],
@@ -101,7 +103,17 @@ export default {
             ],
             isOpen: false,
             isFocused: false,
+            closeBindings: [],
         };
+    },
+    created() {
+        this.closeBindings = [
+            { eventName: 'keyup', handler: this.closeOnEscape },
+            { eventName: 'click', handler: this.closeOnClick },
+        ];
+    },
+    beforeDestroy() {
+        this.unbindCloseListeners();
     },
     methods: {
         toggle(evt) {
@@ -131,12 +143,10 @@ export default {
             }
         },
         bindCloseListeners() {
-            window.addEventListener('keyup', this.closeOnEscape);
-            window.addEventListener('click', this.closeOnClick);
+            bindWindowListeners(this.closeBindings);
         },
         unbindCloseListeners() {
-            window.removeEventListener('keyup', this.closeOnEscape);
-            window.removeEventListener('click', this.closeOnClick);
+            unbindWindowListeners(this.closeBindings);
         },
         closeOnEscape(evt) {
             if (evt.keyCode === 27) {

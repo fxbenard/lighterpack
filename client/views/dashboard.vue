@@ -139,6 +139,7 @@ import itemLink from '../components/item-link.vue';
 import importCSV from '../components/import-csv.vue';
 import copyList from '../components/copy-list.vue';
 import speedbump from '../components/speedbump.vue';
+import { push } from '../services/navigation';
 
 export default {
     name: 'Dashboard',
@@ -179,7 +180,7 @@ export default {
     },
     beforeMount() {
         if (!this.$store.state.library) {
-            router.push('/welcome');
+            push('/welcome');
         } else {
             this.isLoaded = true;
         }

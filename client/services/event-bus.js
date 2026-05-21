@@ -14,12 +14,6 @@ export function emit(eventName, ...args) {
     bus.$emit(eventName, ...args);
 }
 
-export const legacyEventBus = {
-    $on: on,
-    $off: off,
-    $emit: emit,
-};
-
 export default {
     on,
     off,

@@ -15,7 +15,3 @@ export function push(location) {
 export function redirect(location) {
     window.location = location;
 }
-
-export const legacyNavigation = {
-    push,
-};

@@ -46,6 +46,7 @@
 
 <script>
 import item from './item.vue';
+import eventBus from '../services/event-bus';
 
 const utilsMixin = require('../mixins/utils-mixin.js');
 
@@ -78,7 +79,7 @@ export default {
             const speedbumpOptions = {
                 body: 'Are you sure you want to delete this category? This cannot be undone.',
             };
-            bus.$emit('initSpeedbump', callback, speedbumpOptions);
+            eventBus.emit('initSpeedbump', callback, speedbumpOptions);
         },
     },
 };

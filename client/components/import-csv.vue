@@ -135,7 +135,7 @@
             <a class="lpButton close" @click="shown = false">Cancel Import</a>
         </modal>
         <form id="csvUpload">
-            <input id="csv" type="file" name="csv">
+            <input id="csv" ref="csvInput" type="file" name="csv">
         </form>
     </div>
 </template>
@@ -157,6 +157,7 @@ export default {
             listId: false,
             importData: {},
             shown: false,
+            openImportPicker: null,
         };
     },
     computed: {
@@ -174,12 +175,21 @@ export default {
         },
     },
     mounted() {
-        this.csvInput = document.getElementById('csv');
+        this.csvInput = this.$refs.csvInput;
         this.csvInput.onchange = this.importCSV;
 
-        eventBus.on('importCSV', () => {
+        this.openImportPicker = () => {
             this.csvInput.click();
-        });
+        };
+        eventBus.on('importCSV', this.openImportPicker);
+    },
+    beforeDestroy() {
+        if (this.csvInput) {
+            this.csvInput.onchange = null;
+        }
+        if (this.openImportPicker) {
+            eventBus.off('importCSV', this.openImportPicker);
+        }
     },
     methods: {
         importCSV(evt) {

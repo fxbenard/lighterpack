@@ -73,7 +73,7 @@
             <textarea id="listDescription" v-model="list.description" @input="updateListDescription" />
         </div>
 
-        <ul class="lpCategories">
+        <ul ref="categories" class="lpCategories">
             <category v-for="category in categories" :key="category.id" :category="category" />
         </ul>
 
@@ -86,8 +86,8 @@
 <script>
 import category from './category.vue';
 import listSummary from './list-summary.vue';
-
-const dragula = require('dragula');
+import { getElementIndex } from '../utils/utils';
+import { createDragDrop, queryContainers } from '../services/drag-drop';
 
 export default {
     name: 'List',
@@ -102,6 +102,7 @@ export default {
         return {
             onboardingCompleted: false,
             itemDrake: null,
+            categoryDrake: null,
         };
     },
     computed: {
@@ -132,6 +133,16 @@ export default {
         this.handleCategoryReorder();
         this.handleItemReorder();
     },
+    beforeDestroy() {
+        if (this.itemDrake) {
+            this.itemDrake.destroy();
+            this.itemDrake = null;
+        }
+        if (this.categoryDrake) {
+            this.categoryDrake.destroy();
+            this.categoryDrake = null;
+        }
+    },
     methods: {
         newCategory() {
             this.$store.commit('newCategory', this.list);
@@ -143,8 +154,8 @@ export default {
             if (this.itemDrake) {
                 this.itemDrake.destroy();
             }
-            const $categoryItems = Array.prototype.slice.call(document.getElementsByClassName('lpItems'));
-            const drake = dragula($categoryItems, {
+            const categoryItems = queryContainers(this.$el, '.lpItems');
+            const drake = createDragDrop(categoryItems, {
                 moves($el, $source, $handle, $sibling) {
                     return $handle.classList.contains('lpItemHandle');
                 },
@@ -168,8 +179,11 @@ export default {
             this.itemDrake = drake;
         },
         handleCategoryReorder() {
-            const $categories = document.getElementsByClassName('lpCategories')[0];
-            const drake = dragula([$categories], {
+            if (this.categoryDrake) {
+                this.categoryDrake.destroy();
+            }
+
+            const drake = createDragDrop([this.$refs.categories], {
                 moves(el, $source, $handle, $sibling) {
                     return $handle.classList.contains('lpCategoryHandle');
                 },
@@ -181,6 +195,7 @@ export default {
                 this.$store.commit('reorderCategory', { list: this.list, before: this.categoryDragStartIndex, after: getElementIndex($el) });
                 drake.cancel(true);
             });
+            this.categoryDrake = drake;
         },
     },
 };

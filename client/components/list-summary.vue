@@ -11,7 +11,7 @@
 <template>
     <div class="lpListSummary">
         <div class="lpChartContainer">
-            <canvas class="lpChart" height="260" width="260" />
+            <canvas ref="chartCanvas" class="lpChart" height="260" width="260" />
         </div>
         <div class="lpTotalsContainer">
             <ul class="lpTotals lpTable lpDataTable">
@@ -101,8 +101,7 @@
 <script>
 import colorPicker from './colorpicker.vue';
 import unitSelect from './unit-select.vue';
-
-const pies = require('../pies.js');
+import { renderListChart } from '../services/list-chart';
 const utilsMixin = require('../mixins/utils-mixin.js');
 const colorUtils = require('../utils/color.js');
 
@@ -140,16 +139,23 @@ export default {
     mounted() {
         this.updateChart();
     },
+    beforeDestroy() {
+        if (this.chart && typeof this.chart.destroy === 'function') {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    },
     methods: {
         updateChart(type) {
             const chartData = this.library.renderChart(type);
 
             if (chartData) {
-                if (this.chart) {
-                    this.chart.update({ processedData: chartData });
-                } else {
-                    this.chart = pies({ processedData: chartData, container: document.getElementsByClassName('lpChart')[0], hoverCallback: this.chartHover });
-                }
+                this.chart = renderListChart({
+                    chart: this.chart,
+                    canvas: this.$refs.chartCanvas,
+                    processedData: chartData,
+                    hoverCallback: this.chartHover,
+                });
             }
             return chartData;
         },

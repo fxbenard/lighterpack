@@ -90,6 +90,7 @@
 
 <script>
 import unitSelect from './unit-select.vue';
+import eventBus from '../services/event-bus';
 
 const utilsMixin = require('../mixins/utils-mixin.js');
 const weightUtils = require('../utils/weight.js');
@@ -220,13 +221,13 @@ export default {
             this.displayWeight = weightUtils.MgToWeight(this.item.weight, this.item.authorUnit);
         },
         updateItemLink() {
-            bus.$emit('updateItemLink', this.item);
+            eventBus.emit('updateItemLink', this.item);
         },
         updateItemImage() {
-            bus.$emit('updateItemImage', this.item);
+            eventBus.emit('updateItemImage', this.item);
         },
         viewItemImage() {
-            bus.$emit('viewItemImage', this.fullImage);
+            eventBus.emit('viewItemImage', this.fullImage);
         },
         toggleWorn() {
             if (this.categoryItem.consumable) {

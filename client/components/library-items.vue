@@ -106,8 +106,8 @@
     <section id="libraryContainer">
         <h2>Gear</h2>
         <input id="librarySearch" v-model="searchText" type="text" placeholder="search items">
-        <ul id="library">
-            <li v-for="item in filteredItems" class="lpLibraryItem" :data-item-id="item.id">
+        <ul id="library" ref="library">
+            <li v-for="item in filteredItems" :key="item.id" class="lpLibraryItem" :data-item-id="item.id">
                 <a v-if="item.url" :href="item.url" target="_blank" class="lpName lpHref">{{ item.name }}</a>
                 <span v-if="!item.url" class="lpName">{{ item.name }}</span>
                 <span class="lpWeight">
@@ -126,8 +126,9 @@
 
 <script>
 import utilsMixin from '../mixins/utils-mixin.js';
-
-const dragula = require('dragula');
+import eventBus from '../services/event-bus';
+import { getElementIndex } from '../utils/utils';
+import { createDragDrop, queryContainers } from '../services/drag-drop';
 
 export default {
     name: 'LibraryItem',
@@ -189,6 +190,12 @@ export default {
     mounted() {
         this.handleItemDrag();
     },
+    beforeDestroy() {
+        if (this.drake) {
+            this.drake.destroy();
+            this.drake = null;
+        }
+    },
     methods: {
         handleItemDrag() {
             if (this.drake) {
@@ -196,9 +203,9 @@ export default {
             }
 
             const self = this;
-            const $library = document.getElementById('library');
-            const $categoryItems = Array.prototype.slice.call(document.getElementsByClassName('lpItems')); // list.vue
-            const drake = dragula([$library].concat($categoryItems), {
+            const editorRoot = this.$root && this.$root.$el ? this.$root.$el : this.$el;
+            const categoryItems = queryContainers(editorRoot, '.lpItems');
+            const drake = createDragDrop([this.$refs.library].concat(categoryItems), {
                 copy: true,
                 moves($el, $source, $handle, $sibling) {
                     const items = self.library.getItemsInCurrentList();
@@ -234,7 +241,7 @@ export default {
             const speedbumpOptions = {
                 body: 'Are you sure you want to delete this item? This cannot be undone.',
             };
-            bus.$emit('initSpeedbump', callback, speedbumpOptions);
+            eventBus.emit('initSpeedbump', callback, speedbumpOptions);
         },
     },
 };

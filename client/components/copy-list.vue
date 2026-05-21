@@ -22,7 +22,7 @@
 
 <script>
 import modal from './modal.vue';
-import eventBus from '../services/event-bus';
+import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
 
 export default {
     name: 'CopyList',
@@ -33,7 +33,6 @@ export default {
         return {
             listId: false,
             shown: false,
-            openCopyList: null,
         };
     },
     computed: {
@@ -42,15 +41,12 @@ export default {
         },
     },
     mounted() {
-        this.openCopyList = () => {
+        registerDialogOpener('copyList', () => {
             this.shown = true;
-        };
-        eventBus.on('copyList', this.openCopyList);
+        });
     },
     beforeDestroy() {
-        if (this.openCopyList) {
-            eventBus.off('copyList', this.openCopyList);
-        }
+        unregisterDialogOpener('copyList');
     },
     methods: {
         copyList() {

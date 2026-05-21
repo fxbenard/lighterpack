@@ -44,7 +44,7 @@
 
 <script>
 import modal from './modal.vue';
-import eventBus from '../services/event-bus';
+import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
 import { showGlobalAlert } from '../services/user-feedback';
 import { fetchJson } from '../utils/utils';
 
@@ -59,21 +59,17 @@ export default {
             item: false,
             uploading: false,
             shown: false,
-            openItemImage: null,
         };
     },
     mounted() {
-        this.openItemImage = (item) => {
+        registerDialogOpener('itemImage', (item) => {
             this.shown = true;
             this.item = item;
             this.imageUrl = item.imageUrl;
-        };
-        eventBus.on('updateItemImage', this.openItemImage);
+        });
     },
     beforeDestroy() {
-        if (this.openItemImage) {
-            eventBus.off('updateItemImage', this.openItemImage);
-        }
+        unregisterDialogOpener('itemImage');
     },
     methods: {
         saveImageUrl() {

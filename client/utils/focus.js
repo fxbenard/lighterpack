@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import eventBus from '../services/event-bus';
 import { addWindowListener, removeWindowListener } from '../services/window-events';
 
 function bindDirective(directive) {
@@ -40,40 +39,6 @@ Vue.directive('focus-on-create', bindDirective({
         }
     },
     beforeUnmount() {
-    },
-}));
-
-Vue.directive('focus-on-bus', bindDirective({
-    mounted(el, binding) {
-        const handler = () => {
-            el.focus();
-        };
-
-        el.__lpFocusOnBus = handler;
-        eventBus.on(binding.value, handler);
-    },
-    beforeUnmount(el, binding) {
-        if (el.__lpFocusOnBus) {
-            eventBus.off(binding.value, el.__lpFocusOnBus);
-            delete el.__lpFocusOnBus;
-        }
-    },
-}));
-
-Vue.directive('select-on-bus', bindDirective({
-    mounted(el, binding) {
-        const handler = () => {
-            el.select();
-        };
-
-        el.__lpSelectOnBus = handler;
-        eventBus.on(binding.value, handler);
-    },
-    beforeUnmount(el, binding) {
-        if (el.__lpSelectOnBus) {
-            eventBus.off(binding.value, el.__lpSelectOnBus);
-            delete el.__lpSelectOnBus;
-        }
     },
 }));
 

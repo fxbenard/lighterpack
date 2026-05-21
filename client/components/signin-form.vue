@@ -5,7 +5,7 @@
         </p>
         <div class="lpFields">
             <input v-model="username" v-focus-on-create type="text" placeholder="Username" name="username" class="username">
-            <input v-model="password" v-select-on-bus="'focus-signin-password'" type="password" placeholder="Password" name="password" class="password">
+            <input ref="passwordInput" v-model="password" type="password" placeholder="Password" name="password" class="password">
         </div>
 
         <errors :errors="errors" />
@@ -26,7 +26,6 @@
 <script>
 import errors from './errors.vue';
 import spinner from './spinner.vue';
-import eventBus from '../services/event-bus';
 import { fetchJson } from '../utils/utils';
 
 export default {
@@ -80,8 +79,12 @@ export default {
                 })
                 .catch((err) => {
                     this.errors = err;
-                    eventBus.emit('focus-signin-password');
                     this.password = '';
+                    this.$nextTick(() => {
+                        if (this.$refs.passwordInput) {
+                            this.$refs.passwordInput.select();
+                        }
+                    });
                     this.fetching = false;
                 });
         },

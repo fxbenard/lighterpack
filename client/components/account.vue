@@ -35,7 +35,7 @@
 import errors from './errors.vue';
 import modal from './modal.vue';
 import spinner from './spinner.vue';
-import eventBus from '../services/event-bus';
+import { openDialog, registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
 import { fetchJson } from '../utils/utils';
 
 export default {
@@ -54,7 +54,6 @@ export default {
             newPassword: '',
             confirmNewPassword: '',
             shown: false,
-            openAccount: null,
         };
     },
     computed: {
@@ -66,15 +65,12 @@ export default {
         },
     },
     mounted() {
-        this.openAccount = () => {
+        registerDialogOpener('account', () => {
             this.shown = true;
-        };
-        eventBus.on('showAccount', this.openAccount);
+        });
     },
     beforeDestroy() {
-        if (this.openAccount) {
-            eventBus.off('showAccount', this.openAccount);
-        }
+        unregisterDialogOpener('account');
     },
     methods: {
         updateAccount() {
@@ -133,7 +129,7 @@ export default {
         },
         showDeleteAccount() {
             this.shown = false;
-            eventBus.emit('showDeleteAccount');
+            openDialog('deleteAccount');
         },
     },
 };

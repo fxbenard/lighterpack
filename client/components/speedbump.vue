@@ -23,7 +23,7 @@
 
 <script>
 import modal from './modal.vue';
-import eventBus from '../services/event-bus';
+import { clearSpeedbumpOpener, setSpeedbumpOpener } from '../services/speedbump';
 
 export default {
     name: 'Speedbump',
@@ -41,19 +41,13 @@ export default {
             messages: {},
             callback: null,
             shown: false,
-            openSpeedbump: null,
         };
     },
     mounted() {
-        this.openSpeedbump = (callback, options) => {
-            this.initSpeedbump(callback, options);
-        };
-        eventBus.on('initSpeedbump', this.openSpeedbump);
+        setSpeedbumpOpener(this.initSpeedbump);
     },
     beforeDestroy() {
-        if (this.openSpeedbump) {
-            eventBus.off('initSpeedbump', this.openSpeedbump);
-        }
+        clearSpeedbumpOpener(this.initSpeedbump);
     },
     methods: {
         initSpeedbump(callback, options) {

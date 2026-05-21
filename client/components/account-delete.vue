@@ -32,7 +32,7 @@
 <script>
 import errors from './errors.vue';
 import modal from './modal.vue';
-import eventBus from '../services/event-bus';
+import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
 import { fetchJson } from '../utils/utils';
 
 export default {
@@ -48,7 +48,6 @@ export default {
             confirmationText: '',
             currentPassword: '',
             shown: false,
-            openDeleteAccount: null,
         };
     },
     computed: {
@@ -57,15 +56,12 @@ export default {
         },
     },
     mounted() {
-        this.openDeleteAccount = () => {
+        registerDialogOpener('deleteAccount', () => {
             this.shown = true;
-        };
-        eventBus.on('showDeleteAccount', this.openDeleteAccount);
+        });
     },
     beforeDestroy() {
-        if (this.openDeleteAccount) {
-            eventBus.off('showDeleteAccount', this.openDeleteAccount);
-        }
+        unregisterDialogOpener('deleteAccount');
     },
     methods: {
         deleteAccount() {

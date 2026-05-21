@@ -11,7 +11,7 @@
             <div slot="content" class="lpFields">
                 <div class="lpField">
                     <label for="shareUrl">Share your list</label>
-                    <input id="shareUrl" v-select-on-bus="'show-share-box'"  v-select-on-focus type="text" :value="shareUrl">
+                    <input id="shareUrl" ref="shareUrlInput" v-select-on-focus type="text" :value="shareUrl">
                 </div>
                 <div class="lpField">
                     <label for="embedUrl">Embed your list</label>
@@ -25,7 +25,6 @@
 
 <script>
 import PopoverHover from './popover-hover.vue';
-import eventBus from '../services/event-bus';
 import { showGlobalAlert } from '../services/user-feedback';
 import { fetchJson } from '../utils/utils';
 
@@ -65,7 +64,14 @@ export default {
         },
     },
     methods: {
-        focusShare(evt) {
+        selectShareUrl() {
+            this.$nextTick(() => {
+                if (this.$refs.shareUrlInput) {
+                    this.$refs.shareUrlInput.select();
+                }
+            });
+        },
+        focusShare() {
             if (!this.list.externalId) {
                 return fetchJson('/externalId', {
                     method: 'POST',
@@ -76,15 +82,13 @@ export default {
                 })
                     .then((response) => {
                         this.$store.commit('setExternalId', { externalId: response.externalId, list: this.list });
-                        setTimeout(() => {
-                            eventBus.emit('show-share-box');
-                        }, 0);
+                        this.selectShareUrl();
                     })
                     .catch(() => {
                         showGlobalAlert('An error occurred while attempting to get an ID for your list. Please try again later.');
                     });
             }
-            eventBus.emit('show-share-box');
+            this.selectShareUrl();
         },
     },
 };

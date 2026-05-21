@@ -46,7 +46,7 @@
 
 <script>
 import item from './item.vue';
-import eventBus from '../services/event-bus';
+import { openSpeedbump } from '../services/speedbump';
 
 const utilsMixin = require('../mixins/utils-mixin.js');
 
@@ -73,13 +73,13 @@ export default {
             this.$store.commit('updateCategoryName', { id: this.category.id, name: evt.target.value });
         },
         removeCategory(category) {
-            const callback = function () {
+            const callback = () => {
                 this.$store.commit('removeCategory', category);
             };
             const speedbumpOptions = {
                 body: 'Are you sure you want to delete this category? This cannot be undone.',
             };
-            eventBus.emit('initSpeedbump', callback, speedbumpOptions);
+            openSpeedbump(callback, speedbumpOptions);
         },
     },
 };

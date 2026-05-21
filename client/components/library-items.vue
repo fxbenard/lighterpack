@@ -126,7 +126,7 @@
 
 <script>
 import utilsMixin from '../mixins/utils-mixin.js';
-import eventBus from '../services/event-bus';
+import { openSpeedbump } from '../services/speedbump';
 import { getElementIndex } from '../utils/utils';
 import { createDragDrop, getDatasetInt, queryContainers } from '../services/drag-drop';
 
@@ -239,13 +239,13 @@ export default {
             this.drake = drake;
         },
         removeItem(item) {
-            const callback = function () {
+            const callback = () => {
                 this.$store.commit('removeItem', item);
             };
             const speedbumpOptions = {
                 body: 'Are you sure you want to delete this item? This cannot be undone.',
             };
-            eventBus.emit('initSpeedbump', callback, speedbumpOptions);
+            openSpeedbump(callback, speedbumpOptions);
         },
     },
 };

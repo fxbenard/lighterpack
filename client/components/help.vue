@@ -29,7 +29,7 @@
 
 <script>
 import modal from './modal.vue';
-import eventBus from '../services/event-bus';
+import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
 
 export default {
     name: 'Help',
@@ -39,19 +39,15 @@ export default {
     data() {
         return {
             shown: false,
-            openHelp: null,
         };
     },
     mounted() {
-        this.openHelp = () => {
+        registerDialogOpener('help', () => {
             this.shown = true;
-        };
-        eventBus.on('showHelp', this.openHelp);
+        });
     },
     beforeDestroy() {
-        if (this.openHelp) {
-            eventBus.off('showHelp', this.openHelp);
-        }
+        unregisterDialogOpener('help');
     },
 };
 </script>

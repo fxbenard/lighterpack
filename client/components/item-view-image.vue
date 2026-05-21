@@ -18,7 +18,7 @@
 
 <script>
 import modal from './modal.vue';
-import eventBus from '../services/event-bus';
+import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
 
 export default {
     name: 'ItemViewImage',
@@ -29,20 +29,16 @@ export default {
         return {
             imageUrl: '',
             shown: false,
-            openItemImageViewer: null,
         };
     },
     mounted() {
-        this.openItemImageViewer = (imageUrl) => {
+        registerDialogOpener('itemViewImage', (imageUrl) => {
             this.shown = true;
             this.imageUrl = imageUrl;
-        };
-        eventBus.on('viewItemImage', this.openItemImageViewer);
+        });
     },
     beforeDestroy() {
-        if (this.openItemImageViewer) {
-            eventBus.off('viewItemImage', this.openItemImageViewer);
-        }
+        unregisterDialogOpener('itemViewImage');
     },
 };
 </script>

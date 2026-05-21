@@ -19,7 +19,7 @@
 
 <script>
 import PopoverHover from './popover-hover.vue';
-import eventBus from '../services/event-bus';
+import { openDialog } from '../services/dialogs';
 
 export default {
     name: 'AccountDropdown',
@@ -36,10 +36,10 @@ export default {
     },
     methods: {
         showAccount() {
-            eventBus.emit('showAccount');
+            openDialog('account');
         },
         showHelp() {
-            eventBus.emit('showHelp');
+            openDialog('help');
         },
         signout() {
             this.$store.commit('signout');

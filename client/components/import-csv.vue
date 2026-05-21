@@ -142,7 +142,7 @@
 
 <script>
 import modal from './modal.vue';
-import eventBus from '../services/event-bus';
+import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
 import { showGlobalAlert } from '../services/user-feedback';
 
 const csvImportUtils = require('../utils/csv-import.js');
@@ -158,7 +158,6 @@ export default {
             listId: false,
             importData: {},
             shown: false,
-            openImportPicker: null,
         };
     },
     computed: {
@@ -179,18 +178,15 @@ export default {
         this.csvInput = this.$refs.csvInput;
         this.csvInput.onchange = this.importCSV;
 
-        this.openImportPicker = () => {
+        registerDialogOpener('importCSV', () => {
             this.csvInput.click();
-        };
-        eventBus.on('importCSV', this.openImportPicker);
+        });
     },
     beforeDestroy() {
         if (this.csvInput) {
             this.csvInput.onchange = null;
         }
-        if (this.openImportPicker) {
-            eventBus.off('importCSV', this.openImportPicker);
-        }
+        unregisterDialogOpener('importCSV');
     },
     methods: {
         importCSV(evt) {

@@ -15,7 +15,7 @@
 
 <script>
 import modal from './modal.vue';
-import eventBus from '../services/event-bus';
+import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
 
 export default {
     name: 'ItemLink',
@@ -27,21 +27,17 @@ export default {
             url: '',
             item: false,
             shown: false,
-            openItemLink: null,
         };
     },
     mounted() {
-        this.openItemLink = (item) => {
+        registerDialogOpener('itemLink', (item) => {
             this.shown = true;
             this.item = item;
             this.url = item.url;
-        };
-        eventBus.on('updateItemLink', this.openItemLink);
+        });
     },
     beforeDestroy() {
-        if (this.openItemLink) {
-            eventBus.off('updateItemLink', this.openItemLink);
-        }
+        unregisterDialogOpener('itemLink');
     },
     methods: {
         addLink() {

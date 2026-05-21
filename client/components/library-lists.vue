@@ -122,7 +122,8 @@
 
 <script>
 import PopoverHover from './popover-hover.vue';
-import eventBus from '../services/event-bus';
+import { openDialog } from '../services/dialogs';
+import { openSpeedbump } from '../services/speedbump';
 import { getElementIndex } from '../utils/utils';
 import { createDragDrop } from '../services/drag-drop';
 
@@ -165,10 +166,10 @@ export default {
             this.$store.commit('newList');
         },
         copyList() {
-            eventBus.emit('copyList');
+            openDialog('copyList');
         },
         importCSV() {
-            eventBus.emit('importCSV');
+            openDialog('importCSV');
         },
         handleListReorder() {
             if (this.drake) {
@@ -190,13 +191,13 @@ export default {
             this.drake = drake;
         },
         removeList(list) {
-            const callback = function () {
+            const callback = () => {
                 this.$store.commit('removeList', list);
             };
             const speedbumpOptions = {
                 body: 'Are you sure you want to delete this list? This cannot be undone.',
             };
-            eventBus.emit('initSpeedbump', callback, speedbumpOptions);
+            openSpeedbump(callback, speedbumpOptions);
         },
     },
 };

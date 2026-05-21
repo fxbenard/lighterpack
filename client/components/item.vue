@@ -90,7 +90,7 @@
 
 <script>
 import unitSelect from './unit-select.vue';
-import eventBus from '../services/event-bus';
+import { openDialog } from '../services/dialogs';
 
 const utilsMixin = require('../mixins/utils-mixin.js');
 const weightUtils = require('../utils/weight.js');
@@ -221,13 +221,13 @@ export default {
             this.displayWeight = weightUtils.MgToWeight(this.item.weight, this.item.authorUnit);
         },
         updateItemLink() {
-            eventBus.emit('updateItemLink', this.item);
+            openDialog('itemLink', this.item);
         },
         updateItemImage() {
-            eventBus.emit('updateItemImage', this.item);
+            openDialog('itemImage', this.item);
         },
         viewItemImage() {
-            eventBus.emit('viewItemImage', this.fullImage);
+            openDialog('itemViewImage', this.fullImage);
         },
         toggleWorn() {
             if (this.categoryItem.consumable) {

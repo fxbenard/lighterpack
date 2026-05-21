@@ -53,7 +53,7 @@
                         <span class="lpTotalValue" :title="list.totalQty + ' items'">
                             {{ displayWeight(list.totalWeight, library.totalUnit) }}
                         </span>
-                        <span class="lpTotalUnit"><unitSelect :unit="library.totalUnit" :on-change="setTotalUnit" /></span>
+                        <span class="lpTotalUnit"><unitSelect :unit="library.totalUnit" @change="setTotalUnit" /></span>
                     </span>
                 </li>
                 <li v-if="list.totalConsumableWeight" data-weight-type="consumable" class="lpRow lpFooter lpBreakdown lpConsumableWeight">

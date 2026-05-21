@@ -178,7 +178,7 @@ export default {
             return this.$store.state.loggedIn;
         },
     },
-    beforeMount() {
+    created() {
         if (!this.$store.state.library) {
             push('/welcome');
         } else {

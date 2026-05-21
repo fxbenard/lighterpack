@@ -79,7 +79,7 @@ export default {
             return !!this.searchResults;
         }
     },
-    beforeMount() {
+    created() {
         if (false) {
             push('/welcome');
         }

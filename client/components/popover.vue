@@ -121,7 +121,7 @@ export default {
             required: true,
         },
     },
-    beforeMount() {
+    mounted() {
         this.bindEscape();
     },
     beforeUnmount() {

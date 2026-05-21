@@ -73,7 +73,7 @@
         </span>
         <span class="lpWeightCell lpNumber">
             <input v-model="displayWeight" v-empty-if-zero type="text" :class="{lpWeight: true, lpNumber: true, lpSilent: true, lpSilentError: weightError}" @input="saveWeight" @keydown.up="incrementWeight($event)" @keydown.down="decrementWeight($event)">
-            <unitSelect :unit="item.authorUnit" :on-change="setUnit" />
+            <unitSelect :unit="item.authorUnit" @change="setUnit" />
         </span>
         <span class="lpQtyCell">
             <input v-model="displayQty" type="text" :class="{lpQty: true, lpNumber: true, lpSilent: true, lpSilentError: qtyError}" @input="saveQty" @keydown.up="incrementQty($event)" @keydown.down="decrementQty($event)">
@@ -155,7 +155,7 @@ export default {
             this.setDisplayQty();
         },
     },
-    beforeMount() {
+    created() {
         this.setDisplayWeight();
         this.setDisplayPrice();
         this.setDisplayQty();

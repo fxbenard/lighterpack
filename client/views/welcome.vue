@@ -166,7 +166,7 @@ export default {
         registerForm,
         SigninForm,
     },
-    beforeMount() {
+    created() {
         if (this.$store.state.library) {
             push('/');
         }

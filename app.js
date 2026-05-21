@@ -21,6 +21,10 @@ function getRuntimeNumber(name, fallback) {
     return Number.isNaN(parsed) ? fallback : parsed;
 }
 
+function getRuntimeEnvironment() {
+    return process.env.NODE_ENV || config.get('environment');
+}
+
 morgan.token('username', function getUsername (req) {
     return req.lighterpackusername
 });
@@ -78,14 +82,17 @@ logger.info("Starting up Lighterpack...");
 
 const appPort = getRuntimeNumber('PORT', config.get('port'));
 const devServerPort = getRuntimeNumber('DEV_SERVER_PORT', config.get('devServerPort'));
+const runtimeEnvironment = getRuntimeEnvironment();
 
-if (config.get('environment') === 'production') {
+let webpackConfig;
+
+if (runtimeEnvironment === 'production') {
     webpackConfig = require('./webpack.config');
 } else {
     webpackConfig = require('./webpack.development.config');
 }
 
-webpackCompiler = webpack(webpackConfig);
+const webpackCompiler = webpack(webpackConfig);
 
 // Default port is 3000; we can have multiple bindings
 config.get('bindings').map(
@@ -95,29 +102,21 @@ config.get('bindings').map(
     },
 );
 
-if (config.get('environment') !== 'production') {
-    new WebpackDevServer(webpack(webpackConfig), {
-        historyApiFallback: true,
-        disableHostCheck: true,
-        publicPath: webpackConfig.output.publicPath,
-        hot: true,
+if (runtimeEnvironment !== 'production') {
+    const devServerOptions = {
+        ...(webpackConfig.devServer || {}),
+        port: devServerPort,
         proxy: {
             '*': {
-                target: `http://localhost:${appPort}`,
+                target: `http://127.0.0.1:${appPort}`,
                 secure: false,
                 changeOrigin: true,
             },
         },
-        stats: {
-            cached: false,
-            cachedAssets: false,
-            colors: { level: 2 },
-        },
-        watchOptions: {
-            aggregateTimeout: 300,
-            poll: 1000,
-        },
-    }).listen(devServerPort, (err, result) => {
+    };
+    const devServer = new WebpackDevServer(devServerOptions, webpackCompiler);
+
+    devServer.startCallback((err) => {
         if (err) {
             return logger.info(err);
         }

@@ -4,8 +4,8 @@
   "description": "LighterPack =========== LighterPack is a website to track the gear you take on adventures. It is still in Beta.",
   "main": "app.js",
   "scripts": {
-    "dev": "NODE_OPTIONS=--openssl-legacy-provider node --max-old-space-size=8192 app.js",
-    "start": "NODE_OPTIONS=--openssl-legacy-provider webpack-cli --config ./webpack.config.js && NODE_OPTIONS=--openssl-legacy-provider node app.js",
+    "dev": "NODE_ENV=development NODE_OPTIONS=--openssl-legacy-provider node --max-old-space-size=8192 app.js",
+    "start": "NODE_ENV=production NODE_OPTIONS=--openssl-legacy-provider webpack-cli --config ./webpack.config.js && NODE_ENV=production NODE_OPTIONS=--openssl-legacy-provider node app.js",
     "build": "NODE_OPTIONS=--openssl-legacy-provider webpack-cli --config ./webpack.config.js",
     "test:e2e": "playwright test",
     "test:e2e:critical": "playwright test test/e2e/auth.spec.ts test/e2e/list.spec.ts test/e2e/save-load.spec.ts",
@@ -32,7 +32,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "compression": "^1.7.3",
-    "config": "^1.21.0",
+    "config": "^4.4.1",
     "cookie-parser": "^1.4.0",
     "css-loader": "3.5.3",
     "dragula": "^3.7.2",
@@ -72,8 +72,7 @@
     "stylelint-order": "4.1.0",
     "webpack-cli": "^4.3.0",
     "webpack-dev-middleware": "4.0.2",
-    "webpack-dev-server": "3.11.1",
-    "webpack-hot-middleware": "2.25.0",
+    "webpack-dev-server": "^4.15.2",
     "vue-style-loader": "^4.1.3"
   }
 }

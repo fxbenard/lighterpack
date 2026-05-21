@@ -23,6 +23,10 @@ function getDeployUrl() {
     return process.env.DEPLOY_URL || config.get('deployUrl');
 }
 
+function getRuntimeEnvironment() {
+    return process.env.NODE_ENV || config.get('environment');
+}
+
 const templates = {};
 
 const vueRoutes = [ /* TODO - get this from same data source as Vue */
@@ -45,7 +49,7 @@ const shareScriptsLinks = [];
 let appScriptsHtml = '';
 let appStylesHtml = '';
 
-if (config.get('environment') === 'production') {
+if (getRuntimeEnvironment() === 'production') {
     assetData = JSON.parse(fs.readFileSync(path.join(__dirname, '../public/dist/assets.json'), 'utf8'));
     const appAssetFiles = assetData.files.app;
 

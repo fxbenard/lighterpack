@@ -2,7 +2,8 @@ import Vuex from 'vuex';
 import Vue from 'vue';
 import debounce from 'lodash/debounce';
 import eventBus from '../services/event-bus';
-import { arrayMove, createCookie, fetchJson, readCookie } from '../utils/utils';
+import { clearCookie, getLocalLibrary, hasLocalLibrary, readCookie, setLocalLibrary } from '../services/browser-storage';
+import { arrayMove, fetchJson } from '../utils/utils';
 
 const weightUtils = require('../utils/weight.js');
 const dataTypes = require('../dataTypes.js');
@@ -45,7 +46,7 @@ const store = new Vuex.Store({
             state.isSaving = isSaving;
         },
         signout(state) {
-            createCookie('lp', '', -1);
+            clearCookie('lp');
             state.library = false; // duplicate logic
             state.loggedIn = false; // duplicate logic
         },
@@ -272,7 +273,7 @@ const store = new Vuex.Store({
         init(context) {
             if (readCookie('lp')) {
                 return context.dispatch('loadRemote');
-            } if (localStorage.library) {
+            } if (hasLocalLibrary()) {
                 return context.dispatch('loadLocal');
             }
             return new Promise((resolve, reject) => {
@@ -282,7 +283,7 @@ const store = new Vuex.Store({
             });
         },
         loadLocal(context) {
-            const libraryData = localStorage.library;
+            const libraryData = getLocalLibrary();
             context.commit('loadLibraryData', libraryData);
             context.commit('setSaveType', 'local');
             context.commit('setLoggedIn', false);
@@ -376,7 +377,7 @@ const store = new Vuex.Store({
                 if (state.saveType === 'remote') {
                     saveRemotely(saveData);
                 } else if (state.saveType === 'local') {
-                    localStorage.library = saveData;
+                    setLocalLibrary(saveData);
                 }
             }, saveInterval, { maxWait: saveInterval * 3 }));
         },

@@ -1,4 +1,3 @@
-const Vue = require('vue');
 const path = require('path');
 const fs = require('fs');
 const express = require('express');
@@ -344,8 +343,7 @@ const renderItem = function (item, args) {
     const unitSelect = renderUnitSelect(unit, args.unitSelectTemplate, item.weight);
 
     const starClass = item.star ? `lpStar${item.star}` : '';
-    const out = Vue.util.extend({}, item);
-    Vue.util.extend(out, {
+    const out = Object.assign({}, item, {
         classes,
         unit,
         displayWeight,
@@ -369,7 +367,7 @@ const renderCategory = function (category, args) {
         const rowClasses = [];
         if (args.classes) rowClasses.push(args.classes);
         if (parseFloat(categoryItem.qty) <= 0) rowClasses.push('lpQtyZero');
-        const renderArgs = Vue.util.extend({}, args);
+        const renderArgs = Object.assign({}, args);
         renderArgs.classes = rowClasses.join(' ').trim();
         items += renderItem(item, renderArgs);
     }
@@ -377,8 +375,7 @@ const renderCategory = function (category, args) {
     category.calculateSubtotal();
     category.subtotalWeightDisplay = weightUtils.MgToWeight(category.subtotalWeight, args.totalUnit);
     category.subtotalPriceDisplay = category.subtotalPrice ? category.subtotalPrice.toFixed(2) : '0.00';
-    let temp = Vue.util.extend({}, category);
-    temp = Vue.util.extend(temp, {
+    const temp = Object.assign({}, category, {
         items, subtotalUnit: args.totalUnit, currencySymbol: args.currencySymbol, showPrices: args.showPrices,
     });
 
@@ -397,8 +394,8 @@ const renderList = function (list, args) {
 };
 
 var renderLibrary = function (library, args) {
-    Vue.util.extend(args, { itemUnit: library.itemUnit, totalUnit: library.totalUnit });
-    return renderList(library.getListById(library.defaultListId), args);
+    const renderArgs = Object.assign({}, args, { itemUnit: library.itemUnit, totalUnit: library.totalUnit });
+    return renderList(library.getListById(library.defaultListId), renderArgs);
 };
 
 const renderListTotals = function (list, totalsTemplate, unitSelectTemplate, unit) {

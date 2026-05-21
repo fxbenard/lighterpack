@@ -25,6 +25,7 @@
 import errors from './errors.vue';
 import spinner from './spinner.vue';
 import { push } from '../services/navigation';
+import { getLocalLibrary, hasLocalLibrary, moveLocalLibraryToRegistered } from '../services/browser-storage';
 import { fetchJson } from '../utils/utils';
 
 const dataTypes = require('../dataTypes.js');
@@ -101,8 +102,8 @@ export default {
 
             const registerData = { username: this.username, email: this.email, password: this.password };
 
-            if (localStorage.library) {
-                registerData.library = localStorage.library;
+            if (hasLocalLibrary()) {
+                registerData.library = getLocalLibrary();
             }
 
             this.saving = true;
@@ -121,8 +122,7 @@ export default {
                     this.$store.commit('setLoggedIn', response.username);
 
                     if (registerData.library) {
-                        localStorage.registeredLibrary = localStorage.library;
-                        delete localStorage.library;
+                        moveLocalLibraryToRegistered();
                     }
                     this.saving = false;
                     push('/');

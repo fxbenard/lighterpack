@@ -1,24 +1,50 @@
 import Vue from 'vue';
 import eventBus from '../services/event-bus';
+import { addWindowListener, removeWindowListener } from '../services/window-events';
 
-Vue.directive('select-on-focus', {
-    inserted(el) {
-        el.addEventListener('focus', (evt) => {
+function bindDirective(directive) {
+    return {
+        inserted: directive.mounted,
+        unbind: directive.beforeUnmount,
+        ...directive,
+    };
+}
+
+function addElementListener(el, key, eventName, handler) {
+    el[key] = handler;
+    el.addEventListener(eventName, handler);
+}
+
+function removeElementListener(el, key, eventName) {
+    if (el[key]) {
+        el.removeEventListener(eventName, el[key]);
+        delete el[key];
+    }
+}
+
+Vue.directive('select-on-focus', bindDirective({
+    mounted(el) {
+        addElementListener(el, '__lpSelectOnFocus', 'focus', () => {
             el.select();
         });
     },
-});
+    beforeUnmount(el) {
+        removeElementListener(el, '__lpSelectOnFocus', 'focus');
+    },
+}));
 
-Vue.directive('focus-on-create', {
-    inserted(el, binding) {
+Vue.directive('focus-on-create', bindDirective({
+    mounted(el, binding) {
         if (binding.expression && binding.value || !binding.expression) {
             el.focus();
         }
     },
-});
+    beforeUnmount() {
+    },
+}));
 
-Vue.directive('focus-on-bus', {
-    inserted(el, binding) {
+Vue.directive('focus-on-bus', bindDirective({
+    mounted(el, binding) {
         const handler = () => {
             el.focus();
         };
@@ -26,16 +52,16 @@ Vue.directive('focus-on-bus', {
         el.__lpFocusOnBus = handler;
         eventBus.on(binding.value, handler);
     },
-    unbind(el, binding) {
+    beforeUnmount(el, binding) {
         if (el.__lpFocusOnBus) {
             eventBus.off(binding.value, el.__lpFocusOnBus);
             delete el.__lpFocusOnBus;
         }
     },
-});
+}));
 
-Vue.directive('select-on-bus', {
-    inserted(el, binding) {
+Vue.directive('select-on-bus', bindDirective({
+    mounted(el, binding) {
         const handler = () => {
             el.select();
         };
@@ -43,33 +69,37 @@ Vue.directive('select-on-bus', {
         el.__lpSelectOnBus = handler;
         eventBus.on(binding.value, handler);
     },
-    unbind(el, binding) {
+    beforeUnmount(el, binding) {
         if (el.__lpSelectOnBus) {
             eventBus.off(binding.value, el.__lpSelectOnBus);
             delete el.__lpSelectOnBus;
         }
     },
-});
+}));
 
-Vue.directive('empty-if-zero', {
-    inserted(el) {
-        el.addEventListener('focus', (evt) => {
+Vue.directive('empty-if-zero', bindDirective({
+    mounted(el) {
+        addElementListener(el, '__lpEmptyIfZeroFocus', 'focus', () => {
             if (el.value === '0' || el.value === '0.00') {
                 el.dataset.originalValue = el.value;
                 el.value = '';
             }
         });
 
-        el.addEventListener('blur', (evt) => {
+        addElementListener(el, '__lpEmptyIfZeroBlur', 'blur', () => {
             if (el.value === '') {
                 el.value = el.dataset.originalValue || '0';
             }
         });
     },
-});
+    beforeUnmount(el) {
+        removeElementListener(el, '__lpEmptyIfZeroFocus', 'focus');
+        removeElementListener(el, '__lpEmptyIfZeroBlur', 'blur');
+    },
+}));
 
-Vue.directive('click-outside', {
-    inserted(el, binding) {
+Vue.directive('click-outside', bindDirective({
+    mounted(el, binding) {
         const handler = (evt) => {
             if (el.contains(evt.target)) {
                 return;
@@ -79,13 +109,13 @@ Vue.directive('click-outside', {
             }
         };
 
-        window.addEventListener('click', handler);
+        addWindowListener('click', handler);
         el.__lpClickOutside = handler;
     },
-    unbind(el) {
+    beforeUnmount(el) {
         if (el.__lpClickOutside) {
-            window.removeEventListener('click', el.__lpClickOutside);
+            removeWindowListener('click', el.__lpClickOutside);
             delete el.__lpClickOutside;
         }
     },
-});
+}));

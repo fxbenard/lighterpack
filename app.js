@@ -10,6 +10,17 @@ const uuid = require('uuid');
 
 const { logger } = require('./server/log.js');
 
+function getRuntimeNumber(name, fallback) {
+    const value = process.env[name];
+
+    if (typeof value === 'undefined' || value === '') {
+        return fallback;
+    }
+
+    const parsed = parseInt(value, 10);
+    return Number.isNaN(parsed) ? fallback : parsed;
+}
+
 morgan.token('username', function getUsername (req) {
     return req.lighterpackusername
 });
@@ -65,6 +76,9 @@ app.use('/', views);
 
 logger.info("Starting up Lighterpack...");
 
+const appPort = getRuntimeNumber('PORT', config.get('port'));
+const devServerPort = getRuntimeNumber('DEV_SERVER_PORT', config.get('devServerPort'));
+
 if (config.get('environment') === 'production') {
     webpackConfig = require('./webpack.config');
 } else {
@@ -76,8 +90,8 @@ webpackCompiler = webpack(webpackConfig);
 // Default port is 3000; we can have multiple bindings
 config.get('bindings').map(
     (bind) => {
-        app.listen(config.get('port'), bind);
-        logger.info(`Listening on [${bind}]:${config.get('port')}`);
+        app.listen(appPort, bind);
+        logger.info(`Listening on [${bind}]:${appPort}`);
     },
 );
 
@@ -89,7 +103,7 @@ if (config.get('environment') !== 'production') {
         hot: true,
         proxy: {
             '*': {
-                target: `http://localhost:${config.get('port')}`,
+                target: `http://localhost:${appPort}`,
                 secure: false,
                 changeOrigin: true,
             },
@@ -103,11 +117,11 @@ if (config.get('environment') !== 'production') {
             aggregateTimeout: 300,
             poll: 1000,
         },
-    }).listen(config.get('devServerPort'), (err, result) => {
+    }).listen(devServerPort, (err, result) => {
         if (err) {
             return logger.info(err);
         }
 
-        logger.info(`Webpack dev server listening on port ${config.get('devServerPort')}`);
+        logger.info(`Webpack dev server listening on port ${devServerPort}`);
     });
 }

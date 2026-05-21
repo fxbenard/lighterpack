@@ -20,6 +20,10 @@ const Category = dataTypes.Category;
 const List = dataTypes.List;
 const Library = dataTypes.Library;
 
+function getDeployUrl() {
+    return process.env.DEPLOY_URL || config.get('deployUrl');
+}
+
 const templates = {};
 
 const vueRoutes = [ /* TODO - get this from same data source as Vue */
@@ -197,7 +201,7 @@ router.get('/e/:id', (req, res) => {
             renderedTotals,
             optionalFields: library.optionalFields,
             renderedDescription: markdown.toHTML(list.description),
-            baseUrl: config.get('deployUrl'),
+            baseUrl: getDeployUrl(),
             styles: shareStylesLinks,
             scripts: shareScriptsLinks,
         };

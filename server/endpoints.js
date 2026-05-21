@@ -3,10 +3,10 @@ const crypto = require('crypto');
 const path = require('path');
 const express = require('express');
 const generate = require('nanoid/generate');
+const { readFile } = require('fs/promises');
 
 const router = express.Router();
 const fs = require('fs');
-const request = require('request');
 const formidable = require('formidable');
 const config = require('config');
 const { logWithRequest } = require('./log.js');
@@ -381,7 +381,7 @@ router.post('/imageUpload', (req, res) => {
 
 function imageUpload(req, res, user) {
     const form = new formidable.IncomingForm();
-    form.parse(req, (err, fields, files) => {
+    form.parse(req, async (err, fields, files) => {
         if (err) {
             logWithRequest(req, 'form parse error');
             return res.status(500).json({ message: 'An error occurred' });
@@ -391,34 +391,50 @@ function imageUpload(req, res, user) {
             return res.status(500).json({ message: 'An error occurred' });
         }
 
-        const path = files.image.path;
-        const formData = {
-            image: fs.createReadStream(path),
-            type: "file"
-        };
-        request.post({
-            url: 'https://api.imgur.com/3/image',
-            headers: { Authorization: `Client-ID ${config.get('imgurClientID')}` },
-            formData
-        }, (e, r, body) => {
-            if (e) {
-                logWithRequest(req, 'imgur post fail!');
-                logWithRequest(req, e);
-                logWithRequest(req, body);
-                return res.status(500).json({ message: 'An error occurred.' });
-            } if (!body) {
+        const imagePath = files.image.path;
+
+        try {
+            const imageBuffer = await readFile(imagePath);
+            const formData = new FormData();
+
+            formData.append('image', new Blob([imageBuffer]), path.basename(imagePath));
+            formData.append('type', 'file');
+
+            const response = await fetch('https://api.imgur.com/3/image', {
+                method: 'POST',
+                headers: { Authorization: `Client-ID ${config.get('imgurClientID')}` },
+                body: formData,
+            });
+            const body = await response.text();
+
+            if (!body) {
                 logWithRequest(req, 'imgur post fail!!');
-                logWithRequest(req, e);
                 return res.status(500).json({ message: 'An error occurred.' });
-            } if (r.statusCode !== 200 || body.error) {
-                logWithRequest(req, 'imgur post fail!!!');
-                logWithRequest(req, e);
+            }
+
+            let parsedBody;
+            try {
+                parsedBody = JSON.parse(body);
+            } catch (parseError) {
+                logWithRequest(req, 'imgur post parse fail');
+                logWithRequest(req, parseError);
                 logWithRequest(req, body);
                 return res.status(500).json({ message: 'An error occurred.' });
             }
+
+            if (!response.ok || parsedBody.error) {
+                logWithRequest(req, 'imgur post fail!!!');
+                logWithRequest(req, body);
+                return res.status(500).json({ message: 'An error occurred.' });
+            }
+
             logWithRequest(req, body);
             return res.send(body);
-        });
+        } catch (uploadError) {
+            logWithRequest(req, 'imgur post fail!');
+            logWithRequest(req, uploadError);
+            return res.status(500).json({ message: 'An error occurred.' });
+        }
     });
 }
 

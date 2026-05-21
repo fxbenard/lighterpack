@@ -1,5 +1,3 @@
-const request = require('request');
-
 const newDataTypes = require('../client/dataTypes.js');
 const { withDb } = require('./_mongo');
 
@@ -95,17 +93,18 @@ function compareListRender(listId) {
 }
 
 function extractListTotal(fullUrl) {
-    return new Promise((resolve, reject) => {
-        request.get(fullUrl, (error, response, body) => {
-            if (error) {
-                reject();
-                return;
+    return fetch(fullUrl)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`Unexpected status ${response.status}`);
             }
-            totalRow = body.substr(body.indexOf('lpRow lpFooter lpTotal'));
-            totalCell = totalRow.substr(totalRow.indexOf('lpTotalValue'));
-            totalCellBody = totalCell.substr(totalCell.indexOf('>') + 1);
+            return response.text();
+        })
+        .then((body) => {
+            let totalRow = body.substr(body.indexOf('lpRow lpFooter lpTotal'));
+            let totalCell = totalRow.substr(totalRow.indexOf('lpTotalValue'));
+            let totalCellBody = totalCell.substr(totalCell.indexOf('>') + 1);
             totalCellBody = totalCellBody.substr(0, totalCellBody.indexOf('<'));
-            resolve(totalCellBody);
+            return totalCellBody;
         });
-    });
 }

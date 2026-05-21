@@ -1,5 +1,3 @@
-const request = require('request');
-
 const newDataTypes = require('../client/dataTypes.js');
 const { withDb } = require('./_mongo');
 

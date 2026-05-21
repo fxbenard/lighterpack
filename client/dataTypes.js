@@ -401,7 +401,6 @@ Library.prototype.removeCategory = function (id, force) {
     const list = this.findListWithCategoryById(id);
 
     if (list && list.categoryIds.length == 1 && !force) {
-        alert("Can't remove the last category in a list!");
         return false;
     }
 

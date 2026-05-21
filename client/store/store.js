@@ -33,6 +33,21 @@ const store = new Vuex.Store({
         },
     },
     mutations: {
+        pushGlobalAlert(state, alert) {
+            const message = alert && alert.message ? alert.message : alert;
+
+            if (!message) {
+                return;
+            }
+
+            state.globalAlerts.push({
+                id: `${Date.now()}-${Math.random()}`,
+                message,
+            });
+        },
+        removeGlobalAlert(state, alertId) {
+            state.globalAlerts = state.globalAlerts.filter((alert) => alert.id !== alertId);
+        },
         setSaveType(state, saveType) {
             state.saveType = saveType;
         },
@@ -60,7 +75,10 @@ const store = new Vuex.Store({
                 library.load(libraryData);
                 state.library = library;
             } catch (err) {
-                state.globalAlerts.push({ message: 'An error occurred while loading your data.' });
+                state.globalAlerts.push({
+                    id: `${Date.now()}-${Math.random()}`,
+                    message: 'An error occurred while loading your data.',
+                });
             }
             state.lastSaveData = JSON.stringify(library.save());
         },
@@ -105,7 +123,13 @@ const store = new Vuex.Store({
             state.library.getListById(state.library.defaultListId).calculateTotals();
         },
         removeCategory(state, category) {
-            state.library.removeCategory(category.id);
+            const removed = state.library.removeCategory(category.id);
+            if (removed === false) {
+                state.globalAlerts.push({
+                    id: `${Date.now()}-${Math.random()}`,
+                    message: "Can't remove the last category in a list!",
+                });
+            }
         },
         removeList(state, list) {
             state.library.removeList(list.id);
@@ -181,13 +205,11 @@ const store = new Vuex.Store({
             const item = state.library.getItemById(args.item.id);
             item.imageUrl = args.imageUrl;
             state.library.optionalFields.images = true;
-            eventBus.emit('optionalFieldChanged');
         },
         updateItemImage(state, args) {
             const item = state.library.getItemById(args.item.id);
             item.image = args.image;
             state.library.optionalFields.images = true;
-            eventBus.emit('optionalFieldChanged');
         },
         updateItemUnit(state, unit) {
             state.library.itemUnit = unit;
@@ -261,7 +283,6 @@ const store = new Vuex.Store({
             if (hasConsumable) {
                 Vue.set(state.library.optionalFields, 'consumable', true);
             }
-            eventBus.emit('optionalFieldChanged');
             list.calculateTotals();
             state.library.defaultListId = list.id;
         },
@@ -302,14 +323,15 @@ const store = new Vuex.Store({
                     context.commit('setSaveType', 'remote');
                     context.commit('setLoggedIn', response.username);
                 })
-                .catch((response) => {
-                    if (response.status == 401) {
-                eventBus.emit('unauthorized');
-                    } else {
-                        return new Promise((resolve, reject) => {
-                            reject('An error occurred while fetching your data, please try again later.');
-                        });
+                .catch((error) => {
+                    if (error && error.statusCode === 401) {
+                        eventBus.emit('unauthorized', error.message);
+                        return Promise.resolve();
                     }
+
+                    return Promise.reject(error && error.message
+                        ? error.message
+                        : 'An error occurred while fetching your data, please try again later.');
                 });
         },
     },
@@ -360,16 +382,18 @@ const store = new Vuex.Store({
                             store.commit('setSyncToken', response.syncToken);
                             store.commit('setIsSaving', false);
                         })
-                        .catch((response) => {
+                        .catch((error) => {
                             store.commit('setIsSaving', false);
-                            let error = 'An error occurred while attempting to save your data.';
-                            if (response.json && response.json.status) {
-                                error = response.json.status;
+                            let errorMessage = 'An error occurred while attempting to save your data.';
+
+                            if (error && error.message) {
+                                errorMessage = error.message;
                             }
-                            if (response.status == 401) {
-                                eventBus.emit('unauthorized', error);
+
+                            if (error && error.statusCode === 401) {
+                                eventBus.emit('unauthorized', errorMessage);
                             } else {
-                                alert(error); // TODO
+                                eventBus.emit('globalAlert', { message: errorMessage });
                             }
                         });
                 };

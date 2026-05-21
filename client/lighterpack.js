@@ -6,6 +6,7 @@ import VueRouter from 'vue-router';
 import routes from './routes';
 import eventBus from './services/event-bus';
 import { setRouter, redirect } from './services/navigation';
+import { showGlobalAlert } from './services/user-feedback';
 import store from './store/store';
 
 const focusDirectives = require('./utils/focus.js');
@@ -24,8 +25,15 @@ const router = new VueRouter({
 
 setRouter(router);
 
-eventBus.on('unauthorized', () => {
+eventBus.on('unauthorized', (message) => {
+    if (message) {
+        store.commit('pushGlobalAlert', { message });
+    }
     redirect('/signin');
+});
+
+eventBus.on('globalAlert', (alert) => {
+    store.commit('pushGlobalAlert', alert);
 });
 
 store.dispatch('init')
@@ -36,6 +44,7 @@ store.dispatch('init')
         if (!store.state.library) {
             router.push('/welcome');
         }
+        showGlobalAlert(error);
         initLighterPack();
     });
 

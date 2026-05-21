@@ -143,6 +143,7 @@
 <script>
 import modal from './modal.vue';
 import eventBus from '../services/event-bus';
+import { showGlobalAlert } from '../services/user-feedback';
 
 const csvImportUtils = require('../utils/csv-import.js');
 
@@ -200,11 +201,11 @@ export default {
                 return;
             }
             if (file.size > 1000000) {
-                alert('File is too big');
+                showGlobalAlert('File is too big');
                 return;
             }
             if (name.substring(name.length - 4).toLowerCase() !== '.csv') {
-                alert('Please select a CSV.');
+                showGlobalAlert('Please select a CSV.');
                 return;
             }
             const reader = new FileReader();
@@ -219,7 +220,7 @@ export default {
             this.importData = csvImportUtils.parseImportCsv(input, name);
 
             if (!this.importData.data.length) {
-                alert('Unable to load spreadsheet - please verify the format.');
+                showGlobalAlert('Unable to load spreadsheet - please verify the format.');
             } else {
                 this.shown = true;
             }

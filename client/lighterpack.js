@@ -1,4 +1,5 @@
-import '@babel/polyfill';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
 import { createApp, h } from 'vue';
 import { createRouter, createWebHistory, RouterView } from 'vue-router';

@@ -23,6 +23,7 @@
 
 <script>
 import modal from './modal.vue';
+import { clearSpeedbumpOpener, setSpeedbumpOpener } from '../services/speedbump';
 
 export default {
     name: 'Speedbump',
@@ -42,19 +43,20 @@ export default {
             shown: false,
         };
     },
-    beforeMount() {
-        bus.$on('initSpeedbump', (callback, options) => {
-            this.initSpeedbump(callback, options);
-        });
+    mounted() {
+        setSpeedbumpOpener(this.initSpeedbump);
+    },
+    beforeUnmount() {
+        clearSpeedbumpOpener(this.initSpeedbump);
     },
     methods: {
         initSpeedbump(callback, options) {
             this.callback = callback;
-            this.messages = Vue.util.extend({}, this.defaultMessages);
+            this.messages = { ...this.defaultMessages };
             if (typeof options === 'string') {
                 this.messages.body = options;
             } else {
-                this.messages = Vue.util.extend(this.messages, options);
+                this.messages = { ...this.messages, ...options };
             }
             this.shown = true;
         },

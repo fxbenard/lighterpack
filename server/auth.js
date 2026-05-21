@@ -42,30 +42,28 @@ const authenticateUser = function (req, res, callback) {
                 }
             });
     } else {
-        db.users.find({ token: req.cookies.lp }, (err, users) => {
+        db.users.findOne({ token: req.cookies.lp }, (err, user) => {
             if (err) {
                 logWithRequest(req, { message: 'Error on authenticateUser else', error: err });
                 return res.status(500).json({ message: 'An error occurred, please try again later.' });
-            } if (!users || !users.length) {
+            } if (!user) {
                 logWithRequest(req, { message: 'bad cookie!' });
                 return res.status(404).json({ message: 'Please log in again.' });
             }
-            req.lighterpackusername = users[0].username || 'UNKNOWN';
-            callback(req, res, users[0]);
+            req.lighterpackusername = user.username || 'UNKNOWN';
+            callback(req, res, user);
         });
     }
 };
 
 const verifyPassword = function (username, password) {
     return new Promise((resolve, reject) => {
-        db.users.find({ username }, (err, users) => {
+        db.users.findOne({ username }, (err, user) => {
             if (err) {
                 return reject({ code: 500, message: 'An error occurred, please try again later.' });
-            } if (!users || !users.length) {
+            } if (!user) {
                 return reject({ code: 404, message: 'Invalid username and/or password.' });
             }
-
-            const user = users[0];
 
             bcrypt.compare(password, user.password, (err, result) => {
                 if (err) {

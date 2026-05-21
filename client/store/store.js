@@ -1,6 +1,8 @@
-import Vuex from 'vuex';
-import Vue from 'vue';
+import { createStore } from 'vuex';
 import debounce from 'lodash/debounce';
+import { notifyGlobalAlert, notifyUnauthorized } from '../services/app-events';
+import { clearCookie, getLocalLibrary, hasLocalLibrary, readCookie, setLocalLibrary } from '../services/browser-storage';
+import { arrayMove, fetchJson } from '../utils/utils';
 
 const weightUtils = require('../utils/weight.js');
 const dataTypes = require('../dataTypes.js');
@@ -12,25 +14,39 @@ const Library = dataTypes.Library;
 
 const saveInterval = 10000;
 
-Vue.use(Vuex);
+const createInitialState = () => ({
+    library: false,
+    isSaving: false,
+    syncToken: false,
+    saveType: null,
+    lastSaveData: null,
+    loggedIn: false,
+    globalAlerts: [],
+});
 
-const store = new Vuex.Store({
-    state: {
-        library: false,
-        isSaving: false,
-        syncToken: false,
-        saveType: null,
-        lastSaveData: null,
-        loggedIn: false,
-        directiveInstances: {},
-        globalAlerts: [],
-    },
+const store = createStore({
+    state: createInitialState,
     getters: {
         activeList(state) {
             return state.library.getListById(state.library.defaultListId);
         },
     },
     mutations: {
+        pushGlobalAlert(state, alert) {
+            const message = alert && alert.message ? alert.message : alert;
+
+            if (!message) {
+                return;
+            }
+
+            state.globalAlerts.push({
+                id: `${Date.now()}-${Math.random()}`,
+                message,
+            });
+        },
+        removeGlobalAlert(state, alertId) {
+            state.globalAlerts = state.globalAlerts.filter((alert) => alert.id !== alertId);
+        },
         setSaveType(state, saveType) {
             state.saveType = saveType;
         },
@@ -44,7 +60,7 @@ const store = new Vuex.Store({
             state.isSaving = isSaving;
         },
         signout(state) {
-            createCookie('lp', '', -1);
+            clearCookie('lp');
             state.library = false; // duplicate logic
             state.loggedIn = false; // duplicate logic
         },
@@ -58,7 +74,10 @@ const store = new Vuex.Store({
                 library.load(libraryData);
                 state.library = library;
             } catch (err) {
-                state.globalAlerts.push({ message: 'An error occurred while loading your data.' });
+                state.globalAlerts.push({
+                    id: `${Date.now()}-${Math.random()}`,
+                    message: 'An error occurred while loading your data.',
+                });
             }
             state.lastSaveData = JSON.stringify(library.save());
         },
@@ -103,7 +122,13 @@ const store = new Vuex.Store({
             state.library.getListById(state.library.defaultListId).calculateTotals();
         },
         removeCategory(state, category) {
-            state.library.removeCategory(category.id);
+            const removed = state.library.removeCategory(category.id);
+            if (removed === false) {
+                state.globalAlerts.push({
+                    id: `${Date.now()}-${Math.random()}`,
+                    message: "Can't remove the last category in a list!",
+                });
+            }
         },
         removeList(state, list) {
             state.library.removeList(list.id);
@@ -179,13 +204,11 @@ const store = new Vuex.Store({
             const item = state.library.getItemById(args.item.id);
             item.imageUrl = args.imageUrl;
             state.library.optionalFields.images = true;
-            bus.$emit('optionalFieldChanged');
         },
         updateItemImage(state, args) {
             const item = state.library.getItemById(args.item.id);
             item.image = args.image;
             state.library.optionalFields.images = true;
-            bus.$emit('optionalFieldChanged');
         },
         updateItemUnit(state, unit) {
             state.library.itemUnit = unit;
@@ -251,33 +274,26 @@ const store = new Vuex.Store({
                 }
             });
             if (hasPrice) {
-                Vue.set(state.library.optionalFields, 'price', true);
+                state.library.optionalFields.price = true;
             }
             if (hasWorn) {
-                Vue.set(state.library.optionalFields, 'worn', true);
+                state.library.optionalFields.worn = true;
             }
             if (hasConsumable) {
-                Vue.set(state.library.optionalFields, 'consumable', true);
+                state.library.optionalFields.consumable = true;
             }
-            bus.$emit('optionalFieldChanged');
             list.calculateTotals();
             state.library.defaultListId = list.id;
         },
         save() {
             // no-op
         },
-        addDirectiveInstance(state, { key, value }) {
-            state.directiveInstances[key] = value;
-        },
-        removeDirectiveInstance(state, key) {
-            delete state.directiveInstances[key];
-        },
     },
     actions: {
         init(context) {
             if (readCookie('lp')) {
                 return context.dispatch('loadRemote');
-            } if (localStorage.library) {
+            } if (hasLocalLibrary()) {
                 return context.dispatch('loadLocal');
             }
             return new Promise((resolve, reject) => {
@@ -287,7 +303,7 @@ const store = new Vuex.Store({
             });
         },
         loadLocal(context) {
-            const libraryData = localStorage.library;
+            const libraryData = getLocalLibrary();
             context.commit('loadLibraryData', libraryData);
             context.commit('setSaveType', 'local');
             context.commit('setLoggedIn', false);
@@ -306,14 +322,15 @@ const store = new Vuex.Store({
                     context.commit('setSaveType', 'remote');
                     context.commit('setLoggedIn', response.username);
                 })
-                .catch((response) => {
-                    if (response.status == 401) {
-                        bus.$emit('unauthorized');
-                    } else {
-                        return new Promise((resolve, reject) => {
-                            reject('An error occurred while fetching your data, please try again later.');
-                        });
+                .catch((error) => {
+                    if (error && error.statusCode === 401) {
+                        notifyUnauthorized(error.message);
+                        return Promise.resolve();
                     }
+
+                    return Promise.reject(error && error.message
+                        ? error.message
+                        : 'An error occurred while fetching your data, please try again later.');
                 });
         },
     },
@@ -364,16 +381,18 @@ const store = new Vuex.Store({
                             store.commit('setSyncToken', response.syncToken);
                             store.commit('setIsSaving', false);
                         })
-                        .catch((response) => {
+                        .catch((error) => {
                             store.commit('setIsSaving', false);
-                            let error = 'An error occurred while attempting to save your data.';
-                            if (response.json && response.json.status) {
-                                error = response.json.status;
+                            let errorMessage = 'An error occurred while attempting to save your data.';
+
+                            if (error && error.message) {
+                                errorMessage = error.message;
                             }
-                            if (response.status == 401) {
-                                bus.$emit('unauthorized', error);
+
+                            if (error && error.statusCode === 401) {
+                                notifyUnauthorized(errorMessage);
                             } else {
-                                alert(error); // TODO
+                                notifyGlobalAlert({ message: errorMessage });
                             }
                         });
                 };
@@ -381,7 +400,7 @@ const store = new Vuex.Store({
                 if (state.saveType === 'remote') {
                     saveRemotely(saveData);
                 } else if (state.saveType === 'local') {
-                    localStorage.library = saveData;
+                    setLocalLibrary(saveData);
                 }
             }, saveInterval, { maxWait: saveInterval * 3 }));
         },

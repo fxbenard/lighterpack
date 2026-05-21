@@ -53,6 +53,8 @@
 import blackoutFooter from '../components/blackout-footer.vue';
 import errors from '../components/errors.vue';
 import modal from '../components/modal.vue';
+import { push } from '../services/navigation';
+import { fetchJson } from '../utils/utils';
 
 export default {
     name: 'ForgotPassword',
@@ -82,7 +84,7 @@ export default {
                 body: JSON.stringify({ username: this.forgotPasswordUsername }),
             })
                 .then((response) => {
-                    router.push('/signin/reset-password');
+                    push('/signin/reset-password');
                 })
                 .catch((response) => {
                     let errors = [{ message: 'An error occurred, please try again later.' }];
@@ -104,7 +106,7 @@ export default {
                 body: JSON.stringify({ email: this.forgotUsernameEmail }),
             })
                 .then((response) => {
-                    router.push('/signin/forgot-username');
+                    push('/signin/forgot-username');
                 })
                 .catch((response) => {
                     let errors = [{ message: 'An error occurred, please try again later.' }];

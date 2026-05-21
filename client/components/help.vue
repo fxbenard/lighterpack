@@ -29,6 +29,7 @@
 
 <script>
 import modal from './modal.vue';
+import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
 
 export default {
     name: 'Help',
@@ -40,10 +41,13 @@ export default {
             shown: false,
         };
     },
-    beforeMount() {
-        bus.$on('showHelp', () => {
+    mounted() {
+        registerDialogOpener('help', () => {
             this.shown = true;
         });
+    },
+    beforeUnmount() {
+        unregisterDialogOpener('help');
     },
 };
 </script>

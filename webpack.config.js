@@ -1,7 +1,13 @@
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const { VueLoaderPlugin } = require('vue-loader');
+
+const vueFeatureFlags = {
+    __VUE_OPTIONS_API__: JSON.stringify(true),
+    __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
+};
 
 class AssetJsonPlugin {
     apply(compiler) {
@@ -74,11 +80,7 @@ module.exports = {
             },
         ],
     },
-    resolve: {
-        alias: {
-            vue$: 'vue/dist/vue.esm.js',
-        },
-    },
+    resolve: {},
     performance: {
         hints: false,
     },
@@ -88,6 +90,7 @@ module.exports = {
         new webpack.LoaderOptionsPlugin({
             minimize: true,
         }),
+        new webpack.DefinePlugin(vueFeatureFlags),
         new MiniCssExtractPlugin({
             filename: '[name].[chunkhash].css',
         }),

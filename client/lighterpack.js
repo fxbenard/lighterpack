@@ -1,32 +1,32 @@
 import '@babel/polyfill';
 
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+import { createApp, h } from 'vue';
+import { createRouter, createWebHistory, RouterView } from 'vue-router';
 
 import routes from './routes';
+import { registerAppEventHandlers } from './services/app-events';
+import { setRouter, redirect } from './services/navigation';
+import { showGlobalAlert } from './services/user-feedback';
+import { registerFocusDirectives } from './utils/focus';
 import store from './store/store';
 
-const focusDirectives = require('./utils/focus.js');
-const dataTypes = require('./dataTypes.js');
-
-const Item = dataTypes.Item;
-const Category = dataTypes.Category;
-const List = dataTypes.List;
-const Library = dataTypes.Library;
-
-Vue.use(VueRouter);
-
-const utils = require('./utils/utils.js');
-
-window.Vue = Vue; // surfacing Vue globally for utils methods
-window.bus = new Vue(); // global event bus
-window.router = new VueRouter({
-    mode: 'history',
+const router = createRouter({
+    history: createWebHistory(),
     routes,
 });
 
-bus.$on('unauthorized', (error) => {
-    window.location = '/signin';
+setRouter(router);
+
+registerAppEventHandlers({
+    onUnauthorized(message) {
+        if (message) {
+            store.commit('pushGlobalAlert', { message });
+        }
+        redirect('/signin');
+    },
+    onGlobalAlert(alert) {
+        store.commit('pushGlobalAlert', alert);
+    },
 });
 
 store.dispatch('init')
@@ -37,24 +37,22 @@ store.dispatch('init')
         if (!store.state.library) {
             router.push('/welcome');
         }
+        showGlobalAlert(error);
         initLighterPack();
     });
 
 var initLighterPack = function () {
-    window.LighterPack = new Vue({
-        router,
-        store,
-        data: {
-            path: '',
-            fatal: '',
+    const app = createApp({
+        render() {
+            return h(RouterView);
         },
-        watch: {
-            $route(to, from) {
-                this.path = to.path;
-            },
-        },
-        mounted() {
-            this.path = router.currentRoute.path;
-        },
-    }).$mount('#lp');
+    });
+
+    app.use(router);
+    app.use(store);
+    registerFocusDirectives(app);
+
+    router.isReady().then(() => {
+        window.LighterPack = app.mount('#lp');
+    });
 };

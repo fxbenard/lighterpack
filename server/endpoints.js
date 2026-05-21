@@ -213,15 +213,14 @@ router.post('/forgotPassword', (req, res) => {
         return res.status(400).json({ errors: [{ message: 'Please enter a username.' }] });
     }
 
-    db.users.find({ username }, (err, users) => {
+    db.users.findOne({ username }, (err, user) => {
         if (err) {
             logWithRequest(req, { message: 'Forgot password lookup error', username });
             return res.status(500).json({ message: 'An error occurred' });
-        } if (!users.length) {
+        } if (!user) {
             logWithRequest(req, { message: 'Forgot password for unknown user', username });
             return res.status(500).json({ message: 'An error occurred.' });
         }
-        const user = users[0];
         require('crypto').randomBytes(12, (ex, buf) => {
             const newPassword = buf.toString('hex');
 
@@ -266,15 +265,14 @@ router.post('/forgotUsername', (req, res) => {
         return res.status(400).json({ errors: [{ message: 'Please enter a valid email.' }] });
     }
 
-    db.users.find({ email }, (err, users) => {
+    db.users.findOne({ email }, (err, user) => {
         if (err) {
             logWithRequest(req, { message: 'Forgot email lookup error', email });
             return res.status(500).json({ message: 'An error occurred' });
-        } if (!users.length) {
+        } if (!user) {
             logWithRequest(req, { message: 'Forgot email for unknown user', email });
             return res.status(400).json({ message: 'An error occurred' });
         }
-        const user = users[0];
         const username = user.username;
 
         const message = `Hello ${username},\n Apparently you forgot your username. Here It is: \n\n Username: ${username}\n\n If you continue to have problems, please reply to this email with details.\n\n Thanks!`;

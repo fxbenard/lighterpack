@@ -58,6 +58,9 @@
 </template>
 
 <script>
+import { push } from '../services/navigation';
+import { fetchJson } from '../utils/utils';
+
 export default {
     name: 'Admin',
     components: {
@@ -76,9 +79,9 @@ export default {
             return !!this.searchResults;
         }
     },
-    beforeMount() {
+    created() {
         if (false) {
-            router.push('/welcome');
+            push('/welcome');
         }
     },
     methods: {

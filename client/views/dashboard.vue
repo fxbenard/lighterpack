@@ -2,10 +2,13 @@
 @import "../css/_globals";
 
 #header {
-    align-items: baseline;
+    align-items: center;
+    border-bottom: 1px solid #d4d9ce;
     display: flex;
-    height: 60px;
+    gap: 2px;
+    min-height: 60px;
     margin: 0 -20px 20px; /* lpList padding */
+    padding: 0 8px;
     position: relative;
 }
 
@@ -25,19 +28,22 @@
 }
 
 #lpListName {
+    background: transparent;
+    border-radius: 4px;
     font-size: 24px;
     font-weight: 600;
-    padding: 12px 15px;
+    padding: 10px 14px;
 }
 
 .headerItem {
     flex: 0 0 auto;
+    color: #50554d;
     height: 100%;
-    padding: 17px 16px;
+    padding: 10px 12px;
     position: relative;
 
     &:first-child {
-        padding-left: 20px;
+        padding-left: 12px;
     }
 
     .lpPopover {
@@ -47,8 +53,9 @@
     }
 
     .lpTarget {
+        border-radius: 4px;
         font-weight: 600;
-        padding: 17px 16px 15px;
+        padding: 10px 12px;
     }
 
     &#lpListName {
@@ -132,6 +139,7 @@ import itemLink from '../components/item-link.vue';
 import importCSV from '../components/import-csv.vue';
 import copyList from '../components/copy-list.vue';
 import speedbump from '../components/speedbump.vue';
+import { push } from '../services/navigation';
 
 export default {
     name: 'Dashboard',
@@ -170,9 +178,9 @@ export default {
             return this.$store.state.loggedIn;
         },
     },
-    beforeMount() {
+    created() {
         if (!this.$store.state.library) {
-            router.push('/welcome');
+            push('/welcome');
         } else {
             this.isLoaded = true;
         }

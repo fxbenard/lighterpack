@@ -24,6 +24,9 @@
 <script>
 import errors from './errors.vue';
 import spinner from './spinner.vue';
+import { push } from '../services/navigation';
+import { getLocalLibrary, hasLocalLibrary, moveLocalLibraryToRegistered } from '../services/browser-storage';
+import { fetchJson } from '../utils/utils';
 
 const dataTypes = require('../dataTypes.js');
 
@@ -53,14 +56,14 @@ export default {
     methods: {
         loadLocal() {
             if (this.isLocalSaving) {
-                router.push('/');
+                push('/');
                 return;
             }
             const library = new Library();
             this.$store.commit('loadLibraryData', JSON.stringify(library.save()));
             this.$store.commit('setSaveType', 'local');
             this.$store.commit('setLoggedIn', false);
-            router.push('/');
+            push('/');
         },
         submit() {
             this.errors = [];
@@ -99,8 +102,8 @@ export default {
 
             const registerData = { username: this.username, email: this.email, password: this.password };
 
-            if (localStorage.library) {
-                registerData.library = localStorage.library;
+            if (hasLocalLibrary()) {
+                registerData.library = getLocalLibrary();
             }
 
             this.saving = true;
@@ -119,11 +122,10 @@ export default {
                     this.$store.commit('setLoggedIn', response.username);
 
                     if (registerData.library) {
-                        localStorage.registeredLibrary = localStorage.library;
-                        delete localStorage.library;
+                        moveLocalLibraryToRegistered();
                     }
                     this.saving = false;
-                    router.push('/');
+                    push('/');
                 })
                 .catch((err) => {
                     this.saving = false;

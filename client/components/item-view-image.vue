@@ -18,6 +18,7 @@
 
 <script>
 import modal from './modal.vue';
+import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
 
 export default {
     name: 'ItemViewImage',
@@ -31,10 +32,13 @@ export default {
         };
     },
     mounted() {
-        bus.$on('viewItemImage', (imageUrl) => {
+        registerDialogOpener('itemViewImage', (imageUrl) => {
             this.shown = true;
             this.imageUrl = imageUrl;
         });
+    },
+    beforeUnmount() {
+        unregisterDialogOpener('itemViewImage');
     },
 };
 </script>

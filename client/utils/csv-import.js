@@ -83,16 +83,35 @@ function getColumnIndexes(row) {
     return indexes;
 }
 
+function isBlankRow(row) {
+    return row.every((cell) => normalizeField(cell) === '');
+}
+
+function rejectRow(importData, rowNumber, reason) {
+    importData.rejectedRows.push({ rowNumber, reason });
+}
+
 function parseImportCsv(input, name) {
     const csv = parseCsvRows(input);
     const firstRow = csv[0] || [];
     const hasHeader = normalizeHeader(firstRow[0]) === 'item name';
     const columnIndexes = hasHeader ? getColumnIndexes(firstRow) : {};
     const rows = hasHeader ? csv.slice(1) : csv;
-    const importData = { data: [], name };
+    const importData = {
+        data: [],
+        name,
+        acceptedRows: 0,
+        rejectedRows: [],
+        errors: [],
+    };
 
-    rows.forEach((row) => {
-        if (row.length < 6) return;
+    rows.forEach((row, index) => {
+        const rowNumber = index + (hasHeader ? 2 : 1);
+        if (isBlankRow(row)) return;
+        if (row.length < 6) {
+            rejectRow(importData, rowNumber, 'missing required columns');
+            return;
+        }
 
         const itemName = normalizeField(getCell(row, columnIndexes, 'item name', 0));
         const category = normalizeField(getCell(row, columnIndexes, 'category', 1));
@@ -102,10 +121,22 @@ function parseImportCsv(input, name) {
         const unit = unitAliases[normalizeField(getCell(row, columnIndexes, 'unit', 5)).toLowerCase()];
         const price = parseNumber(getCell(row, columnIndexes, 'price', 7));
 
-        if (!itemName) return;
-        if (Number.isNaN(qty)) return;
-        if (Number.isNaN(weight)) return;
-        if (typeof unit === 'undefined') return;
+        if (!itemName) {
+            rejectRow(importData, rowNumber, 'missing item name');
+            return;
+        }
+        if (Number.isNaN(qty)) {
+            rejectRow(importData, rowNumber, 'invalid quantity');
+            return;
+        }
+        if (Number.isNaN(weight)) {
+            rejectRow(importData, rowNumber, 'invalid weight');
+            return;
+        }
+        if (typeof unit === 'undefined') {
+            rejectRow(importData, rowNumber, 'unsupported unit');
+            return;
+        }
 
         importData.data.push({
             name: itemName,
@@ -119,6 +150,7 @@ function parseImportCsv(input, name) {
             worn: parseBooleanMarker(getCell(row, columnIndexes, 'worn', 8), 'worn'),
             consumable: parseBooleanMarker(getCell(row, columnIndexes, 'consumable', 9), 'consumable'),
         });
+        importData.acceptedRows += 1;
     });
 
     return importData;

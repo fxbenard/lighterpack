@@ -11,8 +11,8 @@
 </style>
 
 <template>
-    <li :id="category.id" class="lpCategory">
-        <ul class="lpItems lpDataTable">
+    <li :id="category.id" class="lpCategory" :data-category-id="category.id">
+        <ul class="lpItems lpDataTable" :data-category-id="category.id">
             <li class="lpHeader lpItemsHeader">
                 <span class="lpHandleCell">
                     <div class="lpHandle lpCategoryHandle" title="Reorder this category" />
@@ -29,10 +29,10 @@
                     <a class="lpAdd lpAddItem" @click="newItem"><i class="lpSprite lpSpriteAdd" />Add new item</a>
                 </span>
                 <span v-if="library.optionalFields['price']" class="lpPriceCell lpNumber lpSubtotal">
-                    {{ category.subtotalPrice | displayPrice(library.currencySymbol) }}
+                    {{ displayPrice(category.subtotalPrice, library.currencySymbol) }}
                 </span>
                 <span class="lpWeightCell lpNumber lpSubtotal">
-                    <span class="lpDisplaySubtotal">{{ category.subtotalWeight | displayWeight(library.totalUnit) }}</span>
+                    <span class="lpDisplaySubtotal">{{ displayWeight(category.subtotalWeight, library.totalUnit) }}</span>
                     <span class="lpSubtotalUnit">{{ library.totalUnit }}</span>
                 </span>
                 <span class="lpQtyCell lpSubtotal">
@@ -46,6 +46,7 @@
 
 <script>
 import item from './item.vue';
+import { openSpeedbump } from '../services/speedbump';
 
 const utilsMixin = require('../mixins/utils-mixin.js');
 
@@ -72,13 +73,13 @@ export default {
             this.$store.commit('updateCategoryName', { id: this.category.id, name: evt.target.value });
         },
         removeCategory(category) {
-            const callback = function () {
+            const callback = () => {
                 this.$store.commit('removeCategory', category);
             };
             const speedbumpOptions = {
                 body: 'Are you sure you want to delete this category? This cannot be undone.',
             };
-            bus.$emit('initSpeedbump', callback, speedbumpOptions);
+            openSpeedbump(callback, speedbumpOptions);
         },
     },
 };

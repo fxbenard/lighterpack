@@ -1,0 +1,5 @@
+Item Name,Category,desc,qty,weight,unit,url,price,worn,consumable
+Valid spoon,Cooking,Titanium spoon,1,12,g,https://example.com/spoon,11.95,,
+,Cooking,Missing name,1,20,g,https://example.com/missing-name,1,,
+No quantity,Cooking,Missing qty,,20,g,https://example.com/no-qty,1,,
+Bad unit,Cooking,Unsupported unit,1,20,stone,https://example.com/bad-unit,1,,

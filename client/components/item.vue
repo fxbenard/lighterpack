@@ -52,7 +52,7 @@
 </style>
 
 <template>
-    <li :id="item.id" :class="'lpItem '+ item.classes">
+    <li :id="item.id" :data-item-id="item.id" :class="itemRowClasses">
         <span class="lpHandleCell">
             <div class="lpItemHandle lpHandle" title="Reorder this item" />
         </span>
@@ -73,7 +73,7 @@
         </span>
         <span class="lpWeightCell lpNumber">
             <input v-model="displayWeight" v-empty-if-zero type="text" :class="{lpWeight: true, lpNumber: true, lpSilent: true, lpSilentError: weightError}" @input="saveWeight" @keydown.up="incrementWeight($event)" @keydown.down="decrementWeight($event)">
-            <unitSelect :unit="item.authorUnit" :on-change="setUnit" />
+            <unitSelect :unit="item.authorUnit" @change="setUnit" />
         </span>
         <span class="lpQtyCell">
             <input v-model="displayQty" type="text" :class="{lpQty: true, lpNumber: true, lpSilent: true, lpSilentError: qtyError}" @input="saveQty" @keydown.up="incrementQty($event)" @keydown.down="decrementQty($event)">
@@ -90,8 +90,8 @@
 
 <script>
 import unitSelect from './unit-select.vue';
+import { openDialog } from '../services/dialogs';
 
-const utilsMixin = require('../mixins/utils-mixin.js');
 const weightUtils = require('../utils/weight.js');
 
 export default {
@@ -99,7 +99,6 @@ export default {
     components: {
         unitSelect,
     },
-    mixins: [utilsMixin],
     props: ['category', 'itemContainer'],
     data() {
         return {
@@ -117,10 +116,10 @@ export default {
             return this.$store.state.library;
         },
         item() {
-            return Vue.util.extend({}, this.itemContainer.item);
+            return { ...this.itemContainer.item };
         },
         categoryItem() {
-            return Vue.util.extend({}, this.itemContainer.categoryItem);
+            return { ...this.itemContainer.categoryItem };
         },
         thumbnailImage() {
             if (this.item.image) {
@@ -138,6 +137,15 @@ export default {
             }
             return '';
         },
+        itemRowClasses() {
+            return [
+                'lpItem',
+                this.item.classes || '',
+                {
+                    lpQtyZero: parseFloat(this.categoryItem.qty) <= 0,
+                },
+            ];
+        },
     },
     watch: {
         item() {
@@ -147,7 +155,7 @@ export default {
             this.setDisplayQty();
         },
     },
-    beforeMount() {
+    created() {
         this.setDisplayWeight();
         this.setDisplayPrice();
         this.setDisplayQty();
@@ -211,13 +219,13 @@ export default {
             this.displayWeight = weightUtils.MgToWeight(this.item.weight, this.item.authorUnit);
         },
         updateItemLink() {
-            bus.$emit('updateItemLink', this.item);
+            openDialog('itemLink', this.item);
         },
         updateItemImage() {
-            bus.$emit('updateItemImage', this.item);
+            openDialog('itemImage', this.item);
         },
         viewItemImage() {
-            bus.$emit('viewItemImage', this.fullImage);
+            openDialog('itemViewImage', this.fullImage);
         },
         toggleWorn() {
             if (this.categoryItem.consumable) {

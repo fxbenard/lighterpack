@@ -73,7 +73,7 @@
             <textarea id="listDescription" v-model="list.description" @input="updateListDescription" />
         </div>
 
-        <ul class="lpCategories">
+        <ul ref="categories" class="lpCategories">
             <category v-for="category in categories" :key="category.id" :category="category" />
         </ul>
 
@@ -86,8 +86,8 @@
 <script>
 import category from './category.vue';
 import listSummary from './list-summary.vue';
-
-const dragula = require('dragula');
+import { getElementIndex } from '../utils/utils';
+import { createDragDrop, getDatasetInt, queryContainers } from '../services/drag-drop';
 
 export default {
     name: 'List',
@@ -102,6 +102,7 @@ export default {
         return {
             onboardingCompleted: false,
             itemDrake: null,
+            categoryDrake: null,
         };
     },
     computed: {
@@ -123,7 +124,7 @@ export default {
     },
     watch: {
         categories() {
-            Vue.nextTick(() => {
+            this.$nextTick(() => {
                 this.handleItemReorder();
             });
         },
@@ -131,6 +132,16 @@ export default {
     mounted() {
         this.handleCategoryReorder();
         this.handleItemReorder();
+    },
+    beforeUnmount() {
+        if (this.itemDrake) {
+            this.itemDrake.destroy();
+            this.itemDrake = null;
+        }
+        if (this.categoryDrake) {
+            this.categoryDrake.destroy();
+            this.categoryDrake = null;
+        }
     },
     methods: {
         newCategory() {
@@ -143,8 +154,8 @@ export default {
             if (this.itemDrake) {
                 this.itemDrake.destroy();
             }
-            const $categoryItems = Array.prototype.slice.call(document.getElementsByClassName('lpItems'));
-            const drake = dragula($categoryItems, {
+            const categoryItems = queryContainers(this.$el, '.lpItems');
+            const drake = createDragDrop(categoryItems, {
                 moves($el, $source, $handle, $sibling) {
                     return $handle.classList.contains('lpItemHandle');
                 },
@@ -156,10 +167,14 @@ export default {
                 },
             });
             drake.on('drag', ($el, $target, $source, $sibling) => {
-                this.itemDragId = parseInt($el.id); // fragile
+                this.itemDragId = getDatasetInt($el, 'itemId');
             });
             drake.on('drop', ($el, $target, $source, $sibling) => {
-                const categoryId = parseInt($target.parentElement.id); // fragile
+                const categoryId = getDatasetInt($target, 'categoryId');
+                if (this.itemDragId === null || categoryId === null) {
+                    drake.cancel(true);
+                    return;
+                }
                 this.$store.commit('reorderItem', {
                     list: this.list, itemId: this.itemDragId, categoryId, dropIndex: getElementIndex($el) - 1,
                 });
@@ -168,8 +183,11 @@ export default {
             this.itemDrake = drake;
         },
         handleCategoryReorder() {
-            const $categories = document.getElementsByClassName('lpCategories')[0];
-            const drake = dragula([$categories], {
+            if (this.categoryDrake) {
+                this.categoryDrake.destroy();
+            }
+
+            const drake = createDragDrop([this.$refs.categories], {
                 moves(el, $source, $handle, $sibling) {
                     return $handle.classList.contains('lpCategoryHandle');
                 },
@@ -181,6 +199,7 @@ export default {
                 this.$store.commit('reorderCategory', { list: this.list, before: this.categoryDragStartIndex, after: getElementIndex($el) });
                 drake.cancel(true);
             });
+            this.categoryDrake = drake;
         },
     },
 };

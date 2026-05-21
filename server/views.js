@@ -1,14 +1,13 @@
-const Vue = require('vue');
 const path = require('path');
 const fs = require('fs');
 const express = require('express');
 
 const router = express.Router();
 const Mustache = require('mustache');
-const extend = require('node.extend');
 const markdown = require('markdown').markdown;
 const config = require('config');
 const { logWithRequest, logger } = require('./log.js');
+const { escapeCsvField } = require('./csv.js');
 
 const db = require('./db.js');
 
@@ -19,6 +18,10 @@ const Item = dataTypes.Item;
 const Category = dataTypes.Category;
 const List = dataTypes.List;
 const Library = dataTypes.Library;
+
+function getDeployUrl() {
+    return process.env.DEPLOY_URL || config.get('deployUrl');
+}
 
 const templates = {};
 
@@ -87,24 +90,24 @@ router.get('/r/:id', (req, res) => {
         res.status(400).send('No list specified!');
         return;
     }
-    db.users.find({ 'library.lists.externalId': id }, (err, users) => {
+    db.users.findOne({ 'library.lists.externalId': id }, (err, user) => {
         if (err) {
             res.status(500).send('An error occurred.');
             return;
         }
-        if (!users.length) {
+        if (!user) {
             res.status(400).send('Invalid list specified.');
             return;
         }
         const library = new Library();
         let list;
 
-        if (!users[0] || typeof (users[0].library) === 'undefined') {
+        if (!user || typeof (user.library) === 'undefined') {
             logWithRequest(req, `Undefined users[0] for library with list ID ${id}`);
             res.status(500).send('Unknown error.');
         }
 
-        library.load(users[0].library);
+        library.load(user.library);
         for (const i in library.lists) {
             if (library.lists[i].externalId && library.lists[i].externalId == id) {
                 library.defaultListId = library.lists[i].id;
@@ -135,7 +138,7 @@ router.get('/r/:id', (req, res) => {
             styles: shareStylesHtml,
         };
 
-        model = extend(model, templates);
+        model = Object.assign(model, templates);
         res.send(Mustache.render(shareTemplate, model));
     });
 });
@@ -148,13 +151,13 @@ router.get('/e/:id', (req, res) => {
         return;
     }
 
-    db.users.find({ 'library.lists.externalId': id }, (err, users) => {
+    db.users.findOne({ 'library.lists.externalId': id }, (err, user) => {
         if (err) {
             res.status(500).send('An error occurred.');
             return;
         }
 
-        if (!users.length) {
+        if (!user) {
             res.status(400).send('Invalid list specified.');
             return;
         }
@@ -162,12 +165,12 @@ router.get('/e/:id', (req, res) => {
         const library = new Library();
         let list;
 
-        if (!users[0] || typeof (users[0].library) === 'undefined') {
+        if (!user || typeof (user.library) === 'undefined') {
             logWithRequest(req, `Undefined users[0] for library with list ID ${id}`);
             res.status(500).send('Unknown error.');
         }
 
-        library.load(users[0].library);
+        library.load(user.library);
         for (const i in library.lists) {
             if (library.lists[i].externalId && library.lists[i].externalId == id) {
                 library.defaultListId = library.lists[i].id;
@@ -197,11 +200,11 @@ router.get('/e/:id', (req, res) => {
             renderedTotals,
             optionalFields: library.optionalFields,
             renderedDescription: markdown.toHTML(list.description),
-            baseUrl: config.get('deployUrl'),
+            baseUrl: getDeployUrl(),
             styles: shareStylesLinks,
             scripts: shareScriptsLinks,
         };
-        model = extend(model, templates);
+        model = Object.assign(model, templates);
         model.renderedTemplate = escape(Mustache.render(embedTemplate, model));
         res.send(Mustache.render(embedJTemplate, model));
     });
@@ -215,13 +218,13 @@ router.get('/csv/:id', (req, res) => {
         return;
     }
 
-    db.users.find({ 'library.lists.externalId': id }, (err, users) => {
+    db.users.findOne({ 'library.lists.externalId': id }, (err, user) => {
         if (err) {
             res.status(500).send('An error occurred.');
             return;
         }
 
-        if (!users.length) {
+        if (!user) {
             res.status(400).send('Invalid list specified.');
             return;
         }
@@ -229,12 +232,12 @@ router.get('/csv/:id', (req, res) => {
         const library = new Library();
         let list;
 
-        if (!users[0] || typeof (users[0].library) === 'undefined') {
+        if (!user || typeof (user.library) === 'undefined') {
             logWithRequest(req, `Undefined users[0] for library with list ID ${id}`);
             res.status(500).send('Unknown error.');
         }
 
-        library.load(users[0].library);
+        library.load(user.library);
         for (var i in library.lists) {
             if (library.lists[i].externalId && library.lists[i].externalId == id) {
                 library.defaultListId = library.lists[i].id;
@@ -268,14 +271,7 @@ router.get('/csv/:id', (req, res) => {
                         itemRow.push(categoryItem.worn ? 'Worn' : '');
                         itemRow.push(categoryItem.consumable ? 'Consumable' : '');
 
-                        for (const k in itemRow) {
-                            const field = itemRow[k];
-                            if (k > 0) out += ',';
-                            if (typeof (field) === 'string') {
-                                if (field.indexOf(',') > -1) out += `"${field.replace(/\"/g, '""')}"`;
-                                else out += field;
-                            } else out += field;
-                        }
+                        out += itemRow.map(escapeCsvField).join(',');
                         out += '\n';
                     }
                 }
@@ -350,10 +346,17 @@ const renderItem = function (item, args) {
     const unitSelect = renderUnitSelect(unit, args.unitSelectTemplate, item.weight);
 
     const starClass = item.star ? `lpStar${item.star}` : '';
-    const out = {
-        classes, unit, displayWeight, unitSelect, showImages: args.showImages, showPrices: args.showPrices, starClass, displayPrice, currencySymbol: args.currencySymbol,
-    };
-    Vue.util.extend(out, item);
+    const out = Object.assign({}, item, {
+        classes,
+        unit,
+        displayWeight,
+        unitSelect,
+        showImages: args.showImages,
+        showPrices: args.showPrices,
+        starClass,
+        displayPrice,
+        currencySymbol: args.currencySymbol,
+    });
 
     return Mustache.render(args.itemTemplate, out);
 };
@@ -363,15 +366,19 @@ const renderCategory = function (category, args) {
     for (const i in category.categoryItems) {
         const categoryItem = category.categoryItems[i];
         const item = category.library.getItemById(categoryItem.itemId);
-        extend(item, categoryItem);
-        items += renderItem(item, args);
+        Object.assign(item, categoryItem);
+        const rowClasses = [];
+        if (args.classes) rowClasses.push(args.classes);
+        if (parseFloat(categoryItem.qty) <= 0) rowClasses.push('lpQtyZero');
+        const renderArgs = Object.assign({}, args);
+        renderArgs.classes = rowClasses.join(' ').trim();
+        items += renderItem(item, renderArgs);
     }
 
     category.calculateSubtotal();
     category.subtotalWeightDisplay = weightUtils.MgToWeight(category.subtotalWeight, args.totalUnit);
     category.subtotalPriceDisplay = category.subtotalPrice ? category.subtotalPrice.toFixed(2) : '0.00';
-    let temp = Vue.util.extend({}, category);
-    temp = Vue.util.extend(temp, {
+    const temp = Object.assign({}, category, {
         items, subtotalUnit: args.totalUnit, currencySymbol: args.currencySymbol, showPrices: args.showPrices,
     });
 
@@ -390,8 +397,8 @@ const renderList = function (list, args) {
 };
 
 var renderLibrary = function (library, args) {
-    Vue.util.extend(args, { itemUnit: library.itemUnit, totalUnit: library.totalUnit });
-    return renderList(library.getListById(library.defaultListId), args);
+    const renderArgs = Object.assign({}, args, { itemUnit: library.itemUnit, totalUnit: library.totalUnit });
+    return renderList(library.getListById(library.defaultListId), renderArgs);
 };
 
 const renderListTotals = function (list, totalsTemplate, unitSelectTemplate, unit) {

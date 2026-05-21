@@ -1,1 +1,1 @@
-export const testRoot = 'http://localhost:8080/';
+export const testRoot = process.env.PLAYWRIGHT_TEST_ROOT || 'http://127.0.0.1:8180/';

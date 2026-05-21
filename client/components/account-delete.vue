@@ -32,6 +32,8 @@
 <script>
 import errors from './errors.vue';
 import modal from './modal.vue';
+import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
+import { fetchJson } from '../utils/utils';
 
 export default {
     name: 'Account',
@@ -53,10 +55,13 @@ export default {
             return this.confirmationText.toLocaleLowerCase() === 'delete my account';
         },
     },
-    beforeMount() {
-        bus.$on('showDeleteAccount', () => {
+    mounted() {
+        registerDialogOpener('deleteAccount', () => {
             this.shown = true;
         });
+    },
+    beforeUnmount() {
+        unregisterDialogOpener('deleteAccount');
     },
     methods: {
         deleteAccount() {

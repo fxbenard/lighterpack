@@ -1,0 +1,5 @@
+Item Name,Category,desc,qty,weight,unit,url,price,worn,consumable
+"Tente, ultra légère",Shelter,"Double paroi, 2 places",1,925,gram,https://example.com/tente?model=ul&color=bleu,299.95,,Consumable
+Backpack (Sac à dos),Backpack & containers,Simond MT900 UL,1,880,g,https://example.com/backpack,0,,
+Rain jacket,Clothing,Stored but not packed,0,210,g,https://example.com/rain-jacket,79.5,Worn,
+Fuel canister,Cooking,"100g fuel, threaded",2,110,g,https://example.com/fuel,6.5,,Consumable

@@ -10,13 +10,15 @@
 }
 
 .lpLibraryList {
-    border-top: 1px dotted #999;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #eef2e7;
     display: flex;
     list-style: none;
     margin: 0 10px;
     overflow-y: auto;
-    padding: 6px 0;
+    padding: 8px 10px;
     position: relative;
+    transition: background 0.1s ease, color 0.1s ease;
 
     &:first-child {
         border-top: none;
@@ -28,7 +30,8 @@
     }
 
     &.lpActive {
-        color: $yellow1;
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff6bf;
         font-weight: bold;
 
         .lpRemove {
@@ -52,6 +55,10 @@
         visibility: visible;
     }
 
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
     .lpListName {
         flex: 1 1 auto;
         overflow: hidden;
@@ -73,6 +80,7 @@
 .listContainerHeader {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 8px;
 }
 
 #addListFlyout {
@@ -92,19 +100,19 @@
         <div class="listContainerHeader">
             <h2>Lists</h2>
             <PopoverHover id="addListFlyout">
-                <span slot="target"><a class="lpAdd" @click="newList"><i class="lpSprite lpSpriteAdd" />Add new list</a></span>
-                <div slot="content">
+                <template #target><span><a class="lpAdd" @click="newList"><i class="lpSprite lpSpriteAdd" />Add new list</a></span></template>
+                <template #content><div>
                     <a class="lpAdd" @click="newList"><i class="lpSprite lpSpriteAdd" />Add new list</a>
                     <a class="lpAdd" @click="importCSV"><i class="lpSprite lpSpriteUpload" />Import CSV</a>
                     <a class="lpCopy" @click="copyList"><i class="lpSprite lpSpriteCopy" />Copy a list</a>
-                </div>
+                </div></template>
             </PopoverHover>
         </div>
-        <ul id="lists">
+        <ul id="lists" ref="lists">
             <li v-for="list in library.lists" :key="list.id" class="lpLibraryList" :class="{lpActive: (library.defaultListId == list.id)}">
                 <div class="lpHandle" title="Reorder this item" />
                 <span class="lpLibraryListSwitch lpListName" @click="setDefaultList(list)">
-                    {{ list | listName }}
+                    {{ listName(list) }}
                 </span>
                 <a class="lpRemove" title="Remove this list" @click="removeList(list)"><i class="lpSprite lpSpriteRemove" /></a>
             </li>
@@ -114,18 +122,15 @@
 
 <script>
 import PopoverHover from './popover-hover.vue';
-
-const dragula = require('dragula');
+import { openDialog } from '../services/dialogs';
+import { openSpeedbump } from '../services/speedbump';
+import { getElementIndex } from '../utils/utils';
+import { createDragDrop } from '../services/drag-drop';
 
 export default {
     name: 'LibraryList',
     components: {
         PopoverHover,
-    },
-    filters: {
-        listName(list) {
-            return list.name || 'New list';
-        },
     },
     props: ['list'],
     computed: {
@@ -133,25 +138,43 @@ export default {
             return this.$store.state.library;
         },
     },
+    data() {
+        return {
+            dragStartIndex: null,
+            drake: null,
+        };
+    },
     mounted() {
         this.handleListReorder();
+    },
+    beforeUnmount() {
+        if (this.drake) {
+            this.drake.destroy();
+            this.drake = null;
+        }
     },
     methods: {
         setDefaultList(list) {
             this.$store.commit('setDefaultList', list);
         },
+        listName(list) {
+            return list.name || 'New list';
+        },
         newList() {
             this.$store.commit('newList');
         },
         copyList() {
-            bus.$emit('copyList');
+            openDialog('copyList');
         },
         importCSV() {
-            bus.$emit('importCSV');
+            openDialog('importCSV');
         },
         handleListReorder() {
-            const $lists = document.getElementById('lists');
-            const drake = dragula([$lists], {
+            if (this.drake) {
+                this.drake.destroy();
+            }
+
+            const drake = createDragDrop([this.$refs.lists], {
                 moves($el, $source, $handle, $sibling) {
                     return $handle.classList.contains('lpHandle');
                 },
@@ -163,15 +186,16 @@ export default {
                 this.$store.commit('reorderList', { before: this.dragStartIndex, after: getElementIndex($el) });
                 drake.cancel(true);
             });
+            this.drake = drake;
         },
         removeList(list) {
-            const callback = function () {
+            const callback = () => {
                 this.$store.commit('removeList', list);
             };
             const speedbumpOptions = {
                 body: 'Are you sure you want to delete this list? This cannot be undone.',
             };
-            bus.$emit('initSpeedbump', callback, speedbumpOptions);
+            openSpeedbump(callback, speedbumpOptions);
         },
     },
 };

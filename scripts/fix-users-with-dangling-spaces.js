@@ -1,8 +1,7 @@
 const config = require('config');
-const mongojs = require('mongojs');
+const { withDb } = require('./_mongo');
 
-const collections = ['users', 'libraries'];
-const db = mongojs(config.get('databaseUrl'), collections);
+let db;
 
 if (config.get('mailgunAPIKey')) {
     var mailgun = require('mailgun-js')({ apiKey: config.get('mailgunAPIKey'), domain: config.get('mailgunDomain') });
@@ -15,8 +14,10 @@ const samePersonMessage = "Hello ${originalUsername},\n\nWhile performing some s
 const differentPersonMessage = "Hello ${originalUsername},\n\nWhile performing some system updates we noticed your username had some extra spaces at the beginning or end of it. Unfortunately, the username without spaces is taken by someone else, so your new username is ${newUsername}. \n\nIf you would like your username changed to something new please respond to this email and let me know your preferred new username. \n\nYou will have to reset your password to be able log in again, which can be done at https://lighterpack.com/forgot-password \n\nIf you have any isssues please reply to this email with details. \n\nThanks! \n\nThe LighterPack team";
 
 
-console.log('loading users....');
-getAllDanglingUsers()
+withDb(async (database) => {
+    db = database;
+    console.log('loading users....');
+    await getAllDanglingUsers()
     .then(determineFixabilities)
     .then(({ autoFixableUsers, samePersonUsers, differentPersonUsers }) => {
         console.log(`total # of dangling users: ${autoFixableUsers.length + samePersonUsers.length + differentPersonUsers.length}`);
@@ -26,7 +27,7 @@ getAllDanglingUsers()
 
         console.log ('---- starting fix ----');
 
-        fixUsers(autoFixableUsers, autoFixableMessage)
+        return fixUsers(autoFixableUsers, autoFixableMessage)
         .then(() => {
             return fixUsers(samePersonUsers, samePersonMessage);
         })
@@ -37,27 +38,33 @@ getAllDanglingUsers()
             console.log('---- done ----');
         });
     });
+}).catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 
 function getAllDanglingUsers(danglingUsers = [], prefixes = "0123456789abcdef".split("")) {
     return new Promise((resolve, reject) => {
         const prefix = prefixes.pop();
-        db.users.find({token: { '$regex' : '^' + prefix + '.*'} }, (err, users) => {
-            console.log('searching for users with dangling spaces...');
-            console.log(users.length);
-            for (const i in users) {
-                const user = users[i];
+        db.collection('users').find({token: { '$regex' : '^' + prefix + '.*'} }).toArray()
+            .then((users) => {
+                console.log('searching for users with dangling spaces...');
+                console.log(users.length);
+                for (const i in users) {
+                    const user = users[i];
 
-                if (user.username !== user.username.trim() && user.username.trim() !== '') {
-                    danglingUsers.push(user);
+                    if (user.username !== user.username.trim() && user.username.trim() !== '') {
+                        danglingUsers.push(user);
+                    }
                 }
-            }
-            if (!prefixes.length) {
-                resolve(danglingUsers);
-                return;
-            }
-            resolve(getAllDanglingUsers(danglingUsers, prefixes));
+                if (!prefixes.length) {
+                    resolve(danglingUsers);
+                    return;
+                }
+                resolve(getAllDanglingUsers(danglingUsers, prefixes));
             
-        });
+            })
+            .catch(reject);
     });
 }
 
@@ -87,18 +94,20 @@ function determineFixabilities(danglingUsers, differentPersonUsers = [], samePer
 
 function determineUserFixability(danglingUser) {
     return new Promise((resolve, reject) => {
-        db.users.find({ username: danglingUser.username.trim() }, (err, trimmedUsers) => {
-            if (trimmedUsers.length > 0) {
-                trimmedUser = trimmedUsers[0];
-                if (trimmedUser.email === danglingUser.email) {
-                    resolve('samePersonUsers');
+        db.collection('users').find({ username: danglingUser.username.trim() }).toArray()
+            .then((trimmedUsers) => {
+                if (trimmedUsers.length > 0) {
+                    trimmedUser = trimmedUsers[0];
+                    if (trimmedUser.email === danglingUser.email) {
+                        resolve('samePersonUsers');
+                        return;
+                    }
+                    resolve('differentPersonUsers');
                     return;
                 }
-                resolve('differentPersonUsers');
-                return;
-            }
-            resolve('auto');
-        });
+                resolve('auto');
+            })
+            .catch(reject);
     });
 }
 
@@ -164,8 +173,11 @@ function messageUser(user, originalUsername, messageTemplate) {
 function renameUser(user, newUsername) {
     return new Promise((resolve, reject) => {
         user.username = newUsername;
-        db.users.save(user);
-        resolve();
+        db.collection('users').replaceOne({ _id: user._id }, user)
+            .then(() => {
+                resolve();
+            })
+            .catch(reject);
     });
 }
 
@@ -177,17 +189,15 @@ function findNewUsername(trimmedUsername, suffix = 0) {
         } else {
             newUsername = trimmedUsername + String(suffix);
         }
-        db.users.find({ username: newUsername }, (err, existingUsers) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            if (existingUsers.length) {
-                resolve(findNewUsername(trimmedUsername, suffix + 1));
-                return;
-            }
+        db.collection('users').find({ username: newUsername }).toArray()
+            .then((existingUsers) => {
+                if (existingUsers.length) {
+                    resolve(findNewUsername(trimmedUsername, suffix + 1));
+                    return;
+                }
 
-            resolve(newUsername);
-        });
+                resolve(newUsername);
+            })
+            .catch(reject);
     });
 }

@@ -22,6 +22,7 @@
 
 <script>
 import modal from './modal.vue';
+import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
 
 export default {
     name: 'CopyList',
@@ -39,10 +40,13 @@ export default {
             return this.$store.state.library;
         },
     },
-    beforeMount() {
-        bus.$on('copyList', () => {
+    mounted() {
+        registerDialogOpener('copyList', () => {
             this.shown = true;
         });
+    },
+    beforeUnmount() {
+        unregisterDialogOpener('copyList');
     },
     methods: {
         copyList() {

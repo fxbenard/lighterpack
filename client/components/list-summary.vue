@@ -11,7 +11,7 @@
 <template>
     <div class="lpListSummary">
         <div class="lpChartContainer">
-            <canvas class="lpChart" height="260" width="260" />
+            <canvas ref="chartCanvas" class="lpChart" height="260" width="260" />
         </div>
         <div class="lpTotalsContainer">
             <ul class="lpTotals lpTable lpDataTable">
@@ -35,10 +35,10 @@
                         {{ category.name }}
                     </span>
                     <span v-if="library.optionalFields['price']" class="lpCell lpNumber">
-                        {{ category.subtotalPrice | displayPrice(library.currencySymbol) }}
+                        {{ displayPrice(category.subtotalPrice, library.currencySymbol) }}
                     </span>
                     <span class="lpCell lpNumber">
-                        <span class="lpDisplaySubtotal" :mg="category.subtotalWeight">{{ category.subtotalWeight | displayWeight(library.totalUnit) }}</span> <span class="lpSubtotalUnit">{{ library.totalUnit }}</span>
+                        <span class="lpDisplaySubtotal" :mg="category.subtotalWeight">{{ displayWeight(category.subtotalWeight, library.totalUnit) }}</span> <span class="lpSubtotalUnit">{{ library.totalUnit }}</span>
                     </span>
                 </li>
                 <li class="lpRow lpFooter lpTotal">
@@ -47,13 +47,13 @@
                         Total
                     </span>
                     <span v-if="library.optionalFields['price']" class="lpCell lpNumber lpSubtotal" :title="list.totalQty +' items'">
-                        {{ list.totalPrice | displayPrice(library.currencySymbol) }}
+                        {{ displayPrice(list.totalPrice, library.currencySymbol) }}
                     </span>
                     <span class="lpCell lpNumber lpSubtotal">
                         <span class="lpTotalValue" :title="list.totalQty + ' items'">
-                            {{ list.totalWeight | displayWeight(library.totalUnit) }}
+                            {{ displayWeight(list.totalWeight, library.totalUnit) }}
                         </span>
-                        <span class="lpTotalUnit"><unitSelect :unit="library.totalUnit" :on-change="setTotalUnit" /></span>
+                        <span class="lpTotalUnit"><unitSelect :unit="library.totalUnit" @change="setTotalUnit" /></span>
                     </span>
                 </li>
                 <li v-if="list.totalConsumableWeight" data-weight-type="consumable" class="lpRow lpFooter lpBreakdown lpConsumableWeight">
@@ -62,10 +62,10 @@
                         Consumable
                     </span>
                     <span v-if="library.optionalFields['price']" class="lpCell lpNumber lpSubtotal">
-                        {{ list.totalConsumablePrice | displayPrice(library.currencySymbol) }}
+                        {{ displayPrice(list.totalConsumablePrice, library.currencySymbol) }}
                     </span>
                     <span class="lpCell lpNumber lpSubtotal">
-                        <span class="lpDisplaySubtotal" :mg="list.totalConsumableWeight">{{ list.totalConsumableWeight | displayWeight(library.totalUnit) }}</span>
+                        <span class="lpDisplaySubtotal" :mg="list.totalConsumableWeight">{{ displayWeight(list.totalConsumableWeight, library.totalUnit) }}</span>
                         <span class="lpSubtotalUnit">{{ library.totalUnit }}</span>
                     </span>
                 </li>
@@ -76,19 +76,19 @@
                     </span>
                     <span v-if="library.optionalFields['price']" class="lpCell lpNumber" />
                     <span class="lpCell lpNumber lpSubtotal">
-                        <span class="lpDisplaySubtotal" :mg="list.totalWornWeight">{{ list.totalWornWeight | displayWeight(library.totalUnit) }}</span>
+                        <span class="lpDisplaySubtotal" :mg="list.totalWornWeight">{{ displayWeight(list.totalWornWeight, library.totalUnit) }}</span>
                         <span class="lpSubtotalUnit">{{ library.totalUnit }}</span>
                     </span>
                 </li>
                 <li v-if="list.totalWornWeight || list.totalConsumableWeight" data-weight-type="base" class="lpRow lpFooter lpBreakdown lpBaseWeight">
                     <span class="lpCell" />
-                    <span class="lpCell lpSubtotal" :title="$options.filters.displayWeight(list.totalPackWeight, library.totalUnit) + ' ' + library.totalUnit + ' pack weight (consumable + base weight)'">
+                    <span class="lpCell lpSubtotal" :title="displayWeight(list.totalPackWeight, library.totalUnit) + ' ' + library.totalUnit + ' pack weight (consumable + base weight)'">
                         Base Weight
                     </span>
                     <span v-if="library.optionalFields['price']" class="lpCell lpNumber" />
                     <span class="lpCell lpNumber lpSubtotal">
-                        <span class="lpDisplaySubtotal" :mg="list.totalBaseWeight" :title="$options.filters.displayWeight(list.totalPackWeight, library.totalUnit) + ' ' + library.totalUnit + ' pack weight (consumable + base weight)'">
-                            {{ list.totalBaseWeight | displayWeight(library.totalUnit) }}
+                        <span class="lpDisplaySubtotal" :mg="list.totalBaseWeight" :title="displayWeight(list.totalPackWeight, library.totalUnit) + ' ' + library.totalUnit + ' pack weight (consumable + base weight)'">
+                            {{ displayWeight(list.totalBaseWeight, library.totalUnit) }}
                         </span>
                         <span class="lpSubtotalUnit">{{ library.totalUnit }}</span>
                     </span>
@@ -101,8 +101,7 @@
 <script>
 import colorPicker from './colorpicker.vue';
 import unitSelect from './unit-select.vue';
-
-const pies = require('../pies.js');
+import { renderListChart } from '../services/list-chart';
 const utilsMixin = require('../mixins/utils-mixin.js');
 const colorUtils = require('../utils/color.js');
 
@@ -140,16 +139,23 @@ export default {
     mounted() {
         this.updateChart();
     },
+    beforeUnmount() {
+        if (this.chart && typeof this.chart.destroy === 'function') {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    },
     methods: {
         updateChart(type) {
             const chartData = this.library.renderChart(type);
 
             if (chartData) {
-                if (this.chart) {
-                    this.chart.update({ processedData: chartData });
-                } else {
-                    this.chart = pies({ processedData: chartData, container: document.getElementsByClassName('lpChart')[0], hoverCallback: this.chartHover });
-                }
+                this.chart = renderListChart({
+                    chart: this.chart,
+                    canvas: this.$refs.chartCanvas,
+                    processedData: chartData,
+                    hoverCallback: this.chartHover,
+                });
             }
             return chartData;
         },

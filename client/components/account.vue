@@ -35,6 +35,8 @@
 import errors from './errors.vue';
 import modal from './modal.vue';
 import spinner from './spinner.vue';
+import { openDialog, registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
+import { fetchJson } from '../utils/utils';
 
 export default {
     name: 'Account',
@@ -62,10 +64,13 @@ export default {
             return this.$store.state.loggedIn;
         },
     },
-    beforeMount() {
-        bus.$on('showAccount', () => {
+    mounted() {
+        registerDialogOpener('account', () => {
             this.shown = true;
         });
+    },
+    beforeUnmount() {
+        unregisterDialogOpener('account');
     },
     methods: {
         updateAccount() {
@@ -124,7 +129,7 @@ export default {
         },
         showDeleteAccount() {
             this.shown = false;
-            bus.$emit('showDeleteAccount');
+            openDialog('deleteAccount');
         },
     },
 };

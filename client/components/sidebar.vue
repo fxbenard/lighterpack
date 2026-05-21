@@ -6,8 +6,8 @@ $sidebarOverflow: 1000px;
 $sidebarPadding: 20px;
 
 #sidebar {
-    background: #555;
-    box-shadow: -7px 0 7px rgba(0, 0, 0, 0.2) inset;
+    background: #474c45;
+    box-shadow: -7px 0 7px rgba(0, 0, 0, 0.18) inset;
     color: #fff;
     height: 100%;
     margin-left: -$sidebarOverflow;
@@ -26,13 +26,14 @@ $sidebarPadding: 20px;
     h1 {
         @include fullBleedLeft();
 
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         height: 60px;
         margin: 0 -20px 20px 0;
         padding: 20px 0 20px;
         position: relative;
 
         span {
-            color: #aaa;
+            color: #bfc4bb;
         }
     }
 
@@ -42,19 +43,22 @@ $sidebarPadding: 20px;
     }
 
     h2 {
+        color: #eef2e7;
         font-size: 16px;
         margin: 0 0 10px;
     }
 
     ul {
-        background: #606060;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
         margin: 0;
         overflow-x: hidden;
         padding: 0;
     }
 
     .lpHref {
-        color: $blue2;
+        color: #9bd1ff;
     }
 }
 

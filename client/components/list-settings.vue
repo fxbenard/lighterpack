@@ -36,12 +36,12 @@
 <template>
     <span v-if="isSignedIn" id="settings" class="headerItem hasPopover">
         <PopoverHover>
-            <span slot="target"><i class="lpSprite lpSettings" /> Settings</span>
-            <div slot="content">
+            <template #target><span><i class="lpSprite lpSettings" /> Settings</span></template>
+            <template #content><div>
                 <ul id="lpOptionalFields">
                     <li v-for="optionalField in optionalFieldsLookup" :key="optionalField.name" class="lpOptionalField">
                         <label>
-                            <input v-model="optionalField.value" type="checkbox" @change="toggleOptionalField($event, optionalField.name)">
+                            <input :checked="optionalField.value" type="checkbox" @change="toggleOptionalField(optionalField.name)">
                             {{ optionalField.displayName }}
                         </label>
                     </li>
@@ -53,7 +53,7 @@
                         <input id="currencySymbol" type="text" maxlength="4" :value="library.currencySymbol" @input="updateCurrencySymbol($event)">
                     </label>
                 </div>
-            </div>
+            </div></template>
         </PopoverHover>
     </span>
 </template>
@@ -66,36 +66,6 @@ export default {
     components: {
         PopoverHover,
     },
-    data() {
-        return {
-            optionalFieldsLookup: [{
-                name: 'images',
-                displayName: 'Item images',
-                cssClass: 'lpShowImages',
-                value: false,
-            }, {
-                name: 'price',
-                displayName: 'Item prices',
-                cssClass: 'lpShowPrices',
-                value: false,
-            }, {
-                name: 'worn',
-                displayName: 'Worn items',
-                cssClass: 'lpShowWorn',
-                value: false,
-            }, {
-                name: 'consumable',
-                displayName: 'Consumable items',
-                cssClass: 'lpShowConsumable',
-                value: false,
-            }, {
-                name: 'listDescription',
-                displayName: 'List descriptions',
-                cssClass: 'lpShowListDescription',
-                value: false,
-            }],
-        };
-    },
     computed: {
         library() {
             return this.$store.state.library;
@@ -103,30 +73,39 @@ export default {
         isSignedIn() {
             return this.$store.state.loggedIn;
         },
-    },
-    beforeMount() {
-        this.updateOptionalFieldValues();
-    },
-    mounted() {
-        bus.$on('optionalFieldChanged', () => {
-            this.updateOptionalFieldValues();
-        });
+        optionalFieldsLookup() {
+            return [{
+                name: 'images',
+                displayName: 'Item images',
+                cssClass: 'lpShowImages',
+            }, {
+                name: 'price',
+                displayName: 'Item prices',
+                cssClass: 'lpShowPrices',
+            }, {
+                name: 'worn',
+                displayName: 'Worn items',
+                cssClass: 'lpShowWorn',
+            }, {
+                name: 'consumable',
+                displayName: 'Consumable items',
+                cssClass: 'lpShowConsumable',
+            }, {
+                name: 'listDescription',
+                displayName: 'List descriptions',
+                cssClass: 'lpShowListDescription',
+            }].map((optionalField) => ({
+                ...optionalField,
+                value: this.library.optionalFields[optionalField.name],
+            }));
+        },
     },
     methods: {
-        toggleOptionalField(evt, optionalField) {
+        toggleOptionalField(optionalField) {
             this.$store.commit('toggleOptionalField', optionalField);
         },
         updateCurrencySymbol(evt) {
             this.$store.commit('updateCurrencySymbol', evt.target.value);
-        },
-        updateOptionalFieldValues() {
-            let i;
-            let fieldLookup;
-
-            for (i = 0; i < this.optionalFieldsLookup.length; i++) {
-                fieldLookup = this.optionalFieldsLookup[i];
-                fieldLookup.value = this.library.optionalFields[fieldLookup.name];
-            }
         },
     },
 };

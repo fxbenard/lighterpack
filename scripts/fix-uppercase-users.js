@@ -1,12 +1,10 @@
-const config = require('config');
-const mongojs = require('mongojs');
+const { withDb } = require('./_mongo');
 
-const collections = ['users', 'libraries'];
-
-const db = mongojs(config.get('databaseUrl'), collections);
-
-console.log('loading users....');
-db.users.find({username: { '$regex' : '[A-Z]'} }, (err, users) => {
+withDb(async (db) => {
+    console.log('loading users....');
+    const users = await db.collection('users')
+        .find({username: { '$regex' : '[A-Z]'} })
+        .toArray();
     if (!users.length) {
         console.log('no users found');
         return;
@@ -17,7 +15,10 @@ db.users.find({username: { '$regex' : '[A-Z]'} }, (err, users) => {
         var user = users[i];
         console.log(user.username);
         user.username = user.username.toLowerCase();
-        db.users.save(user);
+        await db.collection('users').replaceOne({ _id: user._id }, user);
     }
     console.log('complete');
+}).catch((err) => {
+    console.error(err);
+    process.exit(1);
 });

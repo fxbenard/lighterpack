@@ -1,59 +1,59 @@
-import Vue from 'vue';
-import uniqueId from 'lodash/uniqueId';
+import { addWindowListener, removeWindowListener } from '../services/window-events';
 
-import store from '../store/store.js';
+function addElementListener(el, key, eventName, handler) {
+    el[key] = handler;
+    el.addEventListener(eventName, handler);
+}
 
-Vue.directive('select-on-focus', {
-    inserted(el) {
-        el.addEventListener('focus', (evt) => {
+function removeElementListener(el, key, eventName) {
+    if (el[key]) {
+        el.removeEventListener(eventName, el[key]);
+        delete el[key];
+    }
+}
+
+const directives = {
+    'select-on-focus': {
+    mounted(el) {
+        addElementListener(el, '__lpSelectOnFocus', 'focus', () => {
             el.select();
         });
     },
-});
-
-Vue.directive('focus-on-create', {
-    inserted(el, binding) {
-        if (binding.expression && binding.value || !binding.expression) {
+    beforeUnmount(el) {
+        removeElementListener(el, '__lpSelectOnFocus', 'focus');
+    },
+    },
+    'focus-on-create': {
+    mounted(el, binding) {
+        if (typeof binding.value === 'undefined' || binding.value) {
             el.focus();
         }
     },
-});
-
-Vue.directive('focus-on-bus', {
-    inserted(el, binding) {
-        bus.$on(binding.value, () => {
-            el.focus();
-        });
+    beforeUnmount() {
     },
-});
-
-Vue.directive('select-on-bus', {
-    inserted(el, binding) {
-        bus.$on(binding.value, () => {
-            el.select();
-        });
     },
-});
-
-Vue.directive('empty-if-zero', {
-    inserted(el) {
-        el.addEventListener('focus', (evt) => {
+    'empty-if-zero': {
+    mounted(el) {
+        addElementListener(el, '__lpEmptyIfZeroFocus', 'focus', () => {
             if (el.value === '0' || el.value === '0.00') {
                 el.dataset.originalValue = el.value;
                 el.value = '';
             }
         });
 
-        el.addEventListener('blur', (evt) => {
+        addElementListener(el, '__lpEmptyIfZeroBlur', 'blur', () => {
             if (el.value === '') {
                 el.value = el.dataset.originalValue || '0';
             }
         });
     },
-});
-
-Vue.directive('click-outside', {
-    inserted(el, binding) {
+    beforeUnmount(el) {
+        removeElementListener(el, '__lpEmptyIfZeroFocus', 'focus');
+        removeElementListener(el, '__lpEmptyIfZeroBlur', 'blur');
+    },
+    },
+    'click-outside': {
+    mounted(el, binding) {
         const handler = (evt) => {
             if (el.contains(evt.target)) {
                 return;
@@ -63,16 +63,22 @@ Vue.directive('click-outside', {
             }
         };
 
-        window.addEventListener('click', handler);
+        addWindowListener('click', handler);
+        el.__lpClickOutside = handler;
+    },
+    beforeUnmount(el) {
+        if (el.__lpClickOutside) {
+            removeWindowListener('click', el.__lpClickOutside);
+            delete el.__lpClickOutside;
+        }
+    },
+    },
+};
 
-        // Store handler to clean up later
-        el.dataset.clickoutside = uniqueId();
-        store.commit('addDirectiveInstance', { key: el.dataset.clickoutside, value: handler });
-    },
-    unbind(el) {
-        // clean up event handlers
-        const handler = store.state.directiveInstances[el.dataset.clickoutside];
-        store.commit('removeDirectiveInstance', el.dataset.clickoutside);
-        window.removeEventListener('click', handler);
-    },
-});
+export function registerFocusDirectives(app) {
+    Object.entries(directives).forEach(([name, directive]) => {
+        app.directive(name, directive);
+    });
+}
+
+export default registerFocusDirectives;

@@ -29,9 +29,12 @@
 }
 
 .lpCategory {
-    border: 2px solid transparent;
+    background: rgba(255, 255, 255, 0.58);
+    border: 1px solid #d9ddd3;
+    border-radius: 6px;
     list-style: none;
     margin: 0 0 20px;
+    overflow: hidden;
 
     &.dropAccept {
         background: $yellow2;
@@ -89,14 +92,35 @@ input.lpCategoryName { /* specificity */
 .lpItemsHeader,
 .lpItemsFooter {
     align-items: center;
-    border-top: 1px dotted #aaa;
+    border-top: 1px solid #d7dbd1;
     display: flex;
     flex-direction: row;
     justify-content: stretch;
+    min-height: 40px;
+    padding: 0 10px;
 
     &.gu-mirror {
         background: #f7f7f7;
         border: 1px solid #999;
+    }
+
+    &.lpQtyZero {
+        background: #f3f1ea;
+        color: #6e7168;
+
+        .lpName,
+        .lpDescription,
+        .lpWeightCell,
+        .lpQtyCell,
+        .lpPriceCell,
+        .lpUnitSelect,
+        .lpHref {
+            color: inherit;
+        }
+
+        .lpActionsCell {
+            opacity: 0.8;
+        }
     }
 
     .lpHandleCell {
@@ -172,14 +196,17 @@ input.lpCategoryName { /* specificity */
 }
 
 .lpItemsHeader {
-    align-items: flex-end;
-    border-bottom: 1px solid #aaa;
+    align-items: center;
+    background: #edf1e8;
+    border-bottom: 1px solid #9aa191;
     border-top: none;
-    height: 31px;
+    color: #41473f;
+    min-height: 38px;
 }
 
 .lpItemsFooter {
-    border-top-style: solid;
+    background: #f6f7f2;
+    border-top: 1px solid #c4cabe;
     justify-content: flex-end;
 }
 
@@ -191,11 +218,13 @@ input.lpCategoryName { /* specificity */
     .lpStar {
         cursor: pointer;
         margin-right: 8px;
-        opacity: 0.5;
+        opacity: 0.28;
+        transition: opacity $transitionDurationFast ease, transform $transitionDurationFast ease;
         visibility: hidden;
 
         &:hover {
             opacity: 1;
+            transform: translateY(-1px);
         }
 
         &.lpActive,
@@ -207,6 +236,17 @@ input.lpCategoryName { /* specificity */
         }
     }
 
+    .lpLink.lpActive,
+    .lpWorn.lpActive,
+    .lpConsumable.lpActive,
+    .lpCamera.lpActive,
+    .lpStar.lpStar1,
+    .lpStar.lpStar2,
+    .lpStar.lpStar3 {
+        opacity: 0.95;
+        visibility: visible;
+    }
+
     i:last-child {
         margin-right: 0;
     }
@@ -216,6 +256,24 @@ input.lpCategoryName { /* specificity */
     .lpWeightCell,
     .lpQtyCell,
     .lpPriceCell {
+        color: #52584d;
+        font-size: 12px;
+        font-weight: 700;
         text-align: center;
     }
+}
+
+.lpCategoryName,
+.lpItemsFooter .lpSubtotal {
+    color: #2f352d;
+}
+
+.lpItem {
+    transition: background $transitionDurationFast ease, color $transitionDurationFast ease;
+}
+
+.lpItem .lpPrice,
+.lpItem .lpWeight,
+.lpItem .lpQty {
+    color: #383d36;
 }

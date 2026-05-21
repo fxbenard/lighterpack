@@ -7,18 +7,19 @@
 <template>
     <span class="headerItem hasPopover">
         <PopoverHover id="headerPopover">
-            <span slot="target">Signed in as <span class="username">{{ username }}</span> <i class="lpSprite lpExpand" /></span>
-            <div slot="content">
+            <template #target><span>Signed in as <span class="username">{{ username }}</span> <i class="lpSprite lpExpand" /></span></template>
+            <template #content><div>
                 <a class="lpHref accountSettings" @click="showAccount">Account Settings</a><br>
                 <a class="lpHref" @click="showHelp">Help</a><br>
                 <a class="lpHref signout" @click="signout">Sign Out</a>
-            </div>
+            </div></template>
         </PopoverHover>
     </span>
 </template>
 
 <script>
 import PopoverHover from './popover-hover.vue';
+import { openDialog } from '../services/dialogs';
 
 export default {
     name: 'AccountDropdown',
@@ -35,14 +36,14 @@ export default {
     },
     methods: {
         showAccount() {
-            bus.$emit('showAccount');
+            openDialog('account');
         },
         showHelp() {
-            bus.$emit('showHelp');
+            openDialog('help');
         },
         signout() {
             this.$store.commit('signout');
-            router.push('/signin');
+            this.$router.push('/signin');
         },
     },
 };

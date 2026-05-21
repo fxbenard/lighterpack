@@ -6,6 +6,8 @@ class lpError extends Error {
 
         this.message = 'An error occurred, please try again later.';
         this.statusCode = statusCode;
+        this.status = statusCode;
+        this.isUnauthorized = statusCode === 401 || statusCode === 403;
         this.errors = null;
         this.id = null;
         this.metadata = null;
@@ -22,7 +24,7 @@ class lpError extends Error {
     }
 }
 
-window.fetchJson = (url, options) => {
+export function fetchJson(url, options) {
     const fetchOptions = {
         method: 'GET',
         headers: {}
@@ -67,8 +69,8 @@ window.fetchJson = (url, options) => {
                     return resolve(response.json);
                 }
                 if (response.status && (response.status === 401 || response.status === 403)) {
-                    bus.$emit('unauthorized');
-                    return;
+                    const error = new lpError(response.json || response, response.status);
+                    return reject(error);
                 }
 
                 if (response.json) {
@@ -85,40 +87,20 @@ window.fetchJson = (url, options) => {
                 return reject(new lpError(err));
             });
     });
-};
+}
 
-window.readCookie = function (name) {
-    const nameEQ = `${name}=`;
-    const ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-};
-
-window.createCookie = function (name, value, days) {
-    if (days) {
-        const date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        var expires = `; expires=${date.toGMTString()}`;
-    } else var expires = '';
-    document.cookie = `${name}=${value}${expires}; path=/`;
-};
-
-window.getElementIndex = function (node) {
+export function getElementIndex(node) {
     let index = 0;
     while ((node = node.previousElementSibling)) {
         index++;
     }
     return index;
-};
+}
 
-window.arrayMove = function (inputArray, oldIndex, newIndex) {
+export function arrayMove(inputArray, oldIndex, newIndex) {
     const array = inputArray.slice();
     const element = array[oldIndex];
     array.splice(oldIndex, 1);
     array.splice(newIndex, 0, element);
     return array;
-};
+}

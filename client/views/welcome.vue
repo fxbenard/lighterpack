@@ -155,6 +155,7 @@ import globalAlerts from '../components/global-alerts.vue';
 import modal from '../components/modal.vue';
 import registerForm from '../components/register-form.vue';
 import SigninForm from '../components/signin-form.vue';
+import { push } from '../services/navigation';
 
 export default {
     name: 'Welcome',
@@ -165,9 +166,9 @@ export default {
         registerForm,
         SigninForm,
     },
-    beforeMount() {
+    created() {
         if (this.$store.state.library) {
-            router.push('/');
+            push('/');
         }
     },
 };

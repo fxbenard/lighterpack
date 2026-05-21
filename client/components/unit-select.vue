@@ -73,14 +73,14 @@
 <template>
     <div class="lpUnitSelect" :class="{lpOpen: isOpen, lpHover: isFocused}" @click="toggle($event)">
         <select class="lpUnit lpInvisible" :value="unit" @keyup="keyup($event)" @focus="focusSelect" @blur="blurSelect">
-            <option v-for="unit in units" :value="unit">
+            <option v-for="unit in units" :key="unit" :value="unit">
                 {{ unit }}
             </option>
         </select>
         <span class="lpDisplay">{{ unit }}</span>
         <i class="lpSprite lpExpand" />
         <ul :class="'lpUnitDropdown ' + unit">
-            <li v-for="unit in units" :class="unit" @click="select(unit)">
+            <li v-for="unit in units" :key="unit" :class="unit" @click="select(unit)">
                 {{ unit }}
             </li>
         </ul>
@@ -88,9 +88,12 @@
 </template>
 
 <script>
+import { bindWindowListeners, unbindWindowListeners } from '../services/window-events';
+
 export default {
     name: 'UnitSelect',
-    props: ['weight', 'unit', 'onChange'],
+    emits: ['change'],
+    props: ['weight', 'unit'],
     data() {
         return {
             units: [
@@ -101,7 +104,17 @@ export default {
             ],
             isOpen: false,
             isFocused: false,
+            closeBindings: [],
         };
+    },
+    created() {
+        this.closeBindings = [
+            { eventName: 'keyup', handler: this.closeOnEscape },
+            { eventName: 'click', handler: this.closeOnClick },
+        ];
+    },
+    beforeUnmount() {
+        this.unbindCloseListeners();
     },
     methods: {
         toggle(evt) {
@@ -121,22 +134,16 @@ export default {
             this.unbindCloseListeners();
         },
         select(unit) {
-            if (typeof this.onChange === 'function') {
-                this.onChange(unit);
-            }
+            this.$emit('change', unit);
         },
         keyup(evt) {
-            if (typeof this.onChange === 'function') {
-                this.onChange(evt.target.value);
-            }
+            this.$emit('change', evt.target.value);
         },
         bindCloseListeners() {
-            window.addEventListener('keyup', this.closeOnEscape);
-            window.addEventListener('click', this.closeOnClick);
+            bindWindowListeners(this.closeBindings);
         },
         unbindCloseListeners() {
-            window.removeEventListener('keyup', this.closeOnEscape);
-            window.removeEventListener('click', this.closeOnClick);
+            unbindWindowListeners(this.closeBindings);
         },
         closeOnEscape(evt) {
             if (evt.keyCode === 27) {

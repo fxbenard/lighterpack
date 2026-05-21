@@ -15,6 +15,7 @@
 
 <script>
 import modal from './modal.vue';
+import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
 
 export default {
     name: 'ItemLink',
@@ -28,12 +29,15 @@ export default {
             shown: false,
         };
     },
-    beforeMount() {
-        bus.$on('updateItemLink', (item) => {
+    mounted() {
+        registerDialogOpener('itemLink', (item) => {
             this.shown = true;
             this.item = item;
             this.url = item.url;
         });
+    },
+    beforeUnmount() {
+        unregisterDialogOpener('itemLink');
     },
     methods: {
         addLink() {

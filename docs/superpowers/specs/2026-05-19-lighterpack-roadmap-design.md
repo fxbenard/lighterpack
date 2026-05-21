@@ -104,6 +104,7 @@ During this roadmap:
 - Avoid adding new Vue 2-specific patterns where possible.
 - Document fragile components and store interactions.
 - Increase e2e coverage before any future framework migration.
+- Phase 5 implementation plan: `docs/superpowers/plans/2026-05-20-phase-5-vue3-readiness.md`.
 
 ### MongoDB To PostgreSQL JSONB
 

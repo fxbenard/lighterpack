@@ -1,13 +1,4 @@
-import Vue from 'vue';
 import { addWindowListener, removeWindowListener } from '../services/window-events';
-
-function bindDirective(directive) {
-    return {
-        inserted: directive.mounted,
-        unbind: directive.beforeUnmount,
-        ...directive,
-    };
-}
 
 function addElementListener(el, key, eventName, handler) {
     el[key] = handler;
@@ -21,7 +12,8 @@ function removeElementListener(el, key, eventName) {
     }
 }
 
-Vue.directive('select-on-focus', bindDirective({
+const directives = {
+    'select-on-focus': {
     mounted(el) {
         addElementListener(el, '__lpSelectOnFocus', 'focus', () => {
             el.select();
@@ -30,19 +22,17 @@ Vue.directive('select-on-focus', bindDirective({
     beforeUnmount(el) {
         removeElementListener(el, '__lpSelectOnFocus', 'focus');
     },
-}));
-
-Vue.directive('focus-on-create', bindDirective({
+    },
+    'focus-on-create': {
     mounted(el, binding) {
-        if (binding.expression && binding.value || !binding.expression) {
+        if (typeof binding.value === 'undefined' || binding.value) {
             el.focus();
         }
     },
     beforeUnmount() {
     },
-}));
-
-Vue.directive('empty-if-zero', bindDirective({
+    },
+    'empty-if-zero': {
     mounted(el) {
         addElementListener(el, '__lpEmptyIfZeroFocus', 'focus', () => {
             if (el.value === '0' || el.value === '0.00') {
@@ -61,9 +51,8 @@ Vue.directive('empty-if-zero', bindDirective({
         removeElementListener(el, '__lpEmptyIfZeroFocus', 'focus');
         removeElementListener(el, '__lpEmptyIfZeroBlur', 'blur');
     },
-}));
-
-Vue.directive('click-outside', bindDirective({
+    },
+    'click-outside': {
     mounted(el, binding) {
         const handler = (evt) => {
             if (el.contains(evt.target)) {
@@ -83,4 +72,13 @@ Vue.directive('click-outside', bindDirective({
             delete el.__lpClickOutside;
         }
     },
-}));
+    },
+};
+
+export function registerFocusDirectives(app) {
+    Object.entries(directives).forEach(([name, directive]) => {
+        app.directive(name, directive);
+    });
+}
+
+export default registerFocusDirectives;

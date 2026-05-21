@@ -133,7 +133,7 @@ export default {
         this.handleCategoryReorder();
         this.handleItemReorder();
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.itemDrake) {
             this.itemDrake.destroy();
             this.itemDrake = null;

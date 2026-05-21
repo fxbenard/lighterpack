@@ -7,8 +7,8 @@
 <template>
     <span v-if="isSignedIn" class="headerItem hasPopover">
         <PopoverHover id="share" @shown="focusShare">
-            <span slot="target"><i class="lpSprite lpLink" /> Share</span>
-            <div slot="content" class="lpFields">
+            <template #target><span><i class="lpSprite lpLink" /> Share</span></template>
+            <template #content><div class="lpFields">
                 <div class="lpField">
                     <label for="shareUrl">Share your list</label>
                     <input id="shareUrl" ref="shareUrlInput" v-select-on-focus type="text" :value="shareUrl">
@@ -18,7 +18,7 @@
                     <textarea id="embedUrl" v-select-on-focus>&lt;script src="{{ this.baseUrl }}/e/{{ this.externalId }}"&gt;&lt;/script&gt;&lt;div id="{{ this.externalId }}"&gt;&lt;/div&gt;</textarea>
                 </div>
                 <a id="csvUrl" :href="csvUrl" target="_blank" class="lpHref"><i class="lpSprite lpSpriteDownload" />Export to CSV</a>
-            </div>
+            </div></template>
         </PopoverHover>
     </span>
 </template>

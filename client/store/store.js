@@ -1,5 +1,4 @@
-import Vuex from 'vuex';
-import Vue from 'vue';
+import { createStore } from 'vuex';
 import debounce from 'lodash/debounce';
 import { notifyGlobalAlert, notifyUnauthorized } from '../services/app-events';
 import { clearCookie, getLocalLibrary, hasLocalLibrary, readCookie, setLocalLibrary } from '../services/browser-storage';
@@ -15,18 +14,18 @@ const Library = dataTypes.Library;
 
 const saveInterval = 10000;
 
-Vue.use(Vuex);
+const createInitialState = () => ({
+    library: false,
+    isSaving: false,
+    syncToken: false,
+    saveType: null,
+    lastSaveData: null,
+    loggedIn: false,
+    globalAlerts: [],
+});
 
-const store = new Vuex.Store({
-    state: {
-        library: false,
-        isSaving: false,
-        syncToken: false,
-        saveType: null,
-        lastSaveData: null,
-        loggedIn: false,
-        globalAlerts: [],
-    },
+const store = createStore({
+    state: createInitialState,
     getters: {
         activeList(state) {
             return state.library.getListById(state.library.defaultListId);
@@ -275,13 +274,13 @@ const store = new Vuex.Store({
                 }
             });
             if (hasPrice) {
-                Vue.set(state.library.optionalFields, 'price', true);
+                state.library.optionalFields.price = true;
             }
             if (hasWorn) {
-                Vue.set(state.library.optionalFields, 'worn', true);
+                state.library.optionalFields.worn = true;
             }
             if (hasConsumable) {
-                Vue.set(state.library.optionalFields, 'consumable', true);
+                state.library.optionalFields.consumable = true;
             }
             list.calculateTotals();
             state.library.defaultListId = list.id;

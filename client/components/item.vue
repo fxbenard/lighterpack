@@ -92,7 +92,6 @@
 import unitSelect from './unit-select.vue';
 import { openDialog } from '../services/dialogs';
 
-const utilsMixin = require('../mixins/utils-mixin.js');
 const weightUtils = require('../utils/weight.js');
 
 export default {
@@ -100,7 +99,6 @@ export default {
     components: {
         unitSelect,
     },
-    mixins: [utilsMixin],
     props: ['category', 'itemContainer'],
     data() {
         return {

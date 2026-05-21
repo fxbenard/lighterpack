@@ -46,7 +46,7 @@ export default {
     mounted() {
         setSpeedbumpOpener(this.initSpeedbump);
     },
-    beforeDestroy() {
+    beforeUnmount() {
         clearSpeedbumpOpener(this.initSpeedbump);
     },
     methods: {

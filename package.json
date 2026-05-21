@@ -47,7 +47,6 @@
     "morgan": "^1.10.0",
     "mustache": "^2.2.1",
     "nanoid": "2.0.3",
-    "node.extend": "^1.1.5",
     "request": "^2.67.0",
     "sass": "1.32.0",
     "sass-loader": "10.1.0",

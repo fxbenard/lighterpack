@@ -4,7 +4,6 @@ const express = require('express');
 
 const router = express.Router();
 const Mustache = require('mustache');
-const extend = require('node.extend');
 const markdown = require('markdown').markdown;
 const config = require('config');
 const { logWithRequest, logger } = require('./log.js');
@@ -139,7 +138,7 @@ router.get('/r/:id', (req, res) => {
             styles: shareStylesHtml,
         };
 
-        model = extend(model, templates);
+        model = Object.assign(model, templates);
         res.send(Mustache.render(shareTemplate, model));
     });
 });
@@ -205,7 +204,7 @@ router.get('/e/:id', (req, res) => {
             styles: shareStylesLinks,
             scripts: shareScriptsLinks,
         };
-        model = extend(model, templates);
+        model = Object.assign(model, templates);
         model.renderedTemplate = escape(Mustache.render(embedTemplate, model));
         res.send(Mustache.render(embedJTemplate, model));
     });
@@ -367,7 +366,7 @@ const renderCategory = function (category, args) {
     for (const i in category.categoryItems) {
         const categoryItem = category.categoryItems[i];
         const item = category.library.getItemById(categoryItem.itemId);
-        extend(item, categoryItem);
+        Object.assign(item, categoryItem);
         const rowClasses = [];
         if (args.classes) rowClasses.push(args.classes);
         if (parseFloat(categoryItem.qty) <= 0) rowClasses.push('lpQtyZero');

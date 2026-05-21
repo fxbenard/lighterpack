@@ -5,18 +5,18 @@
 <template>
     <Popover id="lpPickerContainer" :shown="shown" @hide="shown = false">
         <span slot="target" class="lpLegend" :style="{'background-color': color}" @click="shown = true" />
-        <VueColorPicker slot="content" :width="150" :height="150" :disabled="false" :start-color="color" @color-change="onColorChange" />
+        <ColorWheelPicker slot="content" :width="150" :height="150" :disabled="false" :start-color="color" @color-change="onColorChange" />
     </Popover>
 </template>
 
 <script>
-import VueColorPicker from 'vue-color-picker-wheel';
 import Popover from './popover.vue';
+import ColorWheelPicker from './color-wheel-picker.vue';
 
 export default {
     name: 'ColorPicker',
     components: {
-        VueColorPicker,
+        ColorWheelPicker,
         Popover,
     },
     props: [

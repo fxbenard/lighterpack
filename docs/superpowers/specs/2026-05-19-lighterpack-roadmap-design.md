@@ -131,6 +131,18 @@ The actual database migration should be a separate project after this roadmap.
 - Full backend rewrite.
 - Replacing the existing list/category/item data model.
 
+## Current Status
+
+Completed work on the stabilization branch has moved beyond the original roadmap baseline:
+
+- Phases 1-3 are implemented: local setup is reproducible, critical auth/save/share flows are covered, CSV import/export is hardened, and the conservative visual refresh is in place.
+- Phase 4 is implemented: the shared Mongo access layer replaced remaining `mongojs` usage in the app and supporting scripts.
+- Phases 5-6 are implemented: the client was decoupled from global runtime helpers, modal/event wiring was isolated into services, and pre-migration UI dependencies were reduced.
+- Phase 7 is effectively complete: browser storage, user feedback, and application-level events now flow through explicit services instead of ad hoc browser globals or a generic event bus.
+- Phase 8 migration prep is substantially complete: the runtime now uses Vue 3, Vue Router 4, Vuex 4, `vue-loader` 17, and `@vue/compiler-sfc`, with focused Playwright gates passing on the migrated flows.
+
+Remaining technical risk is concentrated in legacy toolchain warnings rather than product behavior regressions. That follow-up is tracked separately in `docs/superpowers/tickets/2026-05-21-dependency-runtime-warnings.md`.
+
 ## Risks
 
 - Visual work could accidentally change data behavior if mixed with store changes.

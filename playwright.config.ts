@@ -13,7 +13,7 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   use: {
-    baseURL: 'http://127.0.0.1:8180',
+    baseURL: 'http://127.0.0.1:3101',
     trace: 'on-first-retry',
   },
   testDir: './test/e2e',
@@ -67,8 +67,8 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'PORT=3101 DEV_SERVER_PORT=8180 DEPLOY_URL=http://127.0.0.1:3101 npm run start',
-    url: 'http://127.0.0.1:8180',
+    command: 'NO_COLOR= PORT=3101 DEV_SERVER_PORT=8180 DEPLOY_URL=http://127.0.0.1:3101 npm run start',
+    url: 'http://127.0.0.1:3101',
     reuseExistingServer: !process.env.CI,
   },
 });

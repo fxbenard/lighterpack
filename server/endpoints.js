@@ -2,22 +2,16 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const path = require('path');
 const express = require('express');
-const generate = require('nanoid/generate');
+const { readFile } = require('fs/promises');
 
 const router = express.Router();
 const fs = require('fs');
-const request = require('request');
 const formidable = require('formidable');
 const config = require('config');
 const { logWithRequest } = require('./log.js');
+const { sendMail } = require('./mailgun.js');
 
 const { authenticateUser, verifyPassword } = require('./auth.js');
-
-let mailgun;
-
-if (config.get('mailgunAPIKey')) {
-    mailgun = require('mailgun-js')({ apiKey: config.get('mailgunAPIKey'), domain: config.get('mailgunDomain') });
-}
 
 const db = require('./db.js');
 
@@ -27,6 +21,8 @@ const Item = dataTypes.Item;
 const Category = dataTypes.Category;
 const List = dataTypes.List;
 const Library = dataTypes.Library;
+
+const EXTERNAL_ID_ALPHABET = '1234567890abcdefghijklmnopqrstuvwxyz';
 
 // one day in many years this can go away.
 eval(`${fs.readFileSync(path.join(__dirname, './sha3.js'))}`);
@@ -181,7 +177,7 @@ router.post('/externalId', (req, res) => {
 });
 
 function externalId(req, res, user) {
-    const id = generate('1234567890abcdefghijklmnopqrstuvwxyz', 6);
+    const id = Array.from(crypto.randomBytes(6), (byte) => EXTERNAL_ID_ALPHABET[byte % EXTERNAL_ID_ALPHABET.length]).join('');
     logWithRequest(req, { message: 'Id generated', id });
 
     db.users.find({ 'library.lists.externalId': id }, (err, users) => {
@@ -240,16 +236,15 @@ router.post('/forgotPassword', (req, res) => {
                     };
 
                     logWithRequest(req, { message: 'Attempting to send new password', email });
-                    mailgun.messages().send(mailOptions, (error, response) => {
-                        if (error) {
-                            logWithRequest(req, error);
-                            return res.status(500).json({ message: 'An error occurred' });
-                        }
+                    sendMail(mailOptions).then((response) => {
                         db.users.save(user);
                         const out = { username };
                         logWithRequest(req, { message: 'Message sent', response: response.message });
                         logWithRequest(req, { message: 'password changed for user', username });
                         return res.status(200).json(out);
+                    }).catch((error) => {
+                        logWithRequest(req, error);
+                        return res.status(500).json({ message: 'An error occurred' });
                     });
                 });
             });
@@ -286,15 +281,14 @@ router.post('/forgotUsername', (req, res) => {
         };
 
         logWithRequest(req, { message: 'Attempting to send username', email, username });
-        mailgun.messages().send(mailOptions, (error, response) => {
-            if (error) {
-                logWithRequest(req, error);
-                return res.status(500).json({ message: 'An error occurred' });
-            }
+        sendMail(mailOptions).then((response) => {
             const out = { email };
             logWithRequest(req, { message: 'Message sent', response: response.message });
             logWithRequest(req, { message: 'sent username message for user', username, email });
             return res.status(200).json(out);
+        }).catch((error) => {
+            logWithRequest(req, error);
+            return res.status(500).json({ message: 'An error occurred' });
         });
     });
 });
@@ -380,45 +374,68 @@ router.post('/imageUpload', (req, res) => {
 });
 
 function imageUpload(req, res, user) {
-    const form = new formidable.IncomingForm();
-    form.parse(req, (err, fields, files) => {
+    const form = formidable({
+        maxFiles: 1,
+        maxFileSize: 2500000,
+    });
+
+    form.parse(req, async (err, fields, files) => {
         if (err) {
             logWithRequest(req, 'form parse error');
+            logWithRequest(req, err);
             return res.status(500).json({ message: 'An error occurred' });
         }
-        if (!files || !files.image) {
+
+        const imageFile = Array.isArray(files.image) ? files.image[0] : files.image;
+        if (!imageFile || !imageFile.filepath) {
             logWithRequest(req, 'No image in upload');
             return res.status(500).json({ message: 'An error occurred' });
         }
 
-        const path = files.image.path;
-        const formData = {
-            image: fs.createReadStream(path),
-            type: "file"
-        };
-        request.post({
-            url: 'https://api.imgur.com/3/image',
-            headers: { Authorization: `Client-ID ${config.get('imgurClientID')}` },
-            formData
-        }, (e, r, body) => {
-            if (e) {
-                logWithRequest(req, 'imgur post fail!');
-                logWithRequest(req, e);
-                logWithRequest(req, body);
-                return res.status(500).json({ message: 'An error occurred.' });
-            } if (!body) {
+        const imagePath = imageFile.filepath;
+
+        try {
+            const imageBuffer = await readFile(imagePath);
+            const formData = new FormData();
+
+            formData.append('image', new Blob([imageBuffer]), path.basename(imagePath));
+            formData.append('type', 'file');
+
+            const response = await fetch('https://api.imgur.com/3/image', {
+                method: 'POST',
+                headers: { Authorization: `Client-ID ${config.get('imgurClientID')}` },
+                body: formData,
+            });
+            const body = await response.text();
+
+            if (!body) {
                 logWithRequest(req, 'imgur post fail!!');
-                logWithRequest(req, e);
                 return res.status(500).json({ message: 'An error occurred.' });
-            } if (r.statusCode !== 200 || body.error) {
-                logWithRequest(req, 'imgur post fail!!!');
-                logWithRequest(req, e);
+            }
+
+            let parsedBody;
+            try {
+                parsedBody = JSON.parse(body);
+            } catch (parseError) {
+                logWithRequest(req, 'imgur post parse fail');
+                logWithRequest(req, parseError);
                 logWithRequest(req, body);
                 return res.status(500).json({ message: 'An error occurred.' });
             }
+
+            if (!response.ok || parsedBody.error) {
+                logWithRequest(req, 'imgur post fail!!!');
+                logWithRequest(req, body);
+                return res.status(500).json({ message: 'An error occurred.' });
+            }
+
             logWithRequest(req, body);
             return res.send(body);
-        });
+        } catch (uploadError) {
+            logWithRequest(req, 'imgur post fail!');
+            logWithRequest(req, uploadError);
+            return res.status(500).json({ message: 'An error occurred.' });
+        }
     });
 }
 

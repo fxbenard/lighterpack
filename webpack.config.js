@@ -30,7 +30,6 @@ module.exports = {
     mode: 'production',
     entry: {
         app: [
-            'whatwg-fetch',
             './client/css/lighterpack.scss',
             './client/lighterpack.js',
         ],
@@ -52,15 +51,10 @@ module.exports = {
                 loader: 'vue-loader',
             },
             {
-                test: /\.js$/,
-                loader: 'babel-loader',
-                exclude: /node_modules/,
-            },
-            {
                 test: /\.(png|jpg|gif|svg)$/,
-                loader: 'file-loader',
-                options: {
-                    name: '[name].[ext]?[hash]',
+                type: 'asset/resource',
+                generator: {
+                    filename: '[name][ext]?[hash]',
                 },
             },
             {

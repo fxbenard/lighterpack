@@ -1,12 +1,11 @@
+const crypto = require('crypto');
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
 const compression = require('compression');
 const config = require('config');
 const express = require('express');
 const morgan = require('morgan');
-const uuid = require('uuid');
 
 const { logger } = require('./server/log.js');
 
@@ -19,6 +18,10 @@ function getRuntimeNumber(name, fallback) {
 
     const parsed = parseInt(value, 10);
     return Number.isNaN(parsed) ? fallback : parsed;
+}
+
+function getRuntimeEnvironment() {
+    return process.env.NODE_ENV || config.get('environment');
 }
 
 morgan.token('username', function getUsername (req) {
@@ -34,7 +37,7 @@ const app = express();
 app.enable('trust proxy');
 
 app.use(function (req, res, next) {
-    req.uuid = uuid.v4();
+    req.uuid = crypto.randomUUID();
     next();
 });
 
@@ -59,8 +62,8 @@ const oneDay = 86400000;
 
 app.use(compression());
 app.use(cookieParser());
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({
     extended: true,
     limit: '50mb',
 }));
@@ -78,14 +81,17 @@ logger.info("Starting up Lighterpack...");
 
 const appPort = getRuntimeNumber('PORT', config.get('port'));
 const devServerPort = getRuntimeNumber('DEV_SERVER_PORT', config.get('devServerPort'));
+const runtimeEnvironment = getRuntimeEnvironment();
 
-if (config.get('environment') === 'production') {
+let webpackConfig;
+
+if (runtimeEnvironment === 'production') {
     webpackConfig = require('./webpack.config');
 } else {
     webpackConfig = require('./webpack.development.config');
 }
 
-webpackCompiler = webpack(webpackConfig);
+const webpackCompiler = webpack(webpackConfig);
 
 // Default port is 3000; we can have multiple bindings
 config.get('bindings').map(
@@ -95,29 +101,21 @@ config.get('bindings').map(
     },
 );
 
-if (config.get('environment') !== 'production') {
-    new WebpackDevServer(webpack(webpackConfig), {
-        historyApiFallback: true,
-        disableHostCheck: true,
-        publicPath: webpackConfig.output.publicPath,
-        hot: true,
+if (runtimeEnvironment !== 'production') {
+    const devServerOptions = {
+        ...(webpackConfig.devServer || {}),
+        port: devServerPort,
         proxy: {
             '*': {
-                target: `http://localhost:${appPort}`,
+                target: `http://127.0.0.1:${appPort}`,
                 secure: false,
                 changeOrigin: true,
             },
         },
-        stats: {
-            cached: false,
-            cachedAssets: false,
-            colors: { level: 2 },
-        },
-        watchOptions: {
-            aggregateTimeout: 300,
-            poll: 1000,
-        },
-    }).listen(devServerPort, (err, result) => {
+    };
+    const devServer = new WebpackDevServer(devServerOptions, webpackCompiler);
+
+    devServer.startCallback((err) => {
         if (err) {
             return logger.info(err);
         }

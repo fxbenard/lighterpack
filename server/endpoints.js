@@ -2,7 +2,6 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const path = require('path');
 const express = require('express');
-const generate = require('nanoid/generate');
 const { readFile } = require('fs/promises');
 
 const router = express.Router();
@@ -22,6 +21,8 @@ const Item = dataTypes.Item;
 const Category = dataTypes.Category;
 const List = dataTypes.List;
 const Library = dataTypes.Library;
+
+const EXTERNAL_ID_ALPHABET = '1234567890abcdefghijklmnopqrstuvwxyz';
 
 // one day in many years this can go away.
 eval(`${fs.readFileSync(path.join(__dirname, './sha3.js'))}`);
@@ -176,7 +177,7 @@ router.post('/externalId', (req, res) => {
 });
 
 function externalId(req, res, user) {
-    const id = generate('1234567890abcdefghijklmnopqrstuvwxyz', 6);
+    const id = Array.from(crypto.randomBytes(6), (byte) => EXTERNAL_ID_ALPHABET[byte % EXTERNAL_ID_ALPHABET.length]).join('');
     logWithRequest(req, { message: 'Id generated', id });
 
     db.users.find({ 'library.lists.externalId': id }, (err, users) => {

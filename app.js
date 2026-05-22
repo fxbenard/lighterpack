@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 const cookieParser = require('cookie-parser');
@@ -5,7 +6,6 @@ const compression = require('compression');
 const config = require('config');
 const express = require('express');
 const morgan = require('morgan');
-const uuid = require('uuid');
 
 const { logger } = require('./server/log.js');
 
@@ -37,7 +37,7 @@ const app = express();
 app.enable('trust proxy');
 
 app.use(function (req, res, next) {
-    req.uuid = uuid.v4();
+    req.uuid = crypto.randomUUID();
     next();
 });
 

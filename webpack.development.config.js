@@ -15,7 +15,6 @@ module.exports = {
     mode: 'development',
     entry: {
         app: [
-            'whatwg-fetch',
             './client/css/lighterpack.scss',
             './client/lighterpack.js',
         ],

@@ -30,7 +30,6 @@ module.exports = {
     mode: 'production',
     entry: {
         app: [
-            'whatwg-fetch',
             './client/css/lighterpack.scss',
             './client/lighterpack.js',
         ],

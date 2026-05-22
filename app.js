@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
 const compression = require('compression');
 const config = require('config');
 const express = require('express');
@@ -63,8 +62,8 @@ const oneDay = 86400000;
 
 app.use(compression());
 app.use(cookieParser());
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({
     extended: true,
     limit: '50mb',
 }));

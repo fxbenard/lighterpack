@@ -161,7 +161,6 @@ export default {
         speedbump,
         globalAlerts,
     },
-    mixins: [],
     data() {
         return {
             isLoaded: false,

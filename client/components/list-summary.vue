@@ -102,8 +102,10 @@
 import colorPicker from './colorpicker.vue';
 import unitSelect from './unit-select.vue';
 import { renderListChart } from '../services/list-chart';
-const utilsMixin = require('../mixins/utils-mixin.js');
+import { useUtils } from '../composables/useUtils.js';
 const colorUtils = require('../utils/color.js');
+
+const { displayWeight, displayPrice } = useUtils();
 
 export default {
     name: 'ListSummary',
@@ -111,7 +113,6 @@ export default {
         colorPicker,
         unitSelect,
     },
-    mixins: [utilsMixin],
     props: ['list'],
     data() {
         return {
@@ -146,6 +147,8 @@ export default {
         }
     },
     methods: {
+        displayWeight,
+        displayPrice,
         updateChart(type) {
             const chartData = this.library.renderChart(type);
 

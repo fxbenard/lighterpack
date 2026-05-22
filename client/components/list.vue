@@ -97,7 +97,6 @@ export default {
         categoryDragStartIndex: false,
         itemDragId: false,
     },
-    mixins: [],
     data() {
         return {
             onboardingCompleted: false,

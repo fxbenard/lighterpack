@@ -125,14 +125,15 @@
 </template>
 
 <script>
-import utilsMixin from '../mixins/utils-mixin.js';
+import { useUtils } from '../composables/useUtils.js';
 import { openSpeedbump } from '../services/speedbump';
 import { getElementIndex } from '../utils/utils';
 import { createDragDrop, getDatasetInt, queryContainers } from '../services/drag-drop';
 
+const { displayWeight, displayPrice } = useUtils();
+
 export default {
     name: 'LibraryItem',
-    mixins: [utilsMixin],
     props: ['item'],
     data() {
         return {
@@ -197,6 +198,8 @@ export default {
         }
     },
     methods: {
+        displayWeight,
+        displayPrice,
         handleItemDrag() {
             if (this.drake) {
                 this.drake.destroy();

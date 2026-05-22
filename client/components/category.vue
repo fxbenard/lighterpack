@@ -47,15 +47,15 @@
 <script>
 import item from './item.vue';
 import { openSpeedbump } from '../services/speedbump';
+import { useUtils } from '../composables/useUtils.js';
 
-const utilsMixin = require('../mixins/utils-mixin.js');
+const { displayWeight, displayPrice } = useUtils();
 
 export default {
     name: 'Category',
     components: {
         item,
     },
-    mixins: [utilsMixin],
     props: ['category'],
     computed: {
         library() {
@@ -66,6 +66,8 @@ export default {
         },
     },
     methods: {
+        displayWeight,
+        displayPrice,
         newItem() {
             this.$store.commit('newItem', { category: this.category, _isNew: true });
         },

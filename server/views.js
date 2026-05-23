@@ -72,9 +72,9 @@ if (getRuntimeEnvironment() === 'production') {
         }
     });
 } else {
-    appStylesHtml = '';
+    appStylesHtml = '<link rel=\'stylesheet\' href=\'/dist/app.css\' />';
     appScriptsHtml = '<script src=\'/dist/app.js\'></script>';
-    shareStylesHtml = '';
+    shareStylesHtml = '<link rel=\'stylesheet\' href=\'/dist/share.css\' />';
     shareScriptsHtml = '<script src=\'/dist/share.js\'></script>';
 }
 

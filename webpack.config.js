@@ -26,8 +26,10 @@ class AssetJsonPlugin {
     }
 }
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 module.exports = {
-    mode: 'production',
+    mode: isDev ? 'development' : 'production',
     entry: {
         app: [
             './client/css/lighterpack.scss',
@@ -42,7 +44,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, './public/dist'),
         publicPath: '/dist/',
-        filename: '[name].[chunkhash].js',
+        filename: isDev ? '[name].js' : '[name].[chunkhash].js',
     },
     module: {
         rules: [
@@ -86,7 +88,7 @@ module.exports = {
         }),
         new webpack.DefinePlugin(vueFeatureFlags),
         new MiniCssExtractPlugin({
-            filename: '[name].[chunkhash].css',
+            filename: isDev ? '[name].css' : '[name].[chunkhash].css',
         }),
         new AssetJsonPlugin(),
     ],

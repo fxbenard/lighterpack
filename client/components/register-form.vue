@@ -3,27 +3,31 @@
 </style>
 
 <template>
-    <form class="lpRegister lpFields" @submit.prevent="submit">
-        <div class="lpFields">
-            <input v-model="username" v-focus-on-create type="text" placeholder="Username" name="username">
-            <input v-model="email" type="email" placeholder="Email" name="email">
-            <input v-model="password" type="password" placeholder="Password" name="password">
-            <input v-model="passwordConfirm" type="password" placeholder="Confirm password" name="passwordConfirm">
-        </div>
-        <errors :errors="errors" />
-        <div class="lpButtons">
-            <button class="lpButton">
-                Register
-                <spinner v-if="saving" />
-            </button>
-            <a class="lpHref lpGetStarted" @click="loadLocal">Skip registration</a>
-        </div>
-    </form>
+    <div>
+        <template-picker v-if="showTemplatePicker" @select="submitWithTemplate" @dismiss="submitWithTemplate(null)" />
+        <form class="lpRegister lpFields" @submit.prevent="submit">
+            <div class="lpFields">
+                <input v-model="username" v-focus-on-create type="text" placeholder="Username" name="username">
+                <input v-model="email" type="email" placeholder="Email" name="email">
+                <input v-model="password" type="password" placeholder="Password" name="password">
+                <input v-model="passwordConfirm" type="password" placeholder="Confirm password" name="passwordConfirm">
+            </div>
+            <errors :errors="errors" />
+            <div class="lpButtons">
+                <button class="lpButton">
+                    Register
+                    <spinner v-if="saving" />
+                </button>
+                <a class="lpHref lpGetStarted" @click="loadLocal">Skip registration</a>
+            </div>
+        </form>
+    </div>
 </template>
 
 <script>
 import errors from './errors.vue';
 import spinner from './spinner.vue';
+import templatePicker from './template-picker.vue';
 import { push } from '../services/navigation';
 import { getLocalLibrary, hasLocalLibrary, moveLocalLibraryToRegistered } from '../services/browser-storage';
 import { fetchJson } from '../utils/utils';
@@ -37,6 +41,7 @@ export default {
     components: {
         errors,
         spinner,
+        templatePicker,
     },
     data() {
         return {
@@ -46,6 +51,8 @@ export default {
             passwordConfirm: '',
             saving: false,
             errors: [],
+            showTemplatePicker: false,
+            pendingRegisterData: null,
         };
     },
     computed: {
@@ -59,8 +66,18 @@ export default {
                 push('/');
                 return;
             }
+            this.pendingRegisterData = { _localMode: true };
+            this.showTemplatePicker = true;
+        },
+        loadLocalWithTemplate(templateData) {
+            this.showTemplatePicker = false;
+            this.pendingRegisterData = null;
             const library = new Library();
-            this.$store.commit('loadLibraryData', JSON.stringify(library.save()));
+            if (templateData) {
+                this.$store.commit('loadLibraryData', JSON.stringify(templateData));
+            } else {
+                this.$store.commit('loadLibraryData', JSON.stringify(library.save()));
+            }
             this.$store.commit('setSaveType', 'local');
             this.$store.commit('setLoggedIn', false);
             push('/');
@@ -104,6 +121,23 @@ export default {
 
             if (hasLocalLibrary()) {
                 registerData.library = getLocalLibrary();
+            }
+
+            this.pendingRegisterData = registerData;
+            this.showTemplatePicker = true;
+        },
+        submitWithTemplate(templateData) {
+            if (this.pendingRegisterData && this.pendingRegisterData._localMode) {
+                this.loadLocalWithTemplate(templateData);
+                return;
+            }
+
+            this.showTemplatePicker = false;
+            const registerData = this.pendingRegisterData;
+            this.pendingRegisterData = null;
+
+            if (templateData !== null) {
+                registerData.library = JSON.stringify(templateData);
             }
 
             this.saving = true;

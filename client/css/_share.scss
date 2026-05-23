@@ -4,16 +4,16 @@
 
 .lpShare {
     .lpCategoryName {
-        color: #31362d;
+        color: $color-text;
         font-size: 18px;
         margin: 0;
     }
 
     .lpItem {
-        border-top-color: #d7dbd1;
+        border-top-color: $color-border;
 
         &:hover {
-            background: #fbfcf8;
+            background: $color-bg;
         }
 
         .lpActionsCell {
@@ -25,8 +25,8 @@
         }
 
         &.lpQtyZero {
-            background: #f3f1ea;
-            color: #6e7168;
+            background: $color-bg;
+            color: $color-text-muted;
 
             .lpName,
             .lpDescription,
@@ -45,20 +45,20 @@
     }
 
     .lpItemsHeader {
-        background: #edf1e8;
-        border-bottom: 1px solid #9aa191;
-        color: #41473f;
+        background: rgba(var(--color-accent-rgb), 0.06);
+        border-bottom: 1px solid $color-border;
+        color: $color-text;
     }
 
     .lpItemsFooter {
-        background: #f6f7f2;
-        border-top: 1px solid #c4cabe;
+        background: $color-bg;
+        border-top: 1px solid $color-border;
     }
 
     .lpWeightCell,
     .lpQtyCell,
     .lpPriceCell {
-        color: #383d36;
+        color: $color-text;
     }
 
     #lpListDescription {
@@ -75,8 +75,8 @@
 
     &:hover,
     &.lpHover {
-        background: #fff;
-        border: 1px solid $border1;
+        background: $color-surface;
+        border: 1px solid $color-border;
 
         i {
             opacity: 1;
@@ -88,7 +88,7 @@
     }
 
     &.lpOpen {
-        background: #fff;
+        background: $color-surface;
 
         .lpUnitDropdown {
             display: block;
@@ -101,8 +101,8 @@
     }
 
     .lpUnitDropdown {
-        background: #fff;
-        border: 1px solid #ccc;
+        background: $color-surface;
+        border: 1px solid $color-border;
         display: none;
         left: 0;
         padding: 0;
@@ -127,8 +127,8 @@
             padding: 2px 14px;
 
             &:hover {
-                background: $blue1;
-                color: #fff;
+                background: $color-accent;
+                color: $color-surface;
             }
         }
     }
@@ -136,9 +136,10 @@
 
 .lpDialog {
     animation: fadein 0.25s linear 0s 1 forwards;
-    opacity: 0;
-    background: #F7F7F7;
+    background: $color-surface;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+    color: $color-text;
+    opacity: 0;
     left: 50%;
     padding: 35px;
     position: fixed;

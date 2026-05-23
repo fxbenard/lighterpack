@@ -1,0 +1,111 @@
+{
+  "version": "0.3",
+  "totalUnit": "oz",
+  "itemUnit": "oz",
+  "defaultListId": 1,
+  "sequence": 28,
+  "showSidebar": true,
+  "optionalFields": {
+    "price": false,
+    "consumable": true,
+    "worn": true
+  },
+  "currencySymbol": "$",
+  "items": [
+    { "id": 1,  "name": "4-season tent",             "description": "Freestanding, snow-rated",  "weight": 112.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 2,  "name": "Tent footprint",            "description": "Custom-fit floor saver",    "weight": 8.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 3,  "name": "Sleeping bag (15°F)",       "description": "Down, hood, draft collar",  "weight": 48.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 4,  "name": "Sleeping pad (insulated)",  "description": "R-value 5+, self-inflating","weight": 32.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 5,  "name": "Liner / fleece blanket",    "description": "Extra warmth layer",        "weight": 16.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 6,  "name": "Pillow",                    "description": "Compressible camp pillow",  "weight": 6.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 7,  "name": "Hardshell jacket",          "description": "Gore-Tex, insulated",       "weight": 24.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 8,  "name": "Hardshell pants",           "description": "Waterproof bib or pants",   "weight": 20.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 9,  "name": "Down jacket",               "description": "700-fill, full zip",        "weight": 16.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 10, "name": "Fleece top",                "description": "Mid-layer for camp",        "weight": 12.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 11, "name": "Thermal base layer set",    "description": "Top + bottom, wool/synth",  "weight": 14.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 12, "name": "Waterproof boots",          "description": "Insulated, -20°F rated",    "weight": 64.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 13, "name": "Wool socks (x4)",           "description": "Darn Tough or similar",     "weight": 10.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 14, "name": "Insulated gloves",          "description": "Waterproof, liner inside",  "weight": 6.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 15, "name": "Wool hat + balaclava",      "description": "Layer under helmet if needed","weight": 4.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 16, "name": "Neck gaiter",               "description": "Fleece or Merino",          "weight": 2.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 17, "name": "Water bottles (insulated)", "description": "Wide mouth, 32oz",          "weight": 10.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 18, "name": "Thermos",                   "description": "1L stainless, all day hot", "weight": 12.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 19, "name": "3-burner propane stove",    "description": "Camp Chef or similar",      "weight": 128.0,"authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 20, "name": "Propane canister (x2)",     "description": "1lb canisters",             "weight": 48.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 21, "name": "Cast iron skillet",         "description": "10-inch, pre-seasoned",     "weight": 48.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 22, "name": "Cook pot set",              "description": "3-piece nested pots",       "weight": 32.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 23, "name": "Food cooler",               "description": "Hard-sided, 45qt",          "weight": 320.0,"authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 24, "name": "Food (3 days)",             "description": "Full meals + snacks",       "weight": 96.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 25, "name": "Headlamp",                  "description": "High lumen, extra batteries","weight": 4.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 26, "name": "Lantern",                   "description": "LED camp lantern",          "weight": 8.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 27, "name": "First aid kit",             "description": "Full kit, cold-weather",    "weight": 6.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 28, "name": "Hand warmers (x6)",         "description": "HeatMax or similar",        "weight": 6.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" }
+  ],
+  "categories": [
+    {
+      "id": 101, "name": "Shelter",
+      "categoryItems": [
+        { "itemId": 1, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 2, "qty": 1, "worn": false, "consumable": false, "star": false }
+      ]
+    },
+    {
+      "id": 102, "name": "Sleep System",
+      "categoryItems": [
+        { "itemId": 3, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 4, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 5, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 6, "qty": 1, "worn": false, "consumable": false, "star": false }
+      ]
+    },
+    {
+      "id": 103, "name": "Clothing",
+      "categoryItems": [
+        { "itemId": 7,  "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 8,  "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 9,  "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 10, "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 11, "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 12, "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 13, "qty": 4, "worn": false, "consumable": false, "star": false },
+        { "itemId": 14, "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 15, "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 16, "qty": 1, "worn": true,  "consumable": false, "star": false }
+      ]
+    },
+    {
+      "id": 104, "name": "Water",
+      "categoryItems": [
+        { "itemId": 17, "qty": 2, "worn": false, "consumable": false, "star": false },
+        { "itemId": 18, "qty": 1, "worn": false, "consumable": false, "star": false }
+      ]
+    },
+    {
+      "id": 105, "name": "Food & Cook",
+      "categoryItems": [
+        { "itemId": 19, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 20, "qty": 2, "worn": false, "consumable": true,  "star": false },
+        { "itemId": 21, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 22, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 23, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 24, "qty": 1, "worn": false, "consumable": true,  "star": false }
+      ]
+    },
+    {
+      "id": 106, "name": "Essentials",
+      "categoryItems": [
+        { "itemId": 25, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 26, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 27, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 28, "qty": 6, "worn": false, "consumable": true,  "star": false }
+      ]
+    }
+  ],
+  "lists": [
+    {
+      "id": 1,
+      "name": "Winter Car Camping",
+      "categoryIds": [101, 102, 103, 104, 105, 106]
+    }
+  ]
+}

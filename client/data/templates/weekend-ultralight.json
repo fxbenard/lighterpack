@@ -1,0 +1,99 @@
+{
+  "version": "0.3",
+  "totalUnit": "oz",
+  "itemUnit": "oz",
+  "defaultListId": 1,
+  "sequence": 22,
+  "showSidebar": true,
+  "optionalFields": {
+    "price": false,
+    "consumable": true,
+    "worn": true
+  },
+  "currencySymbol": "$",
+  "items": [
+    { "id": 1,  "name": "Tarp / bivy",              "description": "Cuben or silnylon tarp",    "weight": 14.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 2,  "name": "Stakes (x6)",               "description": "Titanium shepherd's hooks", "weight": 2.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 3,  "name": "Quilt (40°F)",              "description": "Down topquilt, no shell",   "weight": 16.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 4,  "name": "Inflatable pad (short)",    "description": "Torso-length, R-value 2+",  "weight": 8.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 5,  "name": "Wind jacket",               "description": "Ultralight wind shell",     "weight": 4.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 6,  "name": "Down hoody",                "description": "800-fill packable hoody",   "weight": 8.5,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 7,  "name": "Merino base layer",         "description": "Top + bottom set",          "weight": 9.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 8,  "name": "Running shorts",            "description": "Lightweight trail shorts",  "weight": 3.5,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 9,  "name": "Trail runners",             "description": "Low-cut, zero drop",        "weight": 18.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 10, "name": "Socks (x2)",                "description": "Injinji toe socks",         "weight": 2.5,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 11, "name": "Buff / neck gaiter",        "description": "Sun + warmth protection",   "weight": 1.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 12, "name": "Sawyer Squeeze",            "description": "Inline or squeeze filter",  "weight": 3.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 13, "name": "Soft flask 1L",             "description": "CNOC or Hydrapak",          "weight": 1.2,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 14, "name": "Alcohol stove + pot",       "description": "Evernew Ti + homemade",     "weight": 3.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 15, "name": "Fuel (alcohol, 2oz)",       "description": "Denatured alcohol",         "weight": 2.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 16, "name": "Food (2 days)",             "description": "Cold-soak or cook meals",   "weight": 32.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 17, "name": "Frameless pack (30-35L)",   "description": "Sub-1kg ultralight pack",   "weight": 20.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 18, "name": "Trekking poles",            "description": "Doubles as tarp poles",     "weight": 10.0, "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 19, "name": "Headlamp",                  "description": "Petzl e+LITE or similar",   "weight": 0.9,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 20, "name": "First aid (minimal)",       "description": "Leukotape, meds, needle",   "weight": 1.5,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 21, "name": "Phone (navigation)",        "description": "CalTopo offline maps",      "weight": 6.0,  "authorUnit": "oz", "price": 0, "image": "", "url": "" },
+    { "id": 22, "name": "Charger / battery",         "description": "10,000 mAh power bank",    "weight": 6.4,  "authorUnit": "oz", "price": 0, "image": "", "url": "" }
+  ],
+  "categories": [
+    {
+      "id": 101, "name": "Shelter",
+      "categoryItems": [
+        { "itemId": 1, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 2, "qty": 6, "worn": false, "consumable": false, "star": false }
+      ]
+    },
+    {
+      "id": 102, "name": "Sleep System",
+      "categoryItems": [
+        { "itemId": 3, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 4, "qty": 1, "worn": false, "consumable": false, "star": false }
+      ]
+    },
+    {
+      "id": 103, "name": "Clothing",
+      "categoryItems": [
+        { "itemId": 5,  "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 6,  "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 7,  "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 8,  "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 9,  "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 10, "qty": 2, "worn": false, "consumable": false, "star": false },
+        { "itemId": 11, "qty": 1, "worn": true,  "consumable": false, "star": false }
+      ]
+    },
+    {
+      "id": 104, "name": "Water",
+      "categoryItems": [
+        { "itemId": 12, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 13, "qty": 1, "worn": false, "consumable": false, "star": false }
+      ]
+    },
+    {
+      "id": 105, "name": "Food & Cook",
+      "categoryItems": [
+        { "itemId": 14, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 15, "qty": 1, "worn": false, "consumable": true,  "star": false },
+        { "itemId": 16, "qty": 1, "worn": false, "consumable": true,  "star": false }
+      ]
+    },
+    {
+      "id": 106, "name": "Pack & Essentials",
+      "categoryItems": [
+        { "itemId": 17, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 18, "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 19, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 20, "qty": 1, "worn": false, "consumable": false, "star": false },
+        { "itemId": 21, "qty": 1, "worn": true,  "consumable": false, "star": false },
+        { "itemId": 22, "qty": 1, "worn": false, "consumable": false, "star": false }
+      ]
+    }
+  ],
+  "lists": [
+    {
+      "id": 1,
+      "name": "Weekend Ultralight",
+      "categoryIds": [101, 102, 103, 104, 105, 106]
+    }
+  ]
+}

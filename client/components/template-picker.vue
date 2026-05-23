@@ -2,7 +2,7 @@
 @import "../css/_globals";
 
 .lpTemplatePicker {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.55);
     bottom: 0;
     left: 0;
     position: fixed;
@@ -12,8 +12,9 @@
 }
 
 .lpTemplatePickerModal {
-    background: $background1;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+    background: $color-surface;
+    border-radius: $radius-lg;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
     left: 50%;
     max-height: calc(90vh - #{$spacingLarge} * 2);
     overflow-y: auto;
@@ -21,37 +22,44 @@
     position: fixed;
     top: 50%;
     transform: translateX(-50%) translateY(-50%);
-    width: 520px;
+    width: 540px;
     max-width: calc(100vw - #{$spacingLarge} * 2);
     z-index: $dialog + 1;
 }
 
 .lpTemplatePickerTitle {
-    font-size: 1.25em;
-    font-weight: bold;
-    margin: 0 0 $spacingSmall;
+    font-size: $fontSize-md;
+    font-weight: $fontWeight-bold;
+    margin: 0 0 $spacingSmaller;
 }
 
 .lpTemplatePickerSubtitle {
-    color: $content2;
+    color: $color-text-muted;
+    font-size: $fontSize-base;
     margin: 0 0 $spacingLarge;
 }
 
 .lpTemplatePickerCards {
     display: flex;
     flex-direction: column;
-    gap: $spacingMedium;
+    gap: $spacingSmall;
     margin-bottom: $spacingLarge;
 }
 
 .lpTemplatePickerCard {
-    background: #fff;
-    border: 1px solid $border1;
-    display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: $spacingMedium;
+    background: $color-bg;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    display: flex;
     gap: $spacingMedium;
+    justify-content: space-between;
+    padding: $spacingMedium;
+    transition: border-color $transitionDurationFast;
+
+    &:hover {
+        border-color: $color-accent;
+    }
 }
 
 .lpTemplatePickerCardBody {
@@ -59,25 +67,26 @@
 }
 
 .lpTemplatePickerCardName {
-    font-weight: bold;
+    font-weight: $fontWeight-bold;
     margin: 0 0 4px;
 }
 
 .lpTemplatePickerCardDesc {
-    color: $content2;
-    font-size: 0.875em;
+    color: $color-text-muted;
+    font-size: $fontSize-sm;
     margin: 0;
 }
 
 .lpTemplatePickerBlank {
-    display: block;
-    text-align: center;
-    color: $content2;
+    color: $color-text-muted;
     cursor: pointer;
+    display: block;
+    font-size: $fontSize-sm;
+    text-align: center;
     text-decoration: underline;
 
     &:hover {
-        color: $content;
+        color: $color-text;
     }
 }
 </style>

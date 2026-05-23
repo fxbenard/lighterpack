@@ -1,4 +1,5 @@
 <style lang="scss">
+@import "../css/_globals";
 
 #libraryContainer {
     display: flex;
@@ -12,24 +13,34 @@
 }
 
 #librarySearch {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 4px;
-    color: #fff;
+    background: $color-bg;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    color: $color-text;
     margin-bottom: 15px;
     padding: 6px 8px;
+    width: 100%;
+
+    &::placeholder {
+        color: $color-text-muted;
+    }
+
+    &:focus {
+        border-color: $color-accent;
+        outline: none;
+    }
 }
 
 .lpLibraryItem {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    color: #eef2e7;
+    border-top: 1px solid $color-border;
+    color: $color-text;
     list-style: none;
     margin: 0 10px 4px;
     min-height: 43px;
     overflow: hidden;
     padding: 7px 8px 4px 15px;
     position: relative;
-    transition: background 0.1s ease, color 0.1s ease;
+    transition: background $transitionDurationFast ease, color $transitionDurationFast ease;
 
     &:first-child {
         border-top: none;
@@ -41,13 +52,13 @@
     }
 
     &.gu-mirror {
-        background: #606060;
-        border: 1px solid #999;
-        color: #fff;
+        background: $color-bg;
+        border: 1px solid $color-border;
+        color: $color-text;
     }
 
     &:hover {
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(var(--color-accent-rgb), 0.04);
     }
 
     .lpName {
@@ -59,14 +70,17 @@
     }
 
     .lpWeight {
+        color: $color-text-muted;
         float: right;
+        font-variant-numeric: tabular-nums;
         width: auto;
     }
 
     .lpDescription {
         clear: both;
-        color: #cbd2c7;
+        color: $color-text-muted;
         display: block;
+        font-size: $fontSize-sm;
         overflow: hidden;
         text-overflow: ellipsis;
         width: 235px;
@@ -94,8 +108,9 @@
     }
 
     #main > & {
-        background: #666;
-        color: #fff;
+        background: $color-surface;
+        border: 1px solid $color-border;
+        color: $color-text;
         padding: 10px;
         width: 235px;
     }

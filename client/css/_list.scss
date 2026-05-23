@@ -29,11 +29,12 @@
 }
 
 .lpCategory {
-    background: rgba(255, 255, 255, 0.58);
-    border: 1px solid #d9ddd3;
-    border-radius: 6px;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
     list-style: none;
-    margin: 0 0 20px;
+    margin: 0 0 16px;
     overflow: hidden;
 
     &.dropAccept {
@@ -45,7 +46,7 @@
     }
 
     &.gu-mirror {
-        background: #f7f7f7;
+        background: $color-bg;
         border: 1px solid #999;
     }
 }
@@ -59,9 +60,11 @@
 input.lpCategoryName { /* specificity */
     border: 1px solid transparent;
     flex: 1 0 300px;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: $fontSize-base;
+    font-weight: $fontWeight-bold;
+    letter-spacing: $letterSpacing-caps;
     padding-bottom: 0;
+    text-transform: uppercase;
 }
 
 .lpSubtotal {
@@ -92,21 +95,21 @@ input.lpCategoryName { /* specificity */
 .lpItemsHeader,
 .lpItemsFooter {
     align-items: center;
-    border-top: 1px solid #d7dbd1;
+    border-top: 1px solid $color-border;
     display: flex;
     flex-direction: row;
     justify-content: stretch;
-    min-height: 40px;
-    padding: 0 10px;
+    min-height: $row-height-min;
+    padding: 0 12px;
 
     &.gu-mirror {
-        background: #f7f7f7;
-        border: 1px solid #999;
+        background: $color-bg;
+        border: 1px solid $color-border;
     }
 
     &.lpQtyZero {
-        background: #f3f1ea;
-        color: #6e7168;
+        background: $color-bg;
+        color: $color-text-muted;
 
         .lpName,
         .lpDescription,
@@ -197,16 +200,16 @@ input.lpCategoryName { /* specificity */
 
 .lpItemsHeader {
     align-items: center;
-    background: #edf1e8;
-    border-bottom: 1px solid #9aa191;
+    background: rgba(var(--color-accent-rgb), 0.06);
+    border-bottom: 1px solid $color-border;
     border-top: none;
-    color: #41473f;
+    color: $color-text;
     min-height: 38px;
 }
 
 .lpItemsFooter {
-    background: #f6f7f2;
-    border-top: 1px solid #c4cabe;
+    background: $color-bg;
+    border-top: 1px solid $color-border;
     justify-content: flex-end;
 }
 
@@ -256,16 +259,18 @@ input.lpCategoryName { /* specificity */
     .lpWeightCell,
     .lpQtyCell,
     .lpPriceCell {
-        color: #52584d;
-        font-size: 12px;
-        font-weight: 700;
+        color: $color-text-muted;
+        font-size: $fontSize-xs;
+        font-weight: $fontWeight-bold;
+        letter-spacing: $letterSpacing-caps;
         text-align: center;
+        text-transform: uppercase;
     }
 }
 
 .lpCategoryName,
 .lpItemsFooter .lpSubtotal {
-    color: #2f352d;
+    color: $color-text;
 }
 
 .lpItem {
@@ -275,5 +280,6 @@ input.lpCategoryName { /* specificity */
 .lpItem .lpPrice,
 .lpItem .lpWeight,
 .lpItem .lpQty {
-    color: #383d36;
+    color: $color-text;
+    font-variant-numeric: tabular-nums;
 }

@@ -1,8 +1,9 @@
 <style lang="scss">
+@import "../css/_globals";
 
 .lpLegend {
     &:hover {
-        border-color: #666;
+        border-color: $color-text-muted;
         cursor: pointer;
     }
 }

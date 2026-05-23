@@ -42,12 +42,14 @@ $welcomeVerticalSpacing: 80px;
 
 .lpWelcomeRegisterContainer,
 .lpWelcomeSigninContainer {
-    background: rgba(255, 255, 255, 0.9);
-    border-top: 2px solid $orange1;
+    background: $color-surface;
+    border-top: 2px solid $color-accent;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+    color: $color-text;
     padding: $spacingLarge;
 
     .lpWelcomeContainerHeader {
+        color: $color-text;
         font-size: 20px;
     }
 }

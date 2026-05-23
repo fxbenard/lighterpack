@@ -10,15 +10,15 @@
 }
 
 .lpLibraryList {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    color: #eef2e7;
+    border-top: 1px solid $color-border;
+    color: $color-text;
     display: flex;
     list-style: none;
     margin: 0 10px;
     overflow-y: auto;
     padding: 8px 10px;
     position: relative;
-    transition: background 0.1s ease, color 0.1s ease;
+    transition: background $transitionDurationFast ease, color $transitionDurationFast ease;
 
     &:first-child {
         border-top: none;
@@ -30,9 +30,9 @@
     }
 
     &.lpActive {
-        background: rgba(255, 255, 255, 0.08);
-        color: #fff6bf;
-        font-weight: bold;
+        background: rgba(var(--color-accent-rgb), 0.08);
+        color: $color-accent;
+        font-weight: $fontWeight-bold;
 
         .lpRemove {
             display: none;
@@ -40,9 +40,9 @@
     }
 
     &.gu-mirror {
-        background: #606060;
-        border: 1px solid #999;
-        color: #fff;
+        background: $color-bg;
+        border: 1px solid $color-border;
+        color: $color-text;
     }
 
     .lpHandle {
@@ -56,7 +56,7 @@
     }
 
     &:hover {
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(var(--color-accent-rgb), 0.04);
     }
 
     .lpListName {

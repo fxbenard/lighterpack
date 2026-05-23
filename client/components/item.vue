@@ -1,9 +1,10 @@
 <style lang="scss">
+@import "../css/_globals";
 
 .lpItem {
     &:hover,
     &.ui-sortable-helper {
-        background: #fff;
+        background: $color-surface;
 
         .lpRemove,
         .lpWorn,

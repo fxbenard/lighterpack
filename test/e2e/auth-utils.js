@@ -14,12 +14,25 @@ export async function getSharedUser(page) {
 
 export async function registerUser(page, username, password, email) {
     await page.goto(testRoot);
-  
+
     await page.fill('.lpRegister input[name="username"]', username);
     await page.fill('.lpRegister input[name="email"]', email);
     await page.fill('.lpRegister input[name="password"]', password);
     await page.fill('.lpRegister input[name="passwordConfirm"]', password);
     await page.getByRole('button').filter({hasText: 'Register'}).click();
+    await page.getByText('Start blank').click();
+}
+
+export async function registerUserWithTemplate(page, username, password, email, templateName) {
+    await page.goto(testRoot);
+
+    await page.fill('.lpRegister input[name="username"]', username);
+    await page.fill('.lpRegister input[name="email"]', email);
+    await page.fill('.lpRegister input[name="password"]', password);
+    await page.fill('.lpRegister input[name="passwordConfirm"]', password);
+    await page.getByRole('button').filter({hasText: 'Register'}).click();
+    await page.getByText(templateName).waitFor();
+    await page.getByText(templateName).locator('..').locator('..').getByRole('button', { name: 'Select' }).click();
 }
 
 export async function loginUser(page, username, password) {

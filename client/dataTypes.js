@@ -426,7 +426,7 @@ Library.prototype.removeList = function (id) {
     if (Object.size(this.lists) == 1) return;
     const list = this.getListById(id);
 
-    for (var i = 0; i < list.categoryIds; i++) {
+    for (var i = 0; i < list.categoryIds.length; i++) {
         this.removeCategory(list.categoryIds[i], true);
     }
 
@@ -435,8 +435,8 @@ Library.prototype.removeList = function (id) {
 
     if (this.defaultListId == id) {
         let newId = -1;
-        for (var i in lists) {
-            newId = i;
+        for (var i in this.lists) {
+            newId = this.lists[i].id;
             break;
         }
         this.defaultListId = newId;

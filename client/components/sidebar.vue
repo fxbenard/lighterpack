@@ -68,11 +68,35 @@ $sidebarPadding: 20px;
     display: flex;
     flex-direction: column;
     height: 100%;
+    overflow-y: auto;
+    padding-bottom: 20px;
     position: relative;
     top: 0;
 
     > h1 {
         flex: 0 0 auto;
+    }
+}
+
+.lpThemeToggle {
+    align-items: center;
+    background: $color-bg;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    color: $color-text-muted;
+    cursor: pointer;
+    display: flex;
+    font-family: $font-family-base;
+    font-size: $fontSize-sm;
+    gap: 6px;
+    margin-top: auto;
+    padding: 8px 12px;
+    transition: color $transitionDurationFast, border-color $transitionDurationFast;
+    width: 100%;
+
+    &:hover {
+        border-color: $color-accent;
+        color: $color-text;
     }
 }
 
@@ -85,6 +109,10 @@ $sidebarPadding: 20px;
 
             <libraryLists />
             <libraryItems />
+
+            <button class="lpThemeToggle" @click="cycleTheme">
+                {{ themeIcon }} {{ themeLabel }}
+            </button>
         </div>
     </div>
 </template>
@@ -92,12 +120,25 @@ $sidebarPadding: 20px;
 <script>
 import libraryItems from './library-items.vue';
 import libraryLists from './library-lists.vue';
+import { useTheme } from '../composables/useTheme.js';
 
 export default {
     name: 'Sidebar',
     components: {
         libraryItems,
         libraryLists,
+    },
+    setup() {
+        const { mode, cycleTheme } = useTheme();
+        return { mode, cycleTheme };
+    },
+    computed: {
+        themeIcon() {
+            return { auto: '⚙', light: '☀', dark: '☾' }[this.mode];
+        },
+        themeLabel() {
+            return { auto: 'Auto', light: 'Light', dark: 'Dark' }[this.mode];
+        },
     },
 };
 </script>

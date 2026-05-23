@@ -23,6 +23,7 @@
     input,
     select,
     textarea {
+        background: $color-surface;
         color: $color-text;
         font-family: $font-family-base;
         font-size: $fontSize-base;
@@ -186,7 +187,7 @@
 
         &:focus {
             border-color: $color-accent;
-            box-shadow: 0 0 0 3px rgba($color-accent, 0.15);
+            box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb), 0.15);
             outline: none;
         }
     }
@@ -244,7 +245,7 @@
     }
 
     &:focus:not(:active) {
-        box-shadow: 0 0 0 3px rgba($color-accent, 0.3);
+        box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb), 0.3);
         outline: none;
     }
 
@@ -347,6 +348,7 @@
     background: $yellow2;
     border: 1px solid $darkYellow;
     border-radius: 5px;
+    color: #1a1a1a;
     padding: 10px;
 }
 

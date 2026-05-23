@@ -14,9 +14,9 @@
     }
 
     .lpContent {
-        background: #fff;
+        background: $color-surface;
         box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
-        color: $content;
+        color: $color-text;
         left: 50%;
         margin-top: 15px;
         min-width: 100%;
@@ -31,7 +31,7 @@
         z-index: $dialog;
 
         &::before {
-            background-color: #fff;
+            background-color: $color-surface;
             box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
             content: "";
             display: block;
@@ -46,7 +46,7 @@
         }
 
         &::after {
-            background: #fff;
+            background: $color-surface;
             content: "";
             display: block;
             height: 15px;

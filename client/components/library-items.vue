@@ -58,7 +58,7 @@
     }
 
     &:hover {
-        background: rgba($color-accent, 0.04);
+        background: rgba(var(--color-accent-rgb), 0.04);
     }
 
     .lpName {

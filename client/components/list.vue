@@ -21,7 +21,7 @@
 }
 
 #getStarted {
-    background: darken($background1, 10%);
+    background: $color-bg;
     display: flex;
     flex-direction: column;
     height: 220px;

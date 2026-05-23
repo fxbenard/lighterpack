@@ -30,7 +30,7 @@
     }
 
     &.lpActive {
-        background: rgba($color-accent, 0.08);
+        background: rgba(var(--color-accent-rgb), 0.08);
         color: $color-accent;
         font-weight: $fontWeight-bold;
 
@@ -56,7 +56,7 @@
     }
 
     &:hover {
-        background: rgba($color-accent, 0.04);
+        background: rgba(var(--color-accent-rgb), 0.04);
     }
 
     .lpListName {

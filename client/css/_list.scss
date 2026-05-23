@@ -11,6 +11,54 @@
     .lpHasSidebar & {
         margin-left: 320px;
     }
+
+    @media (max-width: 768px) {
+        padding: 0 12px;
+
+        .lpHasSidebar & {
+            margin-left: 0;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .lpItem,
+    .lpItemsHeader,
+    .lpItemsFooter {
+        .lpPriceCell {
+            display: none;
+        }
+    }
+
+    .lpItem {
+        .lpDescription {
+            display: none;
+        }
+
+        .lpActionsCell {
+            flex-basis: 80px;
+        }
+    }
+
+    .lpCategory {
+        margin-bottom: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .lpItem,
+    .lpItemsHeader,
+    .lpItemsFooter {
+        padding: 0 8px;
+
+        .lpWeightCell {
+            flex: 0 0 80px;
+        }
+
+        .lpQtyCell {
+            flex: 0 0 44px;
+        }
+    }
 }
 
 #totals {

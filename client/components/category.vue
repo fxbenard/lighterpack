@@ -66,7 +66,7 @@
             <li class="lpFooter lpItemsFooter">
                 <span class="lpAddItemCell" style="position:relative">
                     <input
-                        v-if="showSuggestions || newItemName"
+                        v-if="showSuggestions || newItemName || showInput"
                         v-model="newItemName"
                         type="text"
                         class="lpSilent lpAddItemInput"
@@ -125,6 +125,7 @@ export default {
             newItemName: '',
             suggestions: [],
             showSuggestions: false,
+            showInput: false,
         };
     },
     computed: {
@@ -143,9 +144,9 @@ export default {
             this.newItemName = '';
             this.suggestions = [];
             this.showSuggestions = false;
+            this.showInput = false;
         },
         onNewItemInput(evt) {
-            this.newItemName = evt.target.value;
             this.suggestions = suggestItems(
                 this.newItemName,
                 this.library.items,
@@ -158,13 +159,19 @@ export default {
             this.newItemName = '';
             this.suggestions = [];
             this.showSuggestions = false;
+            this.showInput = false;
         },
         dismissSuggestions() {
-            setTimeout(() => { this.showSuggestions = false; }, 150);
+            setTimeout(() => {
+                this.showSuggestions = false;
+                this.newItemName = '';
+                this.showInput = false;
+            }, 150);
         },
         showAddInput() {
             this.showSuggestions = false;
             this.newItemName = '';
+            this.showInput = true;
             this.$nextTick(() => {
                 const input = this.$el.querySelector('.lpAddItemInput');
                 if (input) input.focus();

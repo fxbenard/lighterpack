@@ -323,7 +323,7 @@ export default {
         displayWeight,
         displayPrice,
         addFilterTag() {
-            const tag = this.tagInput.trim();
+            const tag = this.tagInput.trim().toLowerCase();
             if (tag && !this.filterTags.includes(tag)) {
                 this.filterTags.push(tag);
             }

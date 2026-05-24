@@ -286,7 +286,7 @@ const store = createStore({
 
                 categoryItem = category.getCategoryItemById(item.id);
                 if (categoryItem) {
-                    categoryItem.qty = parseFloat(row.qty);
+                    categoryItem.qty = parseFloat(row.qty) || 1;
                     categoryItem.worn = row.worn;
                     categoryItem.consumable = row.consumable;
                 }

@@ -141,13 +141,14 @@
 }
 
 .lpRemove {
+    align-items: center;
     border-radius: 16px;
     cursor: pointer;
-    display: inline-block;
-    line-height: 8px;
-    margin-bottom: 3px;
+    display: inline-flex;
+    justify-content: center;
+    line-height: 1;
     opacity: 0.4;
-    padding: 5px 6px 6px;
+    padding: 5px 6px;
     visibility: hidden;
 
     &:hover {

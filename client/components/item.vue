@@ -208,7 +208,7 @@ export default {
         },
         setDisplayPrice() {
             if (!this.priceError) {
-                this.displayPrice = this.item.price.toFixed(2);
+                this.displayPrice = (this.item.price ?? 0).toFixed(2);
             }
         },
         setDisplayQty() {

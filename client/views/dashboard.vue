@@ -3,13 +3,16 @@
 
 #header {
     align-items: center;
-    border-bottom: 1px solid #d4d9ce;
+    background: $color-surface;
+    border-bottom: 1px solid $color-border;
     display: flex;
     gap: 2px;
+    margin: 0 -20px 20px;
     min-height: 60px;
-    margin: 0 -20px 20px; /* lpList padding */
     padding: 0 8px;
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: $belowDialog;
 }
 
 #hamburger {
@@ -59,15 +62,22 @@
 
 #lpListName {
     background: transparent;
-    border-radius: 4px;
-    font-size: 24px;
-    font-weight: 600;
+    border-radius: $radius-sm;
+    color: $color-text;
+    font-size: $fontSize-md;
+    font-weight: $fontWeight-bold;
+    letter-spacing: -0.01em;
     padding: 10px 14px;
+
+    &::placeholder {
+        color: $color-text-muted;
+        font-weight: $fontWeight-normal;
+    }
 }
 
 .headerItem {
     flex: 0 0 auto;
-    color: #50554d;
+    color: $color-text-muted;
     height: 100%;
     padding: 10px 12px;
     position: relative;
@@ -78,7 +88,7 @@
 
     .lpPopover {
         &:hover .lpTarget {
-            color: $blue1;
+            color: $color-accent;
         }
     }
 

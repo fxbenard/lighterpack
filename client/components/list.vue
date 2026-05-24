@@ -22,26 +22,42 @@
 
 #getStarted {
     background: $color-bg;
+    border-radius: $radius-lg;
     display: flex;
     flex-direction: column;
-    height: 220px;
     justify-content: center;
-    line-height: 1.6;
-    padding: $spacingLarge;
+    line-height: 1.7;
+    margin-bottom: $spacingLarge;
+    min-height: 200px;
+    padding: $spacingLarge * 1.5;
 
     h2 {
-        font-size: 24px;
-        line-height: 1;
+        color: $color-text;
+        font-size: 22px;
+        font-weight: $fontWeight-bold;
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        margin: 0 0 $spacingMedium;
     }
 
-    h2,
-    p,
-    ol {
-        margin: 0 0 $spacingMedium;
+    p {
+        color: $color-text-muted;
+        font-size: $fontSize-base;
+        margin: 0 0 $spacingSmall;
+    }
 
-        &:last-child {
-            margin-bottom: 0;
+    ol {
+        color: $color-text-muted;
+        margin: 0 0 $spacingMedium;
+        padding-left: 20px;
+
+        li {
+            margin-bottom: 4px;
         }
+    }
+
+    & > *:last-child {
+        margin-bottom: 0;
     }
 }
 

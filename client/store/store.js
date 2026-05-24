@@ -257,8 +257,21 @@ const store = createStore({
 
                 if (decision === 'merge' && row._match.item) {
                     item = state.library.getItemById(row._match.item.id);
-                    category.addItem({ itemId: item.id, _isNew: false });
-                    mergedCount++;
+                    if (item) {
+                        category.addItem({ itemId: item.id, _isNew: false, qty: parseFloat(row.qty) || 1 });
+                        mergedCount++;
+                    } else {
+                        // Item was deleted — fall back to creating new
+                        item = state.library.newItem({ category, _isNew: false });
+                        item.name = row.name;
+                        item.description = row.description;
+                        item.url = row.url;
+                        item.price = row.price;
+                        if (row.brand) item.brand = row.brand;
+                        item.weight = weightUtils.WeightToMg(parseFloat(row.weight), row.unit);
+                        item.authorUnit = row.unit;
+                        newCount++;
+                    }
                 } else {
                     item = state.library.newItem({ category, _isNew: false });
                     item.name = row.name;

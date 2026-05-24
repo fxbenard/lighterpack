@@ -1,13 +1,13 @@
 <style lang="scss">
+@import "../css/_globals";
 
 .lpQtySubtotal {
-    padding-right: 25px; /* Accommodates delete column */
+    padding-right: 25px;
 }
 
-.lpPriceSubtotal { /* unused? */
+.lpPriceSubtotal {
     padding-right: 4px;
 }
-
 </style>
 
 <template>

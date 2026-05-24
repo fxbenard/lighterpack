@@ -333,3 +333,33 @@ input.lpCategoryName { /* specificity */
     color: $color-text;
     font-variant-numeric: tabular-nums;
 }
+
+/* micro-interactions */
+.lpCategory {
+    animation: lpFadeUp 0.18s ease-out both;
+}
+
+@keyframes lpFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.lpItem {
+    &:hover .lpActionsCell i {
+        visibility: visible;
+    }
+}
+
+.lpActionsCell i {
+    transition: opacity $transitionDurationFast ease, transform $transitionDurationFast ease;
+
+    &:active {
+        transform: scale(0.85);
+    }
+}

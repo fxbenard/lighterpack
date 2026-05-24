@@ -1,6 +1,25 @@
 <style lang="scss">
 @import "../css/_globals";
 
+.lp-list-enter-active {
+    animation: lpSlideDown 0.2s ease-out;
+}
+
+.lp-list-leave-active {
+    animation: lpSlideDown 0.15s ease-in reverse;
+}
+
+@keyframes lpSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 #listDescriptionContainer {
     margin: 25px 0;
 
@@ -89,9 +108,9 @@
             <textarea id="listDescription" v-model="list.description" @input="updateListDescription" />
         </div>
 
-        <ul ref="categories" class="lpCategories">
+        <TransitionGroup name="lp-list" tag="ul" ref="categories" class="lpCategories">
             <category v-for="category in categories" :key="category.id" :category="category" />
-        </ul>
+        </TransitionGroup>
 
         <hr>
 

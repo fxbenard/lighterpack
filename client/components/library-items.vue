@@ -94,10 +94,9 @@
     }
 
     .lpRemove {
+        bottom: 0;
         position: absolute;
         right: 14px;
-        top: 50%;
-        transform: translateY(-50%);
     }
 
     #library.lpSearching & {

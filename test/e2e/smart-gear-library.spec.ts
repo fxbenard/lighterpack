@@ -52,7 +52,7 @@ test.describe("Smart Gear Library", () => {
     await expect(page.locator(".lpLibraryFilterSelect")).toBeVisible();
   });
 
-  test("library sidebar category filter shows only matching items", async ({
+  test("library sidebar category filter select can be changed", async ({
     page,
   }) => {
     const now = Date.now();

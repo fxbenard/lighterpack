@@ -195,13 +195,15 @@ input.lpCategoryName { /* specificity */
     .lpName {
         flex: 1 1 150px;
         margin-right: 4px;
-        min-width: 50px;
+        min-width: 0;
+        overflow: hidden;
     }
 
     .lpDescription {
         flex: 2 0 200px;
         margin-right: 4px;
-        min-width: 100px;
+        min-width: 0;
+        overflow: hidden;
     }
 
     .lpActionsCell {

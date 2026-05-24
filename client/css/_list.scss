@@ -2,6 +2,7 @@
 
 .lpList {
     background: inherit;
+    max-width: 960px;
     min-height: 100%;
     padding: 0 20px;
     position: relative;
@@ -10,6 +11,7 @@
 
     .lpHasSidebar & {
         margin-left: 320px;
+        max-width: calc(100vw - 320px);
     }
 
     @media (max-width: 768px) {

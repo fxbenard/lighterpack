@@ -305,6 +305,7 @@ export default {
         importList() {
             this.$store.commit('importCSV', this.importData);
             this.shown = false;
+            if (this.csvInput) this.csvInput.value = '';
         },
         displayWeight,
         resolveReview(rowIndex, decision) {

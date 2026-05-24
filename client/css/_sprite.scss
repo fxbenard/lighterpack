@@ -32,7 +32,7 @@
 .lpSpriteRemove {
     background-position: -25px 0;
     height: 8px;
-    top: 0;
+    top: auto;
     width: 8px;
 
     .lpRemove:hover & {

@@ -101,8 +101,9 @@ const store = createStore({
         updateCurrencySymbol(state, currencySymbol) {
             state.library.currencySymbol = currencySymbol;
         },
-        newItem(state, { category, _isNew }) {
-            state.library.newItem({ category, _isNew });
+        newItem(state, { category, _isNew, name }) {
+            const item = state.library.newItem({ category, _isNew });
+            if (name) item.name = name;
             state.library.getListById(state.library.defaultListId).calculateTotals();
         },
         newCategory(state, list) {

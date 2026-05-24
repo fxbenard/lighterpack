@@ -127,9 +127,9 @@
                 <span class="importBadge">{{ acceptedRowCount }} accepted</span>
                 <span v-if="rejectedRowCount" class="importBadge isRejected">{{ rejectedRowCount }} rejected</span>
             </p>
-            <p v-if="importData.mergeCount || importData.reviewCount" class="importSummary">
+            <p v-if="importData.mergeCount || reviewCount" class="importSummary">
                 <span v-if="importData.mergeCount" class="importBadge">{{ importData.mergeCount }} will merge with existing gear</span>
-                <span v-if="importData.reviewCount" class="importBadge isAmbiguous">{{ importData.reviewCount }} need your review</span>
+                <span v-if="reviewCount" class="importBadge isAmbiguous">{{ reviewCount }} need your review</span>
             </p>
             <ul v-if="rejectedRowCount" class="importErrors">
                 <li v-for="row in importData.rejectedRows" :key="row.rowNumber">
@@ -164,7 +164,7 @@
                     </li>
                 </ul>
             </div>
-            <div v-if="importData.reviewCount" class="importReview">
+            <div v-if="reviewCount" class="importReview">
                 <h3>Review these items</h3>
                 <div v-for="(row, index) in ambiguousRows" :key="index" class="importReviewRow">
                     <div class="importReviewCol">
@@ -249,6 +249,9 @@ export default {
         ambiguousRows() {
             if (!this.importData.data) return [];
             return this.importData.data.filter(row => row._match && row._match.decision === 'review');
+        },
+        reviewCount() {
+            return this.ambiguousRows.length;
         },
     },
     mounted() {

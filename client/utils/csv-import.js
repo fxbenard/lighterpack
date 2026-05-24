@@ -120,6 +120,7 @@ function parseImportCsv(input, name) {
         const weight = parseNumber(getCell(row, columnIndexes, 'weight', 4));
         const unit = unitAliases[normalizeField(getCell(row, columnIndexes, 'unit', 5)).toLowerCase()];
         const price = parseNumber(getCell(row, columnIndexes, 'price', 7));
+        const brand = normalizeField(getCell(row, columnIndexes, 'brand', -1));
 
         if (!itemName) {
             rejectRow(importData, rowNumber, 'missing item name');
@@ -149,6 +150,7 @@ function parseImportCsv(input, name) {
             price: Number.isNaN(price) ? 0 : price,
             worn: parseBooleanMarker(getCell(row, columnIndexes, 'worn', 8), 'worn'),
             consumable: parseBooleanMarker(getCell(row, columnIndexes, 'consumable', 9), 'consumable'),
+            brand,
         });
         importData.acceptedRows += 1;
     });

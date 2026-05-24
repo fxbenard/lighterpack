@@ -115,11 +115,94 @@
         width: 235px;
     }
 }
+
+.lpLibraryFilters {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+    padding: 0 10px;
+}
+
+.lpLibraryFilterSelect {
+    background: $color-bg;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    color: $color-text;
+    font-size: $fontSize-sm;
+    padding: 4px 6px;
+    width: 100%;
+    &:focus { border-color: $color-accent; outline: none; }
+}
+
+.lpTagFilter {
+    align-items: center;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-height: 28px;
+    padding: 3px 6px;
+    &:focus-within { border-color: $color-accent; }
+}
+
+.lpTagChip {
+    align-items: center;
+    background: rgba(var(--color-accent-rgb), 0.12);
+    border-radius: 999px;
+    color: $color-text;
+    display: flex;
+    font-size: $fontSize-sm;
+    gap: 4px;
+    padding: 2px 8px;
+}
+
+.lpTagChipRemove {
+    background: none;
+    border: none;
+    color: $color-text-muted;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    &:hover { color: $color-text; }
+}
+
+.lpTagInput {
+    background: transparent;
+    border: none;
+    color: $color-text;
+    flex: 1;
+    font-size: $fontSize-sm;
+    min-width: 80px;
+    padding: 2px 0;
+    &:focus { outline: none; }
+    &::placeholder { color: $color-text-muted; }
+}
 </style>
 
 <template>
     <section id="libraryContainer">
         <h2>Gear</h2>
+        <div class="lpLibraryFilters">
+            <select v-model="filterCategory" class="lpLibraryFilterSelect">
+                <option value="">All categories</option>
+                <option v-for="cat in gearCategories" :key="cat" :value="cat">{{ cat }}</option>
+            </select>
+            <div class="lpTagFilter">
+                <span v-for="tag in filterTags" :key="tag" class="lpTagChip">
+                    {{ tag }}<button class="lpTagChipRemove" @click="removeFilterTag(tag)">×</button>
+                </span>
+                <input
+                    v-model="tagInput"
+                    type="text"
+                    class="lpTagInput"
+                    placeholder="Filter by tag..."
+                    @keydown.enter.prevent="addFilterTag"
+                />
+            </div>
+        </div>
         <input id="librarySearch" v-model="searchText" type="text" placeholder="search items">
         <ul id="library" ref="library">
             <li v-for="item in filteredItems" :key="item.id" class="lpLibraryItem" :data-item-id="item.id">
@@ -147,12 +230,20 @@ import { createDragDrop, getDatasetInt, queryContainers } from '../services/drag
 
 const { displayWeight, displayPrice } = useUtils();
 
+const GEAR_CATEGORIES = [
+    'Shelter', 'Sleep', 'Clothing', 'Water', 'Food', 'Cook',
+    'Navigation', 'Safety', 'Hygiene', 'Essentials', 'Other',
+];
+
 export default {
     name: 'LibraryItem',
     props: ['item'],
     data() {
         return {
             searchText: '',
+            filterCategory: '',
+            filterTags: [],
+            tagInput: '',
             itemDragId: false,
             drake: null,
         };
@@ -160,6 +251,9 @@ export default {
     computed: {
         library() {
             return this.$store.state.library;
+        },
+        gearCategories() {
+            return GEAR_CATEGORIES;
         },
         filteredItems() {
             let i;
@@ -176,6 +270,19 @@ export default {
                         filteredItems.push({ ...item });
                     }
                 }
+            }
+
+            if (this.filterCategory) {
+                filteredItems = filteredItems.filter(item =>
+                    (item.category || '').toLowerCase() === this.filterCategory.toLowerCase()
+                );
+            }
+            if (this.filterTags.length) {
+                filteredItems = filteredItems.filter(item =>
+                    this.filterTags.every(tag =>
+                        (item.tags || []).map(t => t.toLowerCase()).includes(tag.toLowerCase())
+                    )
+                );
             }
 
             const currentListItems = this.library.getItemsInCurrentList();
@@ -215,6 +322,16 @@ export default {
     methods: {
         displayWeight,
         displayPrice,
+        addFilterTag() {
+            const tag = this.tagInput.trim();
+            if (tag && !this.filterTags.includes(tag)) {
+                this.filterTags.push(tag);
+            }
+            this.tagInput = '';
+        },
+        removeFilterTag(tag) {
+            this.filterTags = this.filterTags.filter(t => t !== tag);
+        },
         handleItemDrag() {
             if (this.drake) {
                 this.drake.destroy();

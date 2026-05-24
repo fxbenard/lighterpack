@@ -13,17 +13,47 @@
 }
 
 #hamburger {
+    align-items: center;
     cursor: pointer;
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
     opacity: 0.6;
-    transition: transform $transitionDurationSlow;
+    padding: 4px;
+    transition: transform $transitionDurationSlow, opacity $transitionDurationFast;
 
     &:hover {
         opacity: 1;
     }
 
     .lpHasSidebar & {
-        transform: rotate(90deg);
+        opacity: 1;
+    }
+
+    .lpHamburgerLine {
+        background: $color-text;
+        border-radius: 2px;
+        display: block;
+        height: 2px;
+        transition: transform $transitionDurationFast, opacity $transitionDurationFast;
+        width: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    #sidebar {
+        transform: translateX(-100%);
+        transition: transform $transitionDurationSlow ease-in-out;
+
+        .lpHasSidebar & {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    #main .lpList {
+        margin-left: 0 !important;
     }
 }
 
@@ -79,7 +109,11 @@
         <div class="lpList lpTransition">
             <div id="header" class="clearfix">
                 <span class="headerItem">
-                    <a id="hamburger" class="lpTransition" @click="toggleSidebar"><i class="lpSprite lpHamburger" /></a>
+                    <a id="hamburger" class="lpTransition" @click="toggleSidebar">
+                        <span class="lpHamburgerLine" />
+                        <span class="lpHamburgerLine" />
+                        <span class="lpHamburgerLine" />
+                    </a>
                 </span>
                 <input id="lpListName" :value="list.name" type="text" class="lpListName lpSilent headerItem" value="New List" placeholder="List Name" autocomplete="off" name="lastpass-disable-search" @input="updateListName">
                 <share />

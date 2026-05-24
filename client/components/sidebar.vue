@@ -81,7 +81,17 @@ $sidebarPadding: 20px;
 @media (max-width: 768px) {
     #sidebar {
         box-shadow: 4px 0 16px rgba(0, 0, 0, 0.18);
+        margin-left: 0;
+        opacity: 1;
+        padding-left: $sidebarPadding;
+        transform: translateX(-100%);
+        transition: transform $transitionDurationSlow ease-in-out;
+        width: $sidebarWidth + $sidebarPadding * 2;
         z-index: $dialog;
+
+        .lpHasSidebar & {
+            transform: translateX(0);
+        }
     }
 
     .lpSidebarOverlay {

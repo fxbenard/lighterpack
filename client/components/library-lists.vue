@@ -101,7 +101,7 @@
             <h2>Lists</h2>
             <PopoverHover id="addListFlyout">
                 <template #target><span><a class="lpAdd" @click="newList"><i class="lpSprite lpSpriteAdd" />Add new list</a></span></template>
-                <template #content><div>
+                <template #content><div style="display:flex;flex-direction:column;gap:8px;">
                     <a class="lpAdd" @click="newList"><i class="lpSprite lpSpriteAdd" />Add new list</a>
                     <a class="lpAdd" @click="importCSV"><i class="lpSprite lpSpriteUpload" />Import CSV</a>
                     <a class="lpCopy" @click="copyList"><i class="lpSprite lpSpriteCopy" />Copy a list</a>

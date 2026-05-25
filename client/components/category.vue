@@ -109,6 +109,7 @@
 <script>
 import item from './item.vue';
 import { openSpeedbump } from '../services/speedbump';
+import { openDialog } from '../services/dialogs';
 import { useUtils } from '../composables/useUtils.js';
 import { suggestItems } from '../composables/useGearMatcher.js';
 
@@ -140,7 +141,7 @@ export default {
         displayWeight,
         displayPrice,
         newItem() {
-            this.$store.commit('newItem', { category: this.category, _isNew: true, name: this.newItemName });
+            openDialog('gearPicker', { category: this.category });
             this.newItemName = '';
             this.suggestions = [];
             this.showSuggestions = false;

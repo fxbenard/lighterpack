@@ -194,6 +194,17 @@
     gap: 8px;
     padding: 14px 20px;
 
+    .itemDetailRemove {
+        color: $color-text-muted;
+        cursor: pointer;
+        font-size: $fontSize-sm;
+        text-decoration: none;
+
+        &:hover {
+            color: $color-text;
+        }
+    }
+
     .itemDetailDelete {
         align-items: center;
         color: $color-danger;
@@ -429,8 +440,11 @@
                 </div>
 
                 <div class="itemDetailFooter">
-                    <a class="itemDetailDelete" @click="removeItem">
-                        🗑 Delete
+                    <a v-if="category" class="itemDetailRemove" @click="removeFromList">
+                        ↩ Remove from list
+                    </a>
+                    <a class="itemDetailDelete" @click="deleteGear">
+                        🗑 Delete gear
                     </a>
                     <div class="itemDetailSpacer" />
                     <button class="lpButton itemDetailEdit" @click="startEdit">
@@ -537,8 +551,8 @@
 
 <script>
 import modal from './modal.vue';
-import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
-import { openDialog } from '../services/dialogs';
+import { openSpeedbump } from '../services/speedbump';
+import { registerDialogOpener, unregisterDialogOpener, openDialog } from '../services/dialogs';
 
 const weightUtils = require('../utils/weight.js');
 
@@ -668,14 +682,22 @@ export default {
             this.item = { ...updatedItem };
             this.editing = false;
         },
-        removeItem() {
-            if (this.category) {
-                this.$store.commit('removeItemFromCategory', {
-                    itemId: this.item.id,
-                    category: this.category,
-                });
-            }
+        removeFromList() {
+            this.$store.commit('removeItemFromCategory', {
+                itemId: this.item.id,
+                category: this.category,
+            });
             this.close();
+        },
+        deleteGear() {
+            const callback = () => {
+                this.$store.commit('removeItem', this.item);
+                this.close();
+            };
+            const speedbumpOptions = {
+                body: `Delete "${this.item.name || 'this item'}" from your gear room? It will be removed from all lists.`,
+            };
+            openSpeedbump(callback, speedbumpOptions);
         },
         async fetchGear() {
             if (!this.editUrl || this.fetchLoading) return;

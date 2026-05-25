@@ -83,6 +83,17 @@
     }
 }
 
+.lpTag {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath fill='%23999' d='M2 2h5l5 5-5 5-5-5V2zm2 2a1 1 0 1 0 0-2 1 1 0 0 0 0 2z'/%3E%3C/svg%3E");
+    background-position: 0 0;
+    background-size: 14px;
+    width: 14px;
+
+    &.lpActive {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath fill='%232D7A4F' d='M2 2h5l5 5-5 5-5-5V2zm2 2a1 1 0 1 0 0-2 1 1 0 0 0 0 2z'/%3E%3C/svg%3E");
+    }
+}
+
 .lpUp {
     background-position: -200px 0;
     height: 7px;

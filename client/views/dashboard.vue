@@ -159,6 +159,7 @@
         <itemImage />
         <itemViewImage />
         <itemLink />
+        <itemMeta />
         <help />
         <account />
         <accountDelete />
@@ -180,6 +181,7 @@ import list from '../components/list.vue';
 import itemImage from '../components/item-image.vue';
 import itemViewImage from '../components/item-view-image.vue';
 import itemLink from '../components/item-link.vue';
+import itemMeta from '../components/item-meta.vue';
 import importCSV from '../components/import-csv.vue';
 import copyList from '../components/copy-list.vue';
 import speedbump from '../components/speedbump.vue';
@@ -198,6 +200,7 @@ export default {
         help,
         list,
         itemLink,
+        itemMeta,
         copyList,
         importCSV,
         itemImage,

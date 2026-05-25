@@ -163,6 +163,7 @@ input.lpCategoryName { /* specificity */
 
         .lpName,
         .lpDescription,
+        .lpItemMeta,
         .lpWeightCell,
         .lpQtyCell,
         .lpPriceCell,
@@ -192,18 +193,46 @@ input.lpCategoryName { /* specificity */
         }
     }
 
+    .lpNameCell {
+        display: flex;
+        flex: 3 1 350px;
+        flex-wrap: wrap;
+        gap: 0 4px;
+        min-width: 0;
+    }
+
     .lpName {
         flex: 1 1 150px;
-        margin-right: 4px;
         min-width: 0;
         overflow: hidden;
     }
 
     .lpDescription {
         flex: 2 0 200px;
-        margin-right: 4px;
         min-width: 0;
         overflow: hidden;
+    }
+
+    .lpItemMeta {
+        align-items: center;
+        color: $color-text-muted;
+        display: flex;
+        flex: 0 0 100%;
+        font-size: $fontSize-sm;
+        gap: 4px;
+        padding-bottom: 2px;
+    }
+
+    .lpItemBrand {
+        font-weight: $fontWeight-medium;
+    }
+
+    .lpItemMetaSep {
+        opacity: 0.4;
+    }
+
+    .lpItemCategory {
+        font-style: italic;
     }
 
     .lpActionsCell {

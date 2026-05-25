@@ -104,6 +104,7 @@ const store = createStore({
         newItem(state, { category, _isNew, name }) {
             const item = state.library.newItem({ category, _isNew });
             if (name) item.name = name;
+            if (category && category.name && !item.category) item.category = category.name;
             state.library.getListById(state.library.defaultListId).calculateTotals();
         },
         newCategory(state, list) {
@@ -258,6 +259,8 @@ const store = createStore({
                 if (decision === 'merge' && row._match.item) {
                     item = state.library.getItemById(row._match.item.id);
                     if (item) {
+                        if (row.category && !item.category) item.category = row.category;
+                        if (row.brand && !item.brand) item.brand = row.brand;
                         category.addItem({ itemId: item.id, _isNew: false, qty: parseFloat(row.qty) || 1 });
                         mergedCount++;
                     } else {
@@ -267,6 +270,7 @@ const store = createStore({
                         item.description = row.description;
                         item.url = row.url;
                         item.price = row.price;
+                        if (row.category) item.category = row.category;
                         if (row.brand) item.brand = row.brand;
                         item.weight = weightUtils.WeightToMg(parseFloat(row.weight), row.unit);
                         item.authorUnit = row.unit;
@@ -278,6 +282,7 @@ const store = createStore({
                     item.description = row.description;
                     item.url = row.url;
                     item.price = row.price;
+                    if (row.category) item.category = row.category;
                     if (row.brand) item.brand = row.brand;
                     item.weight = weightUtils.WeightToMg(parseFloat(row.weight), row.unit);
                     item.authorUnit = row.unit;

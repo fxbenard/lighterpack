@@ -75,13 +75,12 @@ test.describe("Smart Gear Library", () => {
     await page.locator("#importConfirm").click();
     await importSave;
 
-    // NOTE: category filter only works if items have item.category set.
-    // brand-dedup.csv sets the list category (category column), NOT item.category.
-    // So this test verifies the filter UI is functional (select exists, can be changed),
-    // but does not assert filtered counts since items have empty item.category by default.
     await expect(page.locator(".lpLibraryFilterSelect")).toBeVisible();
     await page.locator(".lpLibraryFilterSelect").selectOption("Sleep");
-    // Filter is applied — no error thrown
     await expect(page.locator(".lpLibraryFilterSelect")).toHaveValue("Sleep");
+    await expect(page.locator("#library .lpLibraryItem")).toHaveCount(1);
+    await expect(page.locator("#library .lpLibraryItem .lpName")).toContainText([
+      "Sleeping Bag",
+    ]);
   });
 });

@@ -439,4 +439,23 @@ function imageUpload(req, res, user) {
     });
 }
 
+const { scrapeGear } = require('./gear-scraper.js');
+
+router.post('/scrapeGear', async (req, res) => {
+    const { url } = req.body;
+    if (!url || typeof url !== 'string') {
+        return res.status(400).json({ error: 'url required' });
+    }
+    try {
+        const parsed = new URL(url);
+        if (!['http:', 'https:'].includes(parsed.protocol)) {
+            return res.status(400).json({ error: 'invalid url' });
+        }
+        const data = await scrapeGear(url);
+        return res.json(data);
+    } catch (err) {
+        return res.status(502).json({ error: err.message || 'fetch failed' });
+    }
+});
+
 module.exports = router;

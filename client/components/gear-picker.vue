@@ -131,7 +131,7 @@
 </style>
 
 <template>
-    <modal id="gearPickerDialog" ref="modal" @hide="reset">
+    <modal id="gearPickerDialog" :shown="shown" @hide="reset">
         <div class="gearPicker">
             <div class="gearPickerHeader">
                 <p class="gearPickerTitle">Add gear</p>
@@ -182,6 +182,7 @@ export default {
     components: { modal },
     data() {
         return {
+            shown: false,
             search: '',
             category: null,
         };
@@ -195,7 +196,7 @@ export default {
         },
         filteredItems() {
             const q = this.search.toLowerCase();
-            return this.library.items.filter(gearItem =>
+            return (this.library?.items || []).filter(gearItem =>
                 !q ||
                 (gearItem.name && gearItem.name.toLowerCase().includes(q)) ||
                 (gearItem.brand && gearItem.brand.toLowerCase().includes(q))
@@ -206,7 +207,7 @@ export default {
         registerDialogOpener('gearPicker', ({ category }) => {
             this.category = category || null;
             this.search = '';
-            this.$refs.modal.show();
+            this.shown = true;
         });
     },
     beforeUnmount() {
@@ -227,7 +228,7 @@ export default {
                 categoryId: this.category.id,
                 dropIndex: this.category.categoryItems.length,
             });
-            this.$refs.modal.hide();
+            this.shown = false;
         },
         createNew() {
             this.$store.commit('newItem', {
@@ -235,9 +236,10 @@ export default {
                 _isNew: true,
                 name: this.search || '',
             });
-            this.$refs.modal.hide();
+            this.shown = false;
         },
         reset() {
+            this.shown = false;
             this.search = '';
             this.category = null;
         },

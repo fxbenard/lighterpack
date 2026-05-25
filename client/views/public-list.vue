@@ -64,7 +64,7 @@
             <p v-if="username">
                 By <router-link :to="`/u/${username}`">{{ username }}</router-link>
             </p>
-            <h1>{{ list.name }}</h1>
+            <h1 class="lpListName">{{ list.name }}</h1>
             <p v-if="list.summary">{{ list.summary }}</p>
 
             <section class="lpPublicListTotals">
@@ -93,14 +93,15 @@
             <section class="lpPublicListCategories">
                 <article v-for="category in categories" :key="category.id || category.name">
                     <h2>{{ category.name }}</h2>
-                    <div v-for="item in category.items" :key="item.id || item.name" class="lpPublicListItem">
+                    <div v-for="item in category.items" :key="item.id || item.name" class="lpPublicListItem lpItem">
                         <img v-if="item.imageUrl" class="lpPublicListItemImage" :src="item.imageUrl" :alt="item.name" />
                         <div v-else></div>
                         <div>
-                            <h3>{{ item.name }}</h3>
+                            <h3 class="lpName">{{ item.name }}</h3>
                             <p v-if="item.brand">{{ item.brand }}</p>
-                            <p v-if="item.description">{{ item.description }}</p>
-                            <p>{{ displayItemWeight(item) }} {{ totalUnit }}</p>
+                            <p v-if="item.description" class="lpDescription">{{ item.description }}</p>
+                            <p class="lpWeight">{{ displayItemWeight(item) }} {{ totalUnit }}</p>
+                            <p class="lpQtyCell">{{ item.qty || 1 }}</p>
                             <div class="lpPublicListItemActions">
                                 <a v-if="item.publicUrl" :href="item.publicUrl" target="_blank" rel="noopener noreferrer" @click="trackItemClick(item)">View gear</a>
                                 <button v-if="item.promoCode" type="button" @click="trackPromoClick(item)">
@@ -133,29 +134,41 @@ export default {
         };
     },
     created() {
-        fetchJson(`/api/public/list/${this.$route.params.externalId}`)
-            .then((payload) => {
-                this.username = payload.username;
-                this.list = payload.list;
-                this.totalUnit = payload.totalUnit || (payload.list && payload.list.totalUnit) || 'oz';
-                this.categories = payload.categories || [];
-                this.affiliateDisclosure = payload.affiliateDisclosure;
-                this.updateDocumentMeta();
-                this.track('listView');
-            })
-            .catch((err) => {
-                this.error = err && err.status === 404 ? 'List not found.' : 'Unable to load this list.';
-            })
-            .finally(() => {
-                this.isLoading = false;
-            });
+        this.loadPublicList();
     },
     methods: {
+        loadPublicList(attempt = 0) {
+            return fetchJson(`/api/public/list/${this.$route.params.externalId}`)
+                .then((payload) => {
+                    this.username = payload.username;
+                    this.list = payload.list;
+                    this.totalUnit = payload.totalUnit || (payload.list && payload.list.totalUnit) || 'oz';
+                    this.categories = payload.categories || [];
+                    this.affiliateDisclosure = payload.affiliateDisclosure;
+                    this.updateDocumentMeta();
+                    this.track('listView');
+                })
+                .catch((err) => {
+                    if (err && err.statusCode === 404 && attempt < 12) {
+                        window.setTimeout(() => {
+                            this.loadPublicList(attempt + 1);
+                        }, 250);
+                        return;
+                    }
+
+                    this.error = err && err.status === 404 ? 'List not found.' : 'Unable to load this list.';
+                })
+                .finally(() => {
+                    if (this.list || this.error) {
+                        this.isLoading = false;
+                    }
+                });
+        },
         displayWeight(value) {
             return weightUtils.MgToWeight(value || 0, this.totalUnit);
         },
         displayItemWeight(item) {
-            return this.displayWeight((item.weight || 0) * (item.qty || 1));
+            return this.displayWeight(item.weight || 0);
         },
         track(type, itemId) {
             if (!this.list || !this.list.externalId) {

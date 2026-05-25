@@ -14,6 +14,7 @@
     "verify:fixtures": "node scripts/verify-library-fixtures.js",
     "verify:csv": "node scripts/verify-csv-roundtrip.js",
     "verify:csv:export": "node scripts/verify-csv-export.js",
+    "verify:plus": "node scripts/verify-lighterpack-plus-model.js",
     "lint:css": "./node_modules/.bin/stylelint \"client/**/*.{scss,vue}\" --fix",
     "lint:js": "./node_modules/.bin/eslint --ext .vue --ext .js ./ --fix"
   },

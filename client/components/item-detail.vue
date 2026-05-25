@@ -379,6 +379,55 @@
     justify-content: flex-end;
     padding: 14px 20px;
 }
+
+.itemDetailAddToList {
+    position: relative;
+}
+
+.itemDetailAddBtn {
+    background: none;
+    border: 1px solid $color-accent;
+    border-radius: $radius-sm;
+    color: $color-accent;
+    cursor: pointer;
+    font-size: $fontSize-sm;
+    padding: 4px 10px;
+
+    &:hover {
+        background: rgba($color-accent, 0.08);
+    }
+}
+
+.itemDetailAddDropdown {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    bottom: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    left: 0;
+    list-style: none;
+    margin: 0 0 4px;
+    min-width: 160px;
+    padding: 4px 0;
+    position: absolute;
+    z-index: 10;
+}
+
+.itemDetailAddOption {
+    cursor: pointer;
+    font-size: $fontSize-sm;
+    padding: 6px 14px;
+
+    &:hover {
+        background: $color-bg;
+    }
+
+    &.dimmed {
+        color: $color-text-muted;
+        cursor: default;
+        pointer-events: none;
+    }
+}
 </style>
 
 <template>
@@ -443,6 +492,21 @@
                     <a v-if="category" class="itemDetailRemove" @click="removeFromList">
                         ↩ Remove from list
                     </a>
+                    <div v-else class="itemDetailAddToList">
+                        <button class="itemDetailAddBtn" @click="addToListOpen = !addToListOpen">
+                            + Add to list ▾
+                        </button>
+                        <ul v-if="addToListOpen" class="itemDetailAddDropdown">
+                            <li
+                                v-for="cat in currentListCategories"
+                                :key="cat.id"
+                                :class="['itemDetailAddOption', { dimmed: cat.getCategoryItemById(item.id) }]"
+                                @click="addToCategory(cat)"
+                            >
+                                {{ cat.name || 'Unnamed category' }}
+                            </li>
+                        </ul>
+                    </div>
                     <a class="itemDetailDelete" @click="deleteGear">
                         🗑 Delete gear
                     </a>
@@ -588,6 +652,7 @@ export default {
             fetchLoading: false,
             fetchError: '',
             fetchSuccess: '',
+            addToListOpen: false,
         };
     },
     computed: {
@@ -609,6 +674,22 @@ export default {
             if (!this.item.weight) return '0';
             return weightUtils.MgToWeight(this.item.weight, this.item.authorUnit);
         },
+        currentListCategories() {
+            const library = this.$store.state.library;
+            const list = library.getListById(library.defaultListId);
+            if (!list) return [];
+            return list.categoryIds.map((id) => library.getCategoryById(id)).filter(Boolean);
+        },
+        isInCurrentList() {
+            const library = this.$store.state.library;
+            const list = library.getListById(library.defaultListId);
+            if (!list) return false;
+            for (const catId of list.categoryIds) {
+                const cat = library.getCategoryById(catId);
+                if (cat && cat.getCategoryItemById(this.item.id)) return true;
+            }
+            return false;
+        },
     },
     mounted() {
         registerDialogOpener('itemDetail', ({ item, categoryItem, category }) => {
@@ -626,6 +707,7 @@ export default {
         close() {
             this.shown = false;
             this.editing = false;
+            this.addToListOpen = false;
         },
         viewImage() {
             const full = this.item.image
@@ -742,6 +824,14 @@ export default {
         },
         removeTag(tag) {
             this.editTags = this.editTags.filter((t) => t !== tag);
+        },
+        addToCategory(category) {
+            this.$store.commit('addItemToCategory', {
+                itemId: this.item.id,
+                categoryId: category.id,
+                dropIndex: category.categoryItems.length,
+            });
+            this.addToListOpen = false;
         },
     },
 };

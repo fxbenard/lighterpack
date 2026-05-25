@@ -24,6 +24,9 @@ const Item = function ({ id, unit }) {
     this.image = '';
     this.imageUrl = '';
     this.url = '';
+    this.brand = '';
+    this.category = '';
+    this.tags = [];
 
     return this;
 };

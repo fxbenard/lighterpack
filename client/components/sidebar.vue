@@ -78,6 +78,38 @@ $sidebarPadding: 20px;
     }
 }
 
+@media (max-width: 768px) {
+    #sidebar {
+        box-shadow: 4px 0 16px rgba(0, 0, 0, 0.18);
+        margin-left: 0;
+        opacity: 1;
+        padding-left: $sidebarPadding;
+        transform: translateX(-100%);
+        transition: transform $transitionDurationSlow ease-in-out;
+        width: $sidebarWidth + $sidebarPadding * 2;
+        z-index: $dialog;
+
+        .lpHasSidebar & {
+            transform: translateX(0);
+        }
+    }
+
+    .lpSidebarOverlay {
+        background: rgba(0, 0, 0, 0.4);
+        bottom: 0;
+        display: none;
+        left: 0;
+        position: fixed;
+        right: 0;
+        top: 0;
+        z-index: $dialog - 1;
+
+        .lpHasSidebar & {
+            display: block;
+        }
+    }
+}
+
 .lpThemeToggle {
     align-items: center;
     background: $color-bg;
@@ -103,7 +135,9 @@ $sidebarPadding: 20px;
 </style>
 
 <template>
-    <div id="sidebar">
+    <div>
+        <div class="lpSidebarOverlay" @click="closeSidebar" />
+        <div id="sidebar">
         <div id="scrollable">
             <h1>LighterPack <span>+</span></h1>
 
@@ -113,6 +147,7 @@ $sidebarPadding: 20px;
             <button class="lpThemeToggle" @click="cycleTheme">
                 {{ themeIcon }} {{ themeLabel }}
             </button>
+        </div>
         </div>
     </div>
 </template>
@@ -138,6 +173,11 @@ export default {
         },
         themeLabel() {
             return { auto: 'Auto', light: 'Light', dark: 'Dark' }[this.mode];
+        },
+    },
+    methods: {
+        closeSidebar() {
+            this.$store.commit('toggleSidebar');
         },
     },
 };

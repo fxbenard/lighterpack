@@ -110,6 +110,37 @@ $sidebarPadding: 20px;
     }
 }
 
+.lpGearSectionHeader {
+    align-items: center;
+    color: $color-text;
+    display: flex;
+    font-size: $fontSize-md;
+    font-weight: $fontWeight-bold;
+    justify-content: space-between;
+    margin: 0 0 10px;
+}
+
+.lpGearRoomBtn {
+    background: none;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    color: $color-text-muted;
+    cursor: pointer;
+    font-family: $font-family-base;
+    font-size: $fontSize-xs;
+    padding: 2px 8px;
+
+    &:hover {
+        border-color: $color-accent;
+        color: $color-accent;
+    }
+}
+
+.lpGearRoomModal {
+    padding: 16px;
+    width: min(520px, 92vw);
+}
+
 .lpThemeToggle {
     align-items: center;
     background: $color-bg;
@@ -142,7 +173,19 @@ $sidebarPadding: 20px;
             <h1>LighterPack <span>+</span></h1>
 
             <libraryLists />
-            <libraryItems />
+            <section class="lpGearSection">
+                <h2 class="lpGearSectionHeader">
+                    Gear
+                    <button class="lpGearRoomBtn" @click="gearRoomOpen = true">⊞ Gear Room</button>
+                </h2>
+                <libraryItems />
+            </section>
+
+            <modal :shown="gearRoomOpen" @hide="gearRoomOpen = false">
+                <div class="lpGearRoomModal">
+                    <libraryItems />
+                </div>
+            </modal>
 
             <button class="lpThemeToggle" @click="cycleTheme">
                 {{ themeIcon }} {{ themeLabel }}
@@ -155,6 +198,7 @@ $sidebarPadding: 20px;
 <script>
 import libraryItems from './library-items.vue';
 import libraryLists from './library-lists.vue';
+import modal from './modal.vue';
 import { useTheme } from '../composables/useTheme.js';
 
 export default {
@@ -162,10 +206,16 @@ export default {
     components: {
         libraryItems,
         libraryLists,
+        modal,
     },
     setup() {
         const { mode, cycleTheme } = useTheme();
         return { mode, cycleTheme };
+    },
+    data() {
+        return {
+            gearRoomOpen: false,
+        };
     },
     computed: {
         themeIcon() {

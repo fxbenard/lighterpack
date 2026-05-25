@@ -29,7 +29,12 @@
 
 /* Body */
 
-.addCategory,
+.addCategory {
+    display: inline-block;
+    margin-top: $spacingMedium;
+    padding: $spacingSmaller 0;
+}
+
 .lpAddItem {
     margin-left: 20px;
     margin-top: 6px;

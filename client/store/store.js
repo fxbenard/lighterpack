@@ -101,8 +101,10 @@ const store = createStore({
         updateCurrencySymbol(state, currencySymbol) {
             state.library.currencySymbol = currencySymbol;
         },
-        newItem(state, { category, _isNew }) {
-            state.library.newItem({ category, _isNew });
+        newItem(state, { category, _isNew, name }) {
+            const item = state.library.newItem({ category, _isNew });
+            if (name) item.name = name;
+            if (category && category.name && !item.category) item.category = category.name;
             state.library.getListById(state.library.defaultListId).calculateTotals();
         },
         newCategory(state, list) {
@@ -238,6 +240,8 @@ const store = createStore({
             let hasPrice = false;
             let hasWorn = false;
             let hasConsumable = false;
+            let mergedCount = 0;
+            let newCount = 0;
 
             list.name = importData.name;
 
@@ -248,42 +252,68 @@ const store = createStore({
                     category = state.library.newCategory({ list });
                     newCategories[row.category] = category;
                 }
-
-                item = state.library.newItem({ category, _isNew: false });
-                categoryItem = category.getCategoryItemById(item.id);
-
-                item.name = row.name;
-                item.description = row.description;
-                item.url = row.url;
-                item.price = row.price;
-                categoryItem.qty = parseFloat(row.qty);
-                categoryItem.worn = row.worn;
-                categoryItem.consumable = row.consumable;
-                item.weight = weightUtils.WeightToMg(parseFloat(row.weight), row.unit);
-                item.authorUnit = row.unit;
                 category.name = row.category;
 
-                if (item.price) {
-                    hasPrice = true;
+                const decision = row._match ? row._match.decision : 'new';
+
+                if (decision === 'merge' && row._match.item) {
+                    item = state.library.getItemById(row._match.item.id);
+                    if (item) {
+                        if (row.category && !item.category) item.category = row.category;
+                        if (row.brand && !item.brand) item.brand = row.brand;
+                        category.addItem({ itemId: item.id, _isNew: false, qty: parseFloat(row.qty) || 1 });
+                        mergedCount++;
+                    } else {
+                        // Item was deleted — fall back to creating new
+                        item = state.library.newItem({ category, _isNew: false });
+                        item.name = row.name;
+                        item.description = row.description;
+                        item.url = row.url;
+                        item.price = row.price;
+                        if (row.category) item.category = row.category;
+                        if (row.brand) item.brand = row.brand;
+                        item.weight = weightUtils.WeightToMg(parseFloat(row.weight), row.unit);
+                        item.authorUnit = row.unit;
+                        newCount++;
+                    }
+                } else {
+                    item = state.library.newItem({ category, _isNew: false });
+                    item.name = row.name;
+                    item.description = row.description;
+                    item.url = row.url;
+                    item.price = row.price;
+                    if (row.category) item.category = row.category;
+                    if (row.brand) item.brand = row.brand;
+                    item.weight = weightUtils.WeightToMg(parseFloat(row.weight), row.unit);
+                    item.authorUnit = row.unit;
+                    newCount++;
                 }
-                if (categoryItem.worn) {
-                    hasWorn = true;
+
+                categoryItem = category.getCategoryItemById(item.id);
+                if (categoryItem) {
+                    categoryItem.qty = parseFloat(row.qty) || 1;
+                    categoryItem.worn = row.worn;
+                    categoryItem.consumable = row.consumable;
                 }
-                if (categoryItem.consumable) {
-                    hasConsumable = true;
-                }
+
+                if (item.price) hasPrice = true;
+                if (categoryItem && categoryItem.worn) hasWorn = true;
+                if (categoryItem && categoryItem.consumable) hasConsumable = true;
             });
-            if (hasPrice) {
-                state.library.optionalFields.price = true;
-            }
-            if (hasWorn) {
-                state.library.optionalFields.worn = true;
-            }
-            if (hasConsumable) {
-                state.library.optionalFields.consumable = true;
-            }
-            list.calculateTotals();
+
+            if (hasPrice) state.library.optionalFields.price = true;
+            if (hasWorn) state.library.optionalFields.worn = true;
+            if (hasConsumable) state.library.optionalFields.consumable = true;
+
             state.library.defaultListId = list.id;
+            state.library.getListById(list.id).calculateTotals();
+
+            if (mergedCount > 0) {
+                state.globalAlerts.push({
+                    id: `${Date.now()}-${Math.random()}`,
+                    message: `Import complete: ${mergedCount} item${mergedCount > 1 ? 's' : ''} merged with existing gear, ${newCount} new item${newCount !== 1 ? 's' : ''} added.`,
+                });
+            }
         },
         save() {
             // no-op

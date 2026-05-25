@@ -172,7 +172,7 @@
 
 <script>
 import modal from './modal.vue';
-import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
+import { registerDialogOpener, unregisterDialogOpener, openDialog } from '../services/dialogs';
 import { useUtils } from '../composables/useUtils.js';
 
 const { displayWeight } = useUtils();
@@ -236,7 +236,10 @@ export default {
                 _isNew: true,
                 name: this.search || '',
             });
+            const newItem = this.$store.state.library.items[this.$store.state.library.items.length - 1];
+            const categoryItem = this.category ? this.category.getCategoryItemById(newItem.id) : null;
             this.shown = false;
+            openDialog('itemDetail', { item: newItem, categoryItem, category: this.category });
         },
         reset() {
             this.shown = false;

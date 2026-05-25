@@ -181,7 +181,7 @@ $sidebarPadding: 20px;
                 <libraryItems />
             </section>
 
-            <modal :shown="gearRoomOpen" @hide="gearRoomOpen = false">
+            <modal v-if="gearRoomOpen" :shown="gearRoomOpen" @hide="gearRoomOpen = false">
                 <div class="lpGearRoomModal">
                     <libraryItems />
                 </div>

@@ -73,6 +73,27 @@
         font-weight: $fontWeight-medium;
         padding: 2px 10px;
     }
+
+    .itemDetailClose {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        border-radius: 50%;
+        color: #fff;
+        cursor: pointer;
+        display: flex;
+        flex-shrink: 0;
+        font-size: 20px;
+        height: 32px;
+        justify-content: center;
+        line-height: 1;
+        margin-left: auto;
+        width: 32px;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    }
 }
 
 .itemDetailStats {
@@ -362,6 +383,7 @@
                         <div v-if="item.brand" class="itemDetailBrand">{{ item.brand }}</div>
                         <span v-if="item.category" class="itemDetailCategoryBadge">{{ item.category }}</span>
                     </div>
+                    <button class="itemDetailClose" title="Close" @click="close">×</button>
                 </div>
 
                 <div class="itemDetailStats">
@@ -427,6 +449,7 @@
                         <div v-if="editBrand" class="itemDetailBrand">{{ editBrand }}</div>
                         <span v-if="editCategory" class="itemDetailCategoryBadge">{{ editCategory }}</span>
                     </div>
+                    <button class="itemDetailClose" title="Close" @click="close">×</button>
                 </div>
 
                 <form class="itemDetailEditForm" @submit.prevent="saveEdit">

@@ -28,6 +28,9 @@
                 <a class="lpHref" @click="showDeleteAccount">Delete account</a>
             </div>
         </form>
+
+        <profileSettings />
+        <creatorLinks />
     </modal>
 </template>
 
@@ -35,6 +38,8 @@
 import errors from './errors.vue';
 import modal from './modal.vue';
 import spinner from './spinner.vue';
+import profileSettings from './profile-settings.vue';
+import creatorLinks from './creator-links.vue';
 import { openDialog, registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
 import { fetchJson } from '../utils/utils';
 
@@ -44,6 +49,8 @@ export default {
         errors,
         modal,
         spinner,
+        profileSettings,
+        creatorLinks,
     },
     data() {
         return {

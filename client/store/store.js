@@ -181,6 +181,34 @@ const store = createStore({
             const list = state.library.getListById(updatedList.id);
             list.description = updatedList.description;
         },
+        updatePublicProfile(state, profile) {
+            state.library.publicProfile = {
+                ...state.library.publicProfile,
+                ...profile,
+            };
+        },
+        updateListVisibility(state, args) {
+            const list = state.library.getListById(args.listId);
+            if (list) {
+                list.visibility = args.visibility;
+                list.allowSearchIndexing = args.allowSearchIndexing === true;
+            }
+        },
+        updateItemCreatorLink(state, args) {
+            const item = state.library.getItemById(args.itemId);
+            if (item) {
+                item.affiliateUrl = args.affiliateUrl || '';
+                item.promoCode = args.promoCode || '';
+                item.promoLabel = args.promoLabel || '';
+                item.shop = args.shop || item.shop || '';
+            }
+        },
+        updateCreatorSettings(state, creator) {
+            state.library.creator = {
+                ...state.library.creator,
+                ...creator,
+            };
+        },
         setExternalId(state, args) {
             const list = state.library.getListById(args.list.id);
             list.externalId = args.externalId;

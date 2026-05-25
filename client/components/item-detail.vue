@@ -442,7 +442,10 @@
 
                     <div class="itemDetailField">
                         <label>Brand</label>
-                        <input v-model="editBrand" type="text" placeholder="e.g. Sea to Summit">
+                        <input v-model="editBrand" type="text" placeholder="e.g. Sea to Summit" list="brandSuggestions">
+                        <datalist id="brandSuggestions">
+                            <option v-for="brand in knownBrands" :key="brand" :value="brand" />
+                        </datalist>
                     </div>
 
                     <div class="itemDetailField">
@@ -553,6 +556,13 @@ export default {
     computed: {
         gearCategories() { return GEAR_CATEGORIES; },
         units() { return UNITS; },
+        knownBrands() {
+            const library = this.$store.state.library;
+            if (!library || !library.items) return [];
+            return [...new Set(
+                library.items.map((i) => i.brand).filter(Boolean),
+            )].sort();
+        },
         thumbnailImage() {
             if (this.item.image) return `https://i.imgur.com/${this.item.image}s.jpg`;
             if (this.item.imageUrl) return this.item.imageUrl;

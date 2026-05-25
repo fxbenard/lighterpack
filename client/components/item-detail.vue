@@ -680,16 +680,6 @@ export default {
             if (!list) return [];
             return list.categoryIds.map((id) => library.getCategoryById(id)).filter(Boolean);
         },
-        isInCurrentList() {
-            const library = this.$store.state.library;
-            const list = library.getListById(library.defaultListId);
-            if (!list) return false;
-            for (const catId of list.categoryIds) {
-                const cat = library.getCategoryById(catId);
-                if (cat && cat.getCategoryItemById(this.item.id)) return true;
-            }
-            return false;
-        },
     },
     mounted() {
         registerDialogOpener('itemDetail', ({ item, categoryItem, category }) => {

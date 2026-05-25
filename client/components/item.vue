@@ -53,7 +53,7 @@
 </style>
 
 <template>
-    <li :id="item.id" :data-item-id="item.id" :class="itemRowClasses">
+    <li :id="item.id" :data-item-id="item.id" :class="itemRowClasses" @dblclick="openDetail">
         <span class="lpHandleCell">
             <div class="lpItemHandle lpHandle" title="Reorder this item" />
         </span>
@@ -226,6 +226,13 @@ export default {
         },
         setDisplayWeight() {
             this.displayWeight = weightUtils.MgToWeight(this.item.weight, this.item.authorUnit);
+        },
+        openDetail() {
+            openDialog('itemDetail', {
+                item: this.item,
+                categoryItem: this.categoryItem,
+                category: this.category,
+            });
         },
         updateItemLink() {
             openDialog('itemLink', this.item);

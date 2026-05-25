@@ -1,8 +1,17 @@
 <style lang="scss">
 @import "../css/_globals";
 
+#itemDetailDialog.lpModal {
+    border-radius: $radius-md;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 0;
+    width: min(480px, 92vw);
+}
+
 .itemDetail {
-    min-width: min(480px, 90vw);
+    display: flex;
+    flex-direction: column;
 }
 
 .itemDetailHeader {

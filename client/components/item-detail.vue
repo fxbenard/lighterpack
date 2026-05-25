@@ -305,6 +305,38 @@
             &:hover { background: $color-bg; }
         }
     }
+
+    .itemDetailUrlRow {
+        display: flex;
+        gap: 6px;
+
+        input { flex: 1; }
+    }
+
+    .itemDetailFetchBtn {
+        background: $color-surface;
+        border: 1px solid $color-border;
+        border-radius: $radius-sm;
+        cursor: pointer;
+        font-size: $fontSize-sm;
+        padding: 6px 12px;
+        white-space: nowrap;
+
+        &:hover:not(:disabled) { background: $color-bg; }
+        &:disabled { cursor: default; opacity: 0.5; }
+    }
+
+    .itemDetailFetchError {
+        color: $color-danger;
+        font-size: $fontSize-sm;
+        margin-top: 4px;
+    }
+
+    .itemDetailFetchSuccess {
+        color: $color-accent;
+        font-size: $fontSize-sm;
+        margin-top: 4px;
+    }
 }
 
 .itemDetailEditFooter {
@@ -443,7 +475,14 @@
 
                     <div class="itemDetailField">
                         <label>Purchase URL</label>
-                        <input v-model="editUrl" type="text" placeholder="https://…">
+                        <div class="itemDetailUrlRow">
+                            <input v-model="editUrl" type="text" placeholder="https://…" @keydown.enter.prevent="fetchGear">
+                            <button type="button" class="itemDetailFetchBtn" :disabled="fetchLoading || !editUrl" @click="fetchGear">
+                                {{ fetchLoading ? '…' : '⬇ Fetch' }}
+                            </button>
+                        </div>
+                        <span v-if="fetchError" class="itemDetailFetchError">{{ fetchError }}</span>
+                        <span v-if="fetchSuccess" class="itemDetailFetchSuccess">{{ fetchSuccess }}</span>
                     </div>
 
                     <div class="itemDetailField">
@@ -506,6 +545,9 @@ export default {
             editUrl: '',
             editTags: [],
             tagInput: '',
+            fetchLoading: false,
+            fetchError: '',
+            fetchSuccess: '',
         };
     },
     computed: {
@@ -556,6 +598,8 @@ export default {
             this.editUrl = this.item.url || '';
             this.editTags = [...(this.item.tags || [])];
             this.tagInput = '';
+            this.fetchError = '';
+            this.fetchSuccess = '';
             this.editing = true;
         },
         cancelEdit() {
@@ -599,6 +643,42 @@ export default {
                 });
             }
             this.close();
+        },
+        async fetchGear() {
+            if (!this.editUrl || this.fetchLoading) return;
+            this.fetchLoading = true;
+            this.fetchError = '';
+            this.fetchSuccess = '';
+            try {
+                const res = await fetch('/scrapeGear', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: this.editUrl }),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'fetch failed');
+
+                const filled = [];
+                if (data.name && !this.editName) { this.editName = data.name; filled.push('name'); }
+                if (data.brand && !this.editBrand) { this.editBrand = data.brand; filled.push('brand'); }
+                if (data.price != null && !parseFloat(this.editPrice)) { this.editPrice = data.price.toFixed(2); filled.push('price'); }
+                if (data.weight != null && !parseFloat(this.editWeight)) {
+                    this.editWeight = data.weight;
+                    if (data.weightUnit) this.editUnit = data.weightUnit;
+                    filled.push('weight');
+                }
+                if (data.imageUrl && !this.item.image && !this.item.imageUrl) {
+                    this.item = { ...this.item, imageUrl: data.imageUrl };
+                    filled.push('image');
+                }
+                this.fetchSuccess = filled.length
+                    ? `Filled: ${filled.join(', ')}`
+                    : 'No data found — fields unchanged';
+            } catch (err) {
+                this.fetchError = err.message;
+            } finally {
+                this.fetchLoading = false;
+            }
         },
         addTag() {
             const tag = this.tagInput.trim().toLowerCase();

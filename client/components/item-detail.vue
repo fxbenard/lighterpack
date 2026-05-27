@@ -366,17 +366,6 @@
         gap: 6px;
 
         input { flex: 1; }
-
-        button {
-            background: $color-surface;
-            border: 1px solid $color-border;
-            border-radius: $radius-sm;
-            cursor: pointer;
-            font-size: $fontSize-sm;
-            padding: 6px 12px;
-
-            &:hover { background: $color-bg; }
-        }
     }
 
     .itemDetailUrlRow {
@@ -387,15 +376,8 @@
     }
 
     .itemDetailFetchBtn {
-        background: $color-surface;
-        border: 1px solid $color-border;
-        border-radius: $radius-sm;
-        cursor: pointer;
-        font-size: $fontSize-sm;
-        padding: 6px 12px;
         white-space: nowrap;
 
-        &:hover:not(:disabled) { background: $color-bg; }
         &:disabled { cursor: default; opacity: 0.5; }
     }
 
@@ -460,35 +442,10 @@
 }
 
 .itemDetailAddCreateBtn {
-    background: rgba(var(--color-accent-rgb), 0.08);
-    border: 1px solid rgba(var(--color-accent-rgb), 0.16);
-    border-radius: 12px;
-    color: $color-accent;
-    cursor: pointer;
-    font-size: $fontSize-md;
-    font-weight: $fontWeight-medium;
     min-height: 46px;
-    padding: 0 18px;
     white-space: nowrap;
-
-    &:hover {
-        background: rgba(var(--color-accent-rgb), 0.14);
-    }
 }
 
-.itemDetailAddBtn {
-    background: none;
-    border: 1px solid $color-accent;
-    border-radius: $radius-sm;
-    color: $color-accent;
-    cursor: pointer;
-    font-size: $fontSize-sm;
-    padding: 4px 10px;
-
-    &:hover {
-        background: rgba($color-accent, 0.08);
-    }
-}
 
 .itemDetailAddDropdown {
     background: $color-surface;
@@ -553,7 +510,7 @@
                         <div v-if="item.brand" class="itemDetailBrand">{{ item.brand }}</div>
                         <span v-if="item.category" class="itemDetailCategoryBadge">{{ item.category }}</span>
                     </div>
-                    <button class="itemDetailClose" title="Close" @click="close">×</button>
+                    <button class="lpIconButton itemDetailClose" title="Close" @click="close">×</button>
                 </div>
 
                 <div class="itemDetailStats">
@@ -603,7 +560,7 @@
                         Remove from list
                     </a>
                     <div v-else class="itemDetailAddToList">
-                        <button class="itemDetailAddBtn" @click="addToListOpen = !addToListOpen">
+                        <button class="lpButton lpSmall lpButtonSecondary itemDetailAddBtn" @click="addToListOpen = !addToListOpen">
                             + Add to list ▾
                         </button>
                         <ul v-if="addToListOpen" class="itemDetailAddDropdown">
@@ -624,7 +581,7 @@
                                         placeholder="New category"
                                         @keydown.enter.prevent="createCategoryAndAdd"
                                     >
-                                    <button class="itemDetailAddCreateBtn" @click="createCategoryAndAdd">
+                                    <button class="lpButton lpSmall itemDetailAddCreateBtn" @click="createCategoryAndAdd">
                                         Create
                                     </button>
                                 </div>
@@ -657,7 +614,7 @@
                         <div v-if="editBrand" class="itemDetailBrand">{{ editBrand }}</div>
                         <span v-if="editCategory" class="itemDetailCategoryBadge">{{ editCategory }}</span>
                     </div>
-                    <button class="itemDetailClose" title="Close" @click="close">×</button>
+                    <button class="lpIconButton itemDetailClose" title="Close" @click="close">×</button>
                 </div>
 
                 <form class="itemDetailEditForm" @submit.prevent="saveEdit">
@@ -711,7 +668,7 @@
                         <label>Purchase URL</label>
                         <div class="itemDetailUrlRow">
                             <input v-model="editUrl" type="text" placeholder="https://…" @keydown.enter.prevent="fetchGear">
-                            <button type="button" class="itemDetailFetchBtn" :disabled="fetchLoading || !editUrl" @click="fetchGear">
+                            <button type="button" class="lpButton lpSmall lpButtonSecondary itemDetailFetchBtn" :disabled="fetchLoading || !editUrl" @click="fetchGear">
                                 {{ fetchLoading ? '…' : '⬇ Fetch' }}
                             </button>
                         </div>
@@ -724,12 +681,12 @@
                         <div class="itemDetailTagsEdit">
                             <span v-for="tag in editTags" :key="tag" class="itemDetailTagChip">
                                 {{ tag }}
-                                <button type="button" @click="removeTag(tag)">×</button>
+                                <button type="button" class="lpIconButton itemDetailTagRemove" @click="removeTag(tag)">×</button>
                             </span>
                         </div>
                         <div class="itemDetailTagInput">
                             <input v-model="tagInput" type="text" placeholder="Add a tag…" @keydown.enter.prevent="addTag">
-                            <button type="button" @click="addTag">Add</button>
+                            <button type="button" class="lpButton lpSmall lpButtonSecondary" @click="addTag">Add</button>
                         </div>
                     </div>
                 </form>

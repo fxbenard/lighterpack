@@ -114,19 +114,7 @@
 }
 
 .gearPickerCreate {
-    background: none;
-    border: 1px dashed $color-border;
-    border-radius: $radius-sm;
-    color: $color-accent;
-    cursor: pointer;
-    font-size: $fontSize-sm;
-    padding: 8px 14px;
     width: 100%;
-
-    &:hover {
-        border-color: $color-accent;
-        background: rgba($color-accent, 0.06);
-    }
 }
 </style>
 
@@ -162,7 +150,7 @@
             </ul>
 
             <div class="gearPickerFooter">
-                <button class="gearPickerCreate" @click="createNew">
+                <button class="lpButton lpSmall lpButtonSecondary gearPickerCreate" @click="createNew">
                     + Create new item{{ search ? ` "${search}"` : '' }}
                 </button>
             </div>

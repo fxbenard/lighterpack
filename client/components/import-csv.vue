@@ -1,10 +1,11 @@
 <style lang="scss">
+@import "../css/_globals";
 
 #importValidate {
     height: 500px;
     overflow-y: scroll;
     width: 650px;
-    background: #f8f6ef;
+    background: $color-bg;
 
     .lpButton {
         margin-bottom: 30px;
@@ -18,13 +19,13 @@
     }
 
     .importErrors {
-        color: #9b2c2c;
+        color: $color-danger;
         margin-bottom: 20px;
     }
 
     .importBadge {
-        background: #e7ebdf;
-        border: 1px solid #c8cfbb;
+        background: $color-control-muted;
+        border: 1px solid $color-border;
         border-radius: 999px;
         display: inline-block;
         font-size: 12px;
@@ -34,21 +35,21 @@
         text-transform: uppercase;
 
         &.isRejected {
-            background: #f6e2de;
-            border-color: #d9a39a;
-            color: #8c2f1c;
+            background: rgba(var(--color-danger-rgb), 0.1);
+            border-color: rgba(var(--color-danger-rgb), 0.24);
+            color: $color-danger;
         }
 
         &.isAmbiguous {
-            background: #fff3cd;
-            border-color: #e6c84a;
-            color: #7a5c00;
+            background: rgba(var(--color-warning-rgb), 0.12);
+            border-color: rgba(var(--color-warning-rgb), 0.32);
+            color: $color-text;
         }
     }
 
     #importData {
-        background: rgba(255, 255, 255, 0.72);
-        border: 1px solid #d7dccd;
+        background: $color-surface-elevated;
+        border: 1px solid $color-border;
         border-radius: 6px;
         margin-bottom: 20px;
         overflow: hidden;
@@ -70,16 +71,16 @@
         z-index: 1;
 
         .lpCell {
-            background: #e9eee2;
+            background: $color-control-muted;
             border-top: none;
-            box-shadow: inset 0 -1px 0 #cbd2c0;
+            box-shadow: inset 0 -1px 0 $color-border;
             font-size: 12px;
             font-weight: 700;
         }
     }
 
     .lpRow:nth-child(even):not(.lpHeader) .lpCell {
-        background: rgba(245, 247, 241, 0.8);
+        background: $color-control-muted;
     }
 
     .lpRow:not(.lpHeader) .lpCell:nth-child(4),
@@ -101,7 +102,7 @@
 
 .importReviewRow {
     align-items: center;
-    border: 1px solid #d7dccd;
+    border: 1px solid $color-border;
     border-radius: 6px;
     display: flex;
     gap: 12px;
@@ -110,12 +111,11 @@
 }
 
 .importReviewCol { flex: 1; }
-.importReviewLabel { color: #888; font-size: 11px; font-weight: 700; margin: 0 0 2px; text-transform: uppercase; }
+.importReviewLabel { color: $color-text-muted; font-size: 11px; font-weight: 700; margin: 0 0 2px; text-transform: uppercase; }
 .importReviewName { font-size: 13px; font-weight: 600; margin: 0 0 2px; }
-.importReviewMeta { color: #888; font-size: 12px; margin: 0; }
+.importReviewMeta { color: $color-text-muted; font-size: 12px; margin: 0; }
 .importReviewActions { display: flex; flex-direction: column; gap: 6px; }
 .lpButtonSm { font-size: 12px; padding: 4px 10px; }
-.lpButtonSecondary { background: transparent; border: 1px solid #d7dccd; color: inherit; }
 
 </style>
 

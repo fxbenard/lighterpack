@@ -155,7 +155,7 @@
         display: none;
     }
 
-    #library.lpSearching &.lpHit {
+    .library.lpSearching &.lpHit {
         display: block;
     }
 
@@ -491,7 +491,7 @@ export default {
                     return $handle.classList.contains('lpLibraryItemHandle');
                 },
                 accepts($el, $target, $source, $sibling) {
-                    if ($target.id === 'library' || !$sibling || $sibling.classList.contains('lpItemsHeader')) {
+                    if ($target.classList.contains('library') || !$sibling || $sibling.classList.contains('lpItemsHeader')) {
                         return false; // header and footer are technically part of this list - exclude them both.
                     }
                     return true;
@@ -501,7 +501,7 @@ export default {
                 this.itemDragId = getDatasetInt($el, 'itemId');
             });
             drake.on('drop', ($el, $target, $source, $sibling) => {
-                if (!$target || $target.id === 'library') {
+                if (!$target || $target.classList.contains('library')) {
                     return;
                 }
                 const categoryId = getDatasetInt($target, 'categoryId');

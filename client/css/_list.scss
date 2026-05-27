@@ -82,22 +82,23 @@
     background: $color-surface;
     border: 1px solid $color-border;
     border-radius: $radius-md;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    box-shadow: $shadow-soft;
     list-style: none;
-    margin: 0 0 16px;
-    overflow: hidden;
+    margin: 0 0 14px;
+    overflow: visible;
 
     &.dropAccept {
-        background: $yellow2;
+        background: $color-highlight;
     }
 
     &.dropHover {
-        background: $green2;
+        background: rgba(var(--color-accent-rgb), 0.14);
     }
 
     &.gu-mirror {
         background: $color-bg;
-        border: 1px solid #999;
+        border: 1px solid $color-border;
+        box-shadow: $shadow-popover;
     }
 }
 
@@ -137,6 +138,7 @@ input.lpCategoryName { /* specificity */
 
 .lpItems {
     margin: 0;
+    overflow: visible;
     padding: 0;
     width: 100%;
 }
@@ -284,32 +286,46 @@ input.lpCategoryName { /* specificity */
 
 .lpItemsHeader {
     align-items: center;
-    background: rgba(var(--color-accent-rgb), 0.06);
+    background: $color-control-muted;
     border-bottom: 1px solid $color-border;
     border-top: none;
     color: $color-text;
-    min-height: 38px;
+    min-height: 40px;
 }
 
 .lpItemsFooter {
-    background: $color-bg;
+    background: $color-control-muted;
     border-top: 1px solid $color-border;
     justify-content: flex-end;
+    min-height: 42px;
+    overflow: visible;
 }
 
 .lpActionsCell {
+    align-items: center;
+    display: flex;
+    gap: 2px;
+
     .lpWorn,
     .lpConsumable,
     .lpCamera,
     .lpLink,
+    .lpTag,
     .lpStar {
+        align-items: center;
+        border-radius: $radius-sm;
         cursor: pointer;
-        margin-right: 8px;
-        opacity: 0.28;
-        transition: opacity $transitionDurationFast ease, transform $transitionDurationFast ease;
+        display: inline-flex;
+        height: $icon-hit-size;
+        justify-content: center;
+        margin-right: 0;
+        opacity: 0.32;
+        transition: background $transitionDurationFast ease, opacity $transitionDurationFast ease, transform $transitionDurationFast ease;
         visibility: hidden;
+        width: $icon-hit-size;
 
         &:hover {
+            background: $color-control-muted;
             opacity: 1;
             transform: translateY(-1px);
         }
@@ -327,15 +343,12 @@ input.lpCategoryName { /* specificity */
     .lpWorn.lpActive,
     .lpConsumable.lpActive,
     .lpCamera.lpActive,
+    .lpTag.lpActive,
     .lpStar.lpStar1,
     .lpStar.lpStar2,
     .lpStar.lpStar3 {
-        opacity: 0.95;
+        opacity: 1;
         visibility: visible;
-    }
-
-    i:last-child {
-        margin-right: 0;
     }
 }
 

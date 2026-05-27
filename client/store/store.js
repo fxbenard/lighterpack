@@ -94,6 +94,14 @@ const store = createStore({
         setTotalUnit(state, unit) {
             state.library.totalUnit = unit;
         },
+        setDefaultUnits(state, units) {
+            if (units.itemUnit) {
+                state.library.itemUnit = units.itemUnit;
+            }
+            if (units.totalUnit) {
+                state.library.totalUnit = units.totalUnit;
+            }
+        },
         toggleOptionalField(state, optionalField) {
             state.library.optionalFields[optionalField] = !state.library.optionalFields[optionalField];
             state.library.getListById(state.library.defaultListId).calculateTotals();
@@ -173,6 +181,28 @@ const store = createStore({
                 state.library.getListById(state.library.defaultListId).calculateTotals();
             }
         },
+        createCategoryAndAddItem(state, args) {
+            const list = state.library.getListById(state.library.defaultListId);
+            const item = state.library.getItemById(args.itemId);
+            const name = String(args.name || '').trim();
+
+            if (!list || !item || !name) {
+                return;
+            }
+
+            const existingCategory = list.categoryIds
+                .map((id) => state.library.getCategoryById(id))
+                .find((category) => category && String(category.name || '').trim().toLowerCase() === name.toLowerCase());
+
+            const category = existingCategory || state.library.newCategory({ list });
+            category.name = existingCategory ? existingCategory.name : name;
+
+            if (!category.getCategoryItemById(item.id)) {
+                category.addItem({ itemId: item.id });
+            }
+
+            state.library.getListById(state.library.defaultListId).calculateTotals();
+        },
         updateListName(state, updatedList) {
             const list = state.library.getListById(updatedList.id);
             list.name = updatedList.name;
@@ -241,7 +271,11 @@ const store = createStore({
             state.library.optionalFields.images = true;
         },
         updateItemUnit(state, unit) {
+            const previousItemUnit = state.library.itemUnit;
             state.library.itemUnit = unit;
+            if (state.library.totalUnit === previousItemUnit) {
+                state.library.totalUnit = unit;
+            }
         },
         removeItemImage(state, updateItem) {
             const item = state.library.getItemById(updateItem.id);
@@ -270,10 +304,16 @@ const store = createStore({
             let hasConsumable = false;
             let mergedCount = 0;
             let newCount = 0;
+            const importedUnits = {};
+            const previousItemUnit = state.library.itemUnit;
 
             list.name = importData.name;
 
             importData.data.forEach((row) => {
+                if (row.unit) {
+                    importedUnits[row.unit] = (importedUnits[row.unit] || 0) + 1;
+                }
+
                 if (newCategories[row.category]) {
                     category = newCategories[row.category];
                 } else {
@@ -332,6 +372,14 @@ const store = createStore({
             if (hasPrice) state.library.optionalFields.price = true;
             if (hasWorn) state.library.optionalFields.worn = true;
             if (hasConsumable) state.library.optionalFields.consumable = true;
+
+            const importedUnit = Object.keys(importedUnits).sort((a, b) => importedUnits[b] - importedUnits[a])[0];
+            if (importedUnit) {
+                state.library.itemUnit = importedUnit;
+                if (state.library.totalUnit === previousItemUnit) {
+                    state.library.totalUnit = importedUnit;
+                }
+            }
 
             state.library.defaultListId = list.id;
             state.library.getListById(list.id).calculateTotals();

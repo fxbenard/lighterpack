@@ -1,14 +1,27 @@
 <style lang="scss">
+@import "../css/_globals";
 
+#itemLinkForm {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
 </style>
 
 <template>
     <modal id="itemLinkDialog" :shown="shown" @hide="shown = false">
         <h2>Add a link for this item</h2>
         <form id="itemLinkForm" @submit.prevent="addLink">
-            <input v-model="url" type="text" d="itemLink" placeholder="Item Link">
-            <input type="submit" class="lpButton" value="Save">
-            <a class="lpHref close" @click="shown = false">Cancel</a>
+            <div class="lpModalBody">
+                <div>
+                    <label for="itemLink">Item link</label>
+                    <input id="itemLink" v-model="url" type="text" placeholder="https://example.com/gear-item">
+                </div>
+            </div>
+            <div class="lpModalActions">
+                <a class="lpHref close" @click="shown = false">Cancel</a>
+                <input type="submit" class="lpButton" value="Save link">
+            </div>
         </form>
     </modal>
 </template>

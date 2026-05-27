@@ -121,19 +121,7 @@ $sidebarPadding: 20px;
 }
 
 .lpGearRoomBtn {
-    background: none;
-    border: 1px solid $color-border;
-    border-radius: $radius-sm;
-    color: $color-text-muted;
-    cursor: pointer;
-    font-family: $font-family-base;
-    font-size: $fontSize-xs;
-    padding: 2px 8px;
-
-    &:hover {
-        border-color: $color-accent;
-        color: $color-accent;
-    }
+    white-space: nowrap;
 }
 
 .lpGearRoomModal {
@@ -142,25 +130,9 @@ $sidebarPadding: 20px;
 }
 
 .lpThemeToggle {
-    align-items: center;
-    background: $color-bg;
-    border: 1px solid $color-border;
-    border-radius: $radius-md;
-    color: $color-text-muted;
-    cursor: pointer;
-    display: flex;
-    font-family: $font-family-base;
-    font-size: $fontSize-sm;
-    gap: 6px;
+    justify-content: flex-start;
     margin-top: auto;
-    padding: 8px 12px;
-    transition: color $transitionDurationFast, border-color $transitionDurationFast;
     width: 100%;
-
-    &:hover {
-        border-color: $color-accent;
-        color: $color-text;
-    }
 }
 
 </style>
@@ -176,22 +148,22 @@ $sidebarPadding: 20px;
             <section class="lpGearSection">
                 <h2 class="lpGearSectionHeader">
                     Gear
-                    <button class="lpGearRoomBtn" @click="gearRoomOpen = true">⊞ Gear Room</button>
+                    <button class="lpButton lpSmall lpButtonSecondary lpGearRoomBtn" @click="gearRoomOpen = true">Gear Room</button>
                 </h2>
-                <libraryItems />
+                <libraryItems :show-title="false" />
             </section>
 
-            <modal v-if="gearRoomOpen" :shown="gearRoomOpen" @hide="gearRoomOpen = false">
-                <div class="lpGearRoomModal">
-                    <libraryItems />
-                </div>
-            </modal>
-
-            <button class="lpThemeToggle" @click="cycleTheme">
-                {{ themeIcon }} {{ themeLabel }}
+            <button class="lpButton lpSmall lpButtonGhost lpThemeToggle" @click="cycleTheme">
+                <span aria-hidden="true">{{ themeIcon }}</span>
+                <span>{{ themeLabel }}</span>
             </button>
         </div>
         </div>
+        <modal v-if="gearRoomOpen" :shown="gearRoomOpen" @hide="gearRoomOpen = false">
+            <div class="lpGearRoomModal">
+                <libraryItems />
+            </div>
+        </modal>
     </div>
 </template>
 

@@ -1,5 +1,10 @@
 @import "globals";
 
+@mixin lpFocusRing($color: var(--color-accent-rgb)) {
+    box-shadow: 0 0 0 3px rgba($color, 0.18);
+    outline: none;
+}
+
 .lp {
     &,
     body {
@@ -46,7 +51,8 @@
     }
 
     .hover {
-        background: $yellow2;
+        background: $color-highlight;
+        color: $color-text;
     }
 
     .tooltip {
@@ -68,11 +74,12 @@
 }
 
 .lpHref {
-    color: $blue1;
+    color: $color-link;
     cursor: pointer;
     text-decoration: none;
 
     &:hover {
+        color: $color-link-hover;
         text-decoration: underline;
     }
 }
@@ -219,44 +226,41 @@
 }
 
 .lp .lpButton { /* TODO: find out why this specificity is needed */
+    align-items: center;
     background: $color-accent;
-    border: none;
+    border: 1px solid transparent;
     border-radius: $radius-md;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    box-shadow: $shadow-soft;
     color: #fff;
     cursor: pointer;
-    display: inline-block;
+    display: inline-flex;
     font-family: $font-family-base;
-    font-size: $fontSize-md;
+    font-size: $fontSize-base;
     font-weight: $fontWeight-bold;
-    letter-spacing: 0.01em;
-    line-height: 1.4;
-    padding: 10px 22px;
+    gap: 6px;
+    justify-content: center;
+    line-height: 1;
+    min-height: $control-height-lg;
+    padding: 0 18px;
     position: relative;
     text-align: center;
     text-decoration: none;
-    transition: background $transitionDurationFast, box-shadow $transitionDurationFast;
+    transition: background $transitionDurationFast, border-color $transitionDurationFast, box-shadow $transitionDurationFast, color $transitionDurationFast;
     width: auto;
 
-    &.lpSmall {
-        font-size: $fontSize-base;
-        padding: 6px 12px;
+    &.lpSmall,
+    &.lpButtonSm {
+        font-size: $fontSize-sm;
+        min-height: $control-height-sm;
+        padding: 0 12px;
     }
 
-    &:hover:not(:disabled),
-    &:active {
+    &:hover:not(:disabled):not(.lpButtonDisabled) {
         background: $color-accent-hover;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
 
-    &:focus,
-    &:active {
-        outline: none;
-    }
-
-    &:focus:not(:active) {
-        box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb), 0.3);
-        outline: none;
+    &:focus {
+        @include lpFocusRing();
     }
 
     &::-moz-focus-inner {
@@ -267,6 +271,82 @@
     &.lpButtonDisabled {
         cursor: default;
         opacity: 0.5;
+    }
+}
+
+.lpButton.lpButtonSecondary {
+    background: $color-control;
+    border-color: $color-border;
+    box-shadow: none;
+    color: $color-text;
+}
+
+.lpButton.lpButtonGhost {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    color: $color-text-muted;
+}
+
+.lpButton.lpButtonDanger {
+    background: $color-danger;
+    color: #fff;
+}
+
+.lpButton.lpButtonSecondary:hover:not(:disabled):not(.lpButtonDisabled),
+.lpButton.lpButtonGhost:hover:not(:disabled):not(.lpButtonDisabled) {
+    background: $color-control-hover;
+    border-color: $color-accent;
+    color: $color-accent;
+}
+
+.lpButton.lpButtonDanger:hover:not(:disabled):not(.lpButtonDisabled) {
+    background: $color-danger-hover;
+}
+
+.lpIconButton {
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: $radius-md;
+    color: $color-text-muted;
+    cursor: pointer;
+    display: inline-flex;
+    height: $icon-hit-size;
+    justify-content: center;
+    padding: 0;
+    transition: background $transitionDurationFast, border-color $transitionDurationFast, color $transitionDurationFast, opacity $transitionDurationFast;
+    width: $icon-hit-size;
+
+    &:hover {
+        background: $color-control-muted;
+        color: $color-text;
+    }
+
+    &:focus:not(:active) {
+        @include lpFocusRing();
+    }
+
+    svg,
+    i {
+        flex: 0 0 auto;
+        height: $icon-size-md;
+        width: $icon-size-md;
+    }
+}
+
+.lpControl {
+    background: $color-control;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    color: $color-text;
+    min-height: $control-height-md;
+    padding: 0 10px;
+
+    &:focus {
+        border-color: $color-accent;
+
+        @include lpFocusRing();
     }
 }
 
@@ -296,7 +376,7 @@
 
     &.lpHeader {
         .lpCell {
-            border-bottom: 1px solid #aaa;
+            border-bottom: 1px solid $color-border;
             vertical-align: bottom;
         }
 
@@ -308,12 +388,12 @@
 
 .lpFooter {
     .lpCell {
-        border-top: 1px solid #aaa;
+        border-top: 1px solid $color-border;
     }
 }
 
 .lpCell {
-    border-top: 1px dotted #aaa;
+    border-top: 1px dotted $color-border;
     display: table-cell;
     padding: 1px 8px;
 
@@ -355,11 +435,11 @@
 }
 
 .lpWarning {
-    background: $yellow2;
-    border: 1px solid $darkYellow;
-    border-radius: 5px;
-    color: #1a1a1a;
-    padding: 10px;
+    background: rgba(var(--color-warning-rgb), 0.12);
+    border: 1px solid rgba(var(--color-warning-rgb), 0.32);
+    border-radius: $radius-md;
+    color: $color-text;
+    padding: 10px 12px;
 }
 
 #lpImageDialog {

@@ -7,6 +7,10 @@
     overflow-y: auto;
     padding: 0;
     width: min(480px, 92vw);
+
+    &::before {
+        display: none;
+    }
 }
 
 .itemDetail {
@@ -15,33 +19,45 @@
 }
 
 .itemDetailHeader {
-    align-items: flex-start;
-    background: $color-accent;
+    align-items: center;
+    background:
+        linear-gradient(180deg, rgba(var(--color-accent-rgb), 0.12), rgba(var(--color-accent-rgb), 0.02)),
+        $color-surface;
+    border-bottom: 1px solid rgba(var(--color-accent-rgb), 0.14);
     border-radius: $radius-md $radius-md 0 0;
-    color: #fff;
+    color: $color-text;
     display: flex;
-    gap: 16px;
-    padding: 20px;
+    gap: 18px;
+    min-height: 132px;
+    padding: 22px 24px;
+    position: relative;
 
     .itemDetailThumb {
-        border-radius: $radius-sm;
+        background: rgba(var(--color-accent-rgb), 0.08);
+        border: 1px solid rgba(var(--color-accent-rgb), 0.16);
+        border-radius: 16px;
         flex-shrink: 0;
-        height: 72px;
+        height: 84px;
         object-fit: cover;
-        width: 72px;
+        width: 84px;
     }
 
     .itemDetailThumbPlaceholder {
         align-items: center;
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: $radius-sm;
-        color: rgba(255, 255, 255, 0.5);
+        background: rgba(var(--color-accent-rgb), 0.14);
+        border: 1px solid rgba(var(--color-accent-rgb), 0.18);
+        border-radius: 16px;
+        color: $color-accent;
         display: flex;
         flex-shrink: 0;
-        font-size: 28px;
-        height: 72px;
+        height: 84px;
         justify-content: center;
-        width: 72px;
+        width: 84px;
+
+        svg {
+            height: 46px;
+            width: 52px;
+        }
     }
 
     .itemDetailHeaderInfo {
@@ -50,48 +66,51 @@
     }
 
     .itemDetailName {
-        font-size: 22px;
+        font-size: 26px;
         font-weight: $fontWeight-bold;
-        line-height: 1.2;
-        margin: 0 0 4px;
+        line-height: 1.08;
+        margin: 0 0 10px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
     .itemDetailBrand {
+        color: $color-text-muted;
         font-size: $fontSize-base;
         margin-bottom: 8px;
-        opacity: 0.85;
     }
 
     .itemDetailCategoryBadge {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(var(--color-accent-rgb), 0.14);
         border-radius: 99px;
+        color: $color-accent;
         display: inline-block;
-        font-size: $fontSize-sm;
-        font-weight: $fontWeight-medium;
-        padding: 2px 10px;
+        font-size: $fontSize-base;
+        font-weight: $fontWeight-bold;
+        line-height: 1;
+        padding: 10px 14px;
     }
 
     .itemDetailClose {
         align-items: center;
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(var(--color-accent-rgb), 0.12);
         border: none;
         border-radius: 50%;
-        color: #fff;
+        color: $color-accent;
         cursor: pointer;
         display: flex;
         flex-shrink: 0;
-        font-size: 20px;
-        height: 32px;
+        font-size: 22px;
+        font-weight: $fontWeight-bold;
+        height: 44px;
         justify-content: center;
         line-height: 1;
         margin-left: auto;
-        width: 32px;
+        width: 44px;
 
         &:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(var(--color-accent-rgb), 0.2);
         }
     }
 }
@@ -191,30 +210,51 @@
     align-items: center;
     border-top: 1px solid $color-border;
     display: flex;
-    gap: 8px;
+    gap: 10px;
+    flex-wrap: wrap;
     padding: 14px 20px;
 
     .itemDetailRemove {
+        align-items: center;
+        background: rgba(var(--color-accent-rgb), 0.05);
+        border: 1px solid rgba(var(--color-accent-rgb), 0.12);
+        border-radius: 999px;
         color: $color-text-muted;
         cursor: pointer;
+        display: inline-flex;
         font-size: $fontSize-sm;
+        font-weight: $fontWeight-medium;
+        min-height: 44px;
+        padding: 0 14px;
         text-decoration: none;
+        transition: background-color $transitionDurationFast ease, border-color $transitionDurationFast ease, color $transitionDurationFast ease;
 
         &:hover {
+            background: rgba(var(--color-accent-rgb), 0.09);
+            border-color: rgba(var(--color-accent-rgb), 0.18);
             color: $color-text;
         }
     }
 
     .itemDetailDelete {
         align-items: center;
+        background: rgba(206, 24, 54, 0.06);
+        border: 1px solid rgba(206, 24, 54, 0.16);
+        border-radius: 999px;
         color: $color-danger;
         cursor: pointer;
         display: flex;
-        font-size: $fontSize-base;
-        gap: 6px;
+        font-size: $fontSize-sm;
+        font-weight: $fontWeight-medium;
+        min-height: 44px;
+        padding: 0 14px;
+        text-decoration: none;
+        transition: background-color $transitionDurationFast ease, border-color $transitionDurationFast ease, color $transitionDurationFast ease;
 
         &:hover {
-            opacity: 0.8;
+            background: rgba(206, 24, 54, 0.1);
+            border-color: rgba(206, 24, 54, 0.22);
+            color: #b41431;
         }
     }
 
@@ -225,7 +265,8 @@
     .lpButton.itemDetailEdit {
         align-items: center;
         display: flex;
-        gap: 6px;
+        min-height: 44px;
+        padding: 0 22px;
     }
 }
 
@@ -384,6 +425,57 @@
     position: relative;
 }
 
+.itemDetailAddCreate {
+    align-items: stretch;
+    border-top: 1px solid $color-border;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 6px;
+    padding: 14px 14px 14px;
+}
+
+.itemDetailAddCreateInput {
+    background: rgba(var(--color-accent-rgb), 0.04);
+    border: 1px solid rgba(var(--color-accent-rgb), 0.14);
+    border-radius: 12px;
+    color: $color-text;
+    flex: 1;
+    font-size: $fontSize-md;
+    min-height: 46px;
+    min-width: 0;
+    padding: 0 16px;
+
+    &:focus {
+        border-color: $color-accent;
+        box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb), 0.12);
+        outline: none;
+    }
+}
+
+.itemDetailAddCreateRow {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(0, 1.7fr) minmax(154px, 0.9fr);
+}
+
+.itemDetailAddCreateBtn {
+    background: rgba(var(--color-accent-rgb), 0.08);
+    border: 1px solid rgba(var(--color-accent-rgb), 0.16);
+    border-radius: 12px;
+    color: $color-accent;
+    cursor: pointer;
+    font-size: $fontSize-md;
+    font-weight: $fontWeight-medium;
+    min-height: 46px;
+    padding: 0 18px;
+    white-space: nowrap;
+
+    &:hover {
+        background: rgba(var(--color-accent-rgb), 0.14);
+    }
+}
+
 .itemDetailAddBtn {
     background: none;
     border: 1px solid $color-accent;
@@ -400,14 +492,16 @@
 
 .itemDetailAddDropdown {
     background: $color-surface;
-    border: 1px solid $color-border;
-    border-radius: $radius-sm;
+    border: 1px solid rgba(var(--color-accent-rgb), 0.12);
+    border-radius: 16px;
     bottom: 100%;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    box-shadow:
+        0 20px 40px rgba(15, 23, 42, 0.16),
+        0 6px 16px rgba(15, 23, 42, 0.08);
     left: 0;
     list-style: none;
-    margin: 0 0 4px;
-    min-width: 160px;
+    margin: 0 0 8px;
+    min-width: 320px;
     padding: 4px 0;
     position: absolute;
     z-index: 10;
@@ -416,16 +510,26 @@
 .itemDetailAddOption {
     cursor: pointer;
     font-size: $fontSize-sm;
-    padding: 6px 14px;
+    padding: 10px 14px;
 
     &:hover {
-        background: $color-bg;
+        background: rgba(var(--color-accent-rgb), 0.06);
     }
 
     &.dimmed {
         color: $color-text-muted;
         cursor: default;
         pointer-events: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .itemDetailAddDropdown {
+        min-width: min(320px, calc(100vw - 72px));
+    }
+
+    .itemDetailAddCreateRow {
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 </style>
@@ -437,7 +541,13 @@
             <template v-if="!editing">
                 <div class="itemDetailHeader">
                     <img v-if="thumbnailImage" class="itemDetailThumb" :src="thumbnailImage" @click="viewImage">
-                    <div v-else class="itemDetailThumbPlaceholder">⛺</div>
+                    <div v-else class="itemDetailThumbPlaceholder" aria-label="No item image">
+                        <svg viewBox="0 0 64 56" aria-hidden="true" focusable="false">
+                            <path d="M5 48h54" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity="0.35" />
+                            <path d="M10 45 25 22l10 14 9-12 16 21" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="m25 22 4 16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.45" />
+                        </svg>
+                    </div>
                     <div class="itemDetailHeaderInfo">
                         <div class="itemDetailName">{{ item.name || 'Unnamed item' }}</div>
                         <div v-if="item.brand" class="itemDetailBrand">{{ item.brand }}</div>
@@ -490,7 +600,7 @@
 
                 <div class="itemDetailFooter">
                     <a v-if="category" class="itemDetailRemove" @click="removeFromList">
-                        ↩ Remove from list
+                        Remove from list
                     </a>
                     <div v-else class="itemDetailAddToList">
                         <button class="itemDetailAddBtn" @click="addToListOpen = !addToListOpen">
@@ -505,14 +615,28 @@
                             >
                                 {{ cat.name || 'Unnamed category' }}
                             </li>
+                            <li class="itemDetailAddCreate">
+                                <div class="itemDetailAddCreateRow">
+                                    <input
+                                        v-model="newCategoryName"
+                                        type="text"
+                                        class="itemDetailAddCreateInput"
+                                        placeholder="New category"
+                                        @keydown.enter.prevent="createCategoryAndAdd"
+                                    >
+                                    <button class="itemDetailAddCreateBtn" @click="createCategoryAndAdd">
+                                        Create
+                                    </button>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                     <a class="itemDetailDelete" @click="deleteGear">
-                        🗑 Delete gear
+                        Delete gear
                     </a>
                     <div class="itemDetailSpacer" />
                     <button class="lpButton itemDetailEdit" @click="startEdit">
-                        ✎ Edit Gear
+                        Edit gear
                     </button>
                 </div>
             </template>
@@ -521,7 +645,13 @@
             <template v-else>
                 <div class="itemDetailHeader">
                     <img v-if="thumbnailImage" class="itemDetailThumb" :src="thumbnailImage">
-                    <div v-else class="itemDetailThumbPlaceholder">⛺</div>
+                    <div v-else class="itemDetailThumbPlaceholder" aria-label="No item image">
+                        <svg viewBox="0 0 64 56" aria-hidden="true" focusable="false">
+                            <path d="M5 48h54" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity="0.35" />
+                            <path d="M10 45 25 22l10 14 9-12 16 21" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="m25 22 4 16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.45" />
+                        </svg>
+                    </div>
                     <div class="itemDetailHeaderInfo">
                         <div class="itemDetailName">{{ editName || 'Unnamed item' }}</div>
                         <div v-if="editBrand" class="itemDetailBrand">{{ editBrand }}</div>
@@ -653,6 +783,7 @@ export default {
             fetchError: '',
             fetchSuccess: '',
             addToListOpen: false,
+            newCategoryName: '',
         };
     },
     computed: {
@@ -698,6 +829,7 @@ export default {
             this.shown = false;
             this.editing = false;
             this.addToListOpen = false;
+            this.newCategoryName = '';
         },
         viewImage() {
             const full = this.item.image
@@ -821,7 +953,17 @@ export default {
                 categoryId: category.id,
                 dropIndex: category.categoryItems.length,
             });
-            this.addToListOpen = false;
+            this.close();
+        },
+        createCategoryAndAdd() {
+            if (!this.newCategoryName.trim()) {
+                return;
+            }
+            this.$store.commit('createCategoryAndAddItem', {
+                itemId: this.item.id,
+                name: this.newCategoryName,
+            });
+            this.close();
         },
     },
 };

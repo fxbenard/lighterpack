@@ -3,8 +3,16 @@
 
 .creatorLinks {
     border-top: 1px solid $color-border;
-    margin-top: 20px;
-    padding-top: 20px;
+    margin-top: 24px;
+    padding-top: 24px;
+}
+
+.creatorLinks h2 {
+    font-size: 28px;
+    letter-spacing: 0;
+    line-height: 1.1;
+    margin-bottom: 18px;
+    max-width: none;
 }
 
 .creatorLinks label {

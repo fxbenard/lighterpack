@@ -1,5 +1,7 @@
 <style lang="scss">
-
+.speedbumpBody {
+    max-width: 44ch;
+}
 </style>
 
 <template>
@@ -8,13 +10,13 @@
             {{ messages.title }}
         </h2>
 
-        <p>{{ messages.body }}</p>
+        <p class="speedbumpBody">{{ messages.body }}</p>
 
-        <div class="buttons">
+        <div class="lpModalActions">
             <button v-focus-on-create class="lpButton" @click="confirmSpeedbump()">
                 {{ messages.confirm }}
             </button>
-            &nbsp;<button class="lpButton" @click="shown = false">
+            <button class="lpButton lpButtonSecondary" @click="shown = false">
                 {{ messages.cancel }}
             </button>
         </div>

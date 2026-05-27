@@ -10,14 +10,27 @@
 }
 
 .lpAddItemInput {
+    border-radius: $radius-sm;
     border: none;
     border-bottom: 1px solid $color-border;
     background: transparent;
     color: $color-text;
     font-size: $fontSize-base;
-    padding: 2px 4px;
-    width: 180px;
+    min-height: 42px;
+    padding: 8px 10px;
+    width: 100%;
+    max-width: 260px;
     &:focus { outline: none; border-bottom-color: $color-accent; }
+}
+
+.lpAddItemCell {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 56px;
+    overflow: visible;
+    position: relative;
 }
 
 .lpSuggestions {
@@ -30,7 +43,7 @@
     margin: 0;
     padding: 4px 0;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 6px);
     width: 260px;
     z-index: 50;
 }
@@ -64,7 +77,7 @@
             </li>
             <item v-for="itemContainer in itemContainers" :key="itemContainer.item.id" :item-container="itemContainer" :category="category" />
             <li class="lpFooter lpItemsFooter">
-                <span class="lpAddItemCell" style="position:relative">
+                <span class="lpAddItemCell">
                     <input
                         v-if="showSuggestions || newItemName || showInput"
                         v-model="newItemName"
@@ -72,7 +85,8 @@
                         class="lpSilent lpAddItemInput"
                         placeholder="Item name..."
                         @input="onNewItemInput"
-                        @keydown.enter.prevent="newItem"
+                        @keydown.enter.prevent="createInlineItem('description')"
+                        @keydown.tab.exact.prevent="createInlineItem('description')"
                         @keydown.escape="dismissSuggestions"
                         @blur="dismissSuggestions"
                     />
@@ -94,8 +108,8 @@
                     {{ displayPrice(category.subtotalPrice, library.currencySymbol) }}
                 </span>
                 <span class="lpWeightCell lpNumber lpSubtotal">
-                    <span class="lpDisplaySubtotal">{{ displayWeight(category.subtotalWeight, library.totalUnit) }}</span>
-                    <span class="lpSubtotalUnit">{{ library.totalUnit }}</span>
+                    <span class="lpDisplaySubtotal">{{ displayWeight(category.subtotalWeight, displayUnit) }}</span>
+                    <span class="lpSubtotalUnit">{{ displayUnit }}</span>
                 </span>
                 <span class="lpQtyCell lpSubtotal">
                     <span class="lpQtySubtotal">{{ category.subtotalQty }}</span>
@@ -109,7 +123,6 @@
 <script>
 import item from './item.vue';
 import { openSpeedbump } from '../services/speedbump';
-import { openDialog } from '../services/dialogs';
 import { useUtils } from '../composables/useUtils.js';
 import { suggestItems } from '../composables/useGearMatcher.js';
 
@@ -136,16 +149,53 @@ export default {
         itemContainers() {
             return this.category.categoryItems.map(categoryItem => ({ categoryItem, item: this.library.getItemById(categoryItem.itemId) }));
         },
+        displayUnit() {
+            if (this.library.totalUnit !== 'oz') {
+                return this.library.totalUnit;
+            }
+
+            const units = {};
+            this.itemContainers.forEach(({ item }) => {
+                if (item && item.authorUnit) {
+                    units[item.authorUnit] = true;
+                }
+            });
+
+            const unitList = Object.keys(units);
+            return unitList.length === 1 ? unitList[0] : this.library.totalUnit;
+        },
     },
     methods: {
         displayWeight,
         displayPrice,
-        newItem() {
-            openDialog('gearPicker', { category: this.category });
+        createInlineItem(focusField = 'name') {
+            const name = this.newItemName.trim();
+
+            if (!name) {
+                this.dismissSuggestions();
+                return;
+            }
+
+            this.$store.commit('newItem', {
+                category: this.category,
+                _isNew: true,
+                name,
+            });
+
+            const newItem = this.$store.state.library.items[this.$store.state.library.items.length - 1];
+
             this.newItemName = '';
             this.suggestions = [];
             this.showSuggestions = false;
             this.showInput = false;
+
+            this.$nextTick(() => {
+                const selector = focusField === 'description' ? '.lpDescription' : '.lpName';
+                const field = this.$el.querySelector(`[data-item-id="${newItem.id}"] ${selector}`);
+                if (field) {
+                    field.focus();
+                }
+            });
         },
         onNewItemInput(evt) {
             this.suggestions = suggestItems(

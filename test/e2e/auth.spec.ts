@@ -17,6 +17,33 @@ test("has title", async ({ page }) => {
 });
 
 test.describe("User Authentication Tests", () => {
+  test("should save default currency from account settings", async ({ page }) => {
+    await page.goto(testRoot);
+
+    const now = Date.now();
+    const username = `cur${now}`;
+    const email = `cur+${now}@lighterpack.com`;
+    const password = "testtest";
+
+    await registerUser(page, username, password, email);
+    await page.getByText("Signed in as").hover();
+    await page.getByText("Account Settings").click();
+
+    const saveResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes("/saveLibrary") && response.ok(),
+      { timeout: 35000 },
+    );
+
+    await page.getByLabel("Default currency").fill("€");
+    await saveResponse;
+
+    await page.reload();
+    await page.getByText("Signed in as").hover();
+    await page.getByText("Account Settings").click();
+    await expect(page.getByLabel("Default currency")).toHaveValue("€");
+  });
+
   test("should successfully register a new user", async ({ page }) => {
     await page.goto(testRoot);
 

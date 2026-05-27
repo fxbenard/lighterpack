@@ -1,24 +1,50 @@
 <style lang="scss">
 @import "../css/_globals";
 
-#libraryContainer {
+.libraryContainer {
     display: flex;
     flex: 2 0 30vh;
     flex-direction: column;
 }
 
-#library {
+.libraryHeader {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.libraryHeader h2 {
+    margin: 0;
+}
+
+.libraryCreateButton {
+    white-space: nowrap;
+}
+
+.library {
     flex: 1 0 25vh;
     overflow-y: scroll;
 }
 
-#librarySearch {
-    background: $color-bg;
+.librarySearchWrap {
+    padding: 0 10px;
+    position: relative;
+}
+
+.librarySearch {
+    appearance: none;
+    background: $color-surface;
     border: 1px solid $color-border;
-    border-radius: $radius-sm;
+    border-radius: 999px;
+    box-sizing: border-box;
     color: $color-text;
-    margin-bottom: 15px;
-    padding: 6px 8px;
+    font-size: $fontSize-md;
+    line-height: 1.2;
+    margin: 0;
+    min-height: 60px;
+    padding: 0 52px 0 26px;
     width: 100%;
 
     &::placeholder {
@@ -27,7 +53,33 @@
 
     &:focus {
         border-color: $color-accent;
+        box-shadow: 0 0 0 6px rgba(var(--color-accent-rgb), 0.08);
         outline: none;
+    }
+}
+
+.librarySearchClear {
+    align-items: center;
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+    color: $color-text-muted;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 18px;
+    height: 28px;
+    justify-content: center;
+    padding: 0;
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: background-color $transitionDurationFast ease, color $transitionDurationFast ease;
+    width: 28px;
+
+    &:hover {
+        background: rgba(var(--color-accent-rgb), 0.08);
+        color: $color-accent;
     }
 }
 
@@ -99,7 +151,7 @@
         right: 14px;
     }
 
-    #library.lpSearching & {
+    .library.lpSearching & {
         display: none;
     }
 
@@ -119,32 +171,62 @@
 .lpLibraryFilters {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 10px;
     margin-bottom: 10px;
     padding: 0 10px;
 }
 
 .lpLibraryFilterSelect {
-    background: $color-bg;
+    appearance: none;
+    background: $color-surface;
     border: 1px solid $color-border;
-    border-radius: $radius-sm;
+    border-radius: 999px;
+    box-sizing: border-box;
     color: $color-text;
-    font-size: $fontSize-sm;
-    padding: 4px 6px;
+    font-size: $fontSize-md;
+    line-height: 1.2;
+    min-height: 60px;
+    padding: 0 54px 0 26px;
     width: 100%;
-    &:focus { border-color: $color-accent; outline: none; }
+    &:focus {
+        border-color: $color-accent;
+        box-shadow: 0 0 0 6px rgba(var(--color-accent-rgb), 0.08);
+        outline: none;
+    }
+}
+
+.lpLibraryFilterSelectWrap {
+    position: relative;
+}
+
+.lpLibraryFilterSelectWrap::after {
+    color: $color-text-muted;
+    content: "⌄";
+    font-size: 24px;
+    line-height: 1;
+    pointer-events: none;
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-54%);
 }
 
 .lpTagFilter {
     align-items: center;
+    background: $color-surface;
     border: 1px solid $color-border;
-    border-radius: $radius-sm;
+    border-radius: 999px;
+    box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
-    min-height: 28px;
-    padding: 3px 6px;
-    &:focus-within { border-color: $color-accent; }
+    gap: 8px;
+    min-height: 60px;
+    padding: 10px 26px;
+    width: 100%;
+    &:focus-within {
+        border-color: $color-accent;
+        box-shadow: 0 0 0 6px rgba(var(--color-accent-rgb), 0.08);
+    }
 }
 
 .lpTagChip {
@@ -170,26 +252,37 @@
 }
 
 .lpTagInput {
+    appearance: none;
     background: transparent;
     border: none;
+    box-shadow: none;
     color: $color-text;
     flex: 1;
-    font-size: $fontSize-sm;
-    min-width: 80px;
-    padding: 2px 0;
+    font-size: $fontSize-md;
+    line-height: 1.2;
+    margin: 0;
+    min-height: 38px;
+    min-width: 140px;
+    padding: 0;
+    width: auto;
     &:focus { outline: none; }
     &::placeholder { color: $color-text-muted; }
 }
 </style>
 
 <template>
-    <section id="libraryContainer">
-        <h2>Gear</h2>
+    <section class="libraryContainer">
+        <div v-if="showTitle" class="libraryHeader">
+            <h2>Gear</h2>
+            <button class="lpButton lpSmall lpButtonSecondary libraryCreateButton" @click="createLibraryItem">New gear item</button>
+        </div>
         <div class="lpLibraryFilters">
-            <select v-model="filterCategory" class="lpLibraryFilterSelect">
-                <option value="">All categories</option>
-                <option v-for="cat in gearCategories" :key="cat" :value="cat">{{ cat }}</option>
-            </select>
+            <div class="lpLibraryFilterSelectWrap">
+                <select v-model="filterCategory" class="lpLibraryFilterSelect">
+                    <option value="">All categories</option>
+                    <option v-for="cat in gearCategories" :key="cat" :value="cat">{{ cat }}</option>
+                </select>
+            </div>
             <div class="lpTagFilter">
                 <span v-for="tag in filterTags" :key="tag" class="lpTagChip">
                     {{ tag }}<button class="lpTagChipRemove" @click="removeFilterTag(tag)">×</button>
@@ -203,8 +296,25 @@
                 />
             </div>
         </div>
-        <input id="librarySearch" v-model="searchText" type="text" placeholder="search items">
-        <ul id="library" ref="library">
+        <div class="librarySearchWrap">
+            <input
+                ref="searchInput"
+                class="librarySearch"
+                v-model="searchText"
+                type="text"
+                placeholder="search items"
+            >
+            <button
+                v-if="searchText"
+                class="librarySearchClear"
+                type="button"
+                aria-label="Clear gear search"
+                @click="clearSearch"
+            >
+                ×
+            </button>
+        </div>
+        <ul class="library" ref="library">
             <li v-for="item in filteredItems" :key="item.id" class="lpLibraryItem" :data-item-id="item.id" @dblclick="openDetail(item)">
                 <a v-if="item.url" :href="item.url" target="_blank" class="lpName lpHref">{{ item.name }}</a>
                 <span v-if="!item.url" class="lpName">{{ item.name }}</span>
@@ -238,7 +348,17 @@ const GEAR_CATEGORIES = [
 
 export default {
     name: 'LibraryItem',
-    props: ['item'],
+    props: {
+        item: {
+            type: Object,
+            required: false,
+            default: null,
+        },
+        showTitle: {
+            type: Boolean,
+            default: true,
+        },
+    },
     data() {
         return {
             searchText: '',
@@ -335,6 +455,23 @@ export default {
         },
         removeFilterTag(tag) {
             this.filterTags = this.filterTags.filter(t => t !== tag);
+        },
+        clearSearch() {
+            this.searchText = '';
+            this.$nextTick(() => {
+                if (this.$refs.searchInput) {
+                    this.$refs.searchInput.focus();
+                }
+            });
+        },
+        createLibraryItem() {
+            this.$store.commit('newItem', {
+                _isNew: true,
+                name: this.searchText.trim(),
+            });
+
+            const newItem = this.$store.state.library.items[this.$store.state.library.items.length - 1];
+            openDialog('itemDetail', { item: newItem, categoryItem: null, category: null });
         },
         handleItemDrag() {
             if (this.drake) {

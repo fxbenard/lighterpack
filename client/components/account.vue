@@ -1,33 +1,71 @@
 <style lang="scss">
+@import "../css/_globals";
 
+#accountSettings {
+    width: min(640px, calc(100vw - 32px));
+}
+
+.accountSection {
+    border-bottom: 1px solid $color-border;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+}
+
+.accountActions {
+    align-items: center;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr auto auto;
+    margin-top: 18px;
+
+    .lpButton {
+        min-width: 160px;
+    }
+}
+
+.accountDangerLink {
+    color: $color-danger;
+}
+
+@media (max-width: 640px) {
+    .accountActions {
+        grid-template-columns: 1fr;
+
+        .lpButton {
+            width: 100%;
+        }
+    }
+}
 </style>
 
 <template>
     <modal id="accountSettings" :shown="shown" @hide="shown = false">
         <h2>Account Settings</h2>
 
-        <form id="accountForm" @submit.prevent="updateAccount()">
-            <div class="lpFields">
-                <input type="text" name="username" class="username" disabled :value="username">
-                <input v-model="currentPassword" type="password" placeholder="Current password" name="currentPassword" class="currentPassword">
-                <hr>
-                <input v-model="newEmail" type="email" placeholder="New Email" name="newEmail" class="newEmail">
-                <hr>
-                <input v-model="newPassword" type="password" placeholder="New Password" name="newPassword" class="newPassword">
-                <input v-model="confirmNewPassword" type="password" placeholder="Confirm New Password" name="confirmNewPassword" class="confirmNewPassword">
-            </div>
+        <section class="accountSection">
+            <form id="accountForm" @submit.prevent="updateAccount()">
+                <div class="lpFields">
+                    <input type="text" name="username" class="username" disabled :value="username">
+                    <input v-model="currentPassword" type="password" placeholder="Current password" name="currentPassword" class="currentPassword">
+                    <hr>
+                    <input v-model="newEmail" type="email" placeholder="New Email" name="newEmail" class="newEmail">
+                    <hr>
+                    <input v-model="newPassword" type="password" placeholder="New Password" name="newPassword" class="newPassword">
+                    <input v-model="confirmNewPassword" type="password" placeholder="Confirm New Password" name="confirmNewPassword" class="confirmNewPassword">
+                </div>
 
-            <errors :errors="errors" />
+                <errors :errors="errors" />
 
-            <div class="lpButtons">
-                <button class="lpButton">
-                    Submit
-                    <spinner v-if="saving" />
-                </button>
-                <a class="lpHref" @click="shown = false">Cancel</a>
-                <a class="lpHref" @click="showDeleteAccount">Delete account</a>
-            </div>
-        </form>
+                <div class="accountActions">
+                    <button class="lpButton">
+                        Submit
+                        <spinner v-if="saving" />
+                    </button>
+                    <a class="lpHref" @click="shown = false">Cancel</a>
+                    <a class="lpHref accountDangerLink" @click="showDeleteAccount">Delete account</a>
+                </div>
+            </form>
+        </section>
 
         <profileSettings />
         <creatorLinks />

@@ -8,49 +8,58 @@
     .lpTarget {
         cursor: default;
         display: inline-block;
-        margin-bottom: -10px;
-        padding-bottom: 10px;
+        margin-bottom: -12px;
+        padding-bottom: 12px;
         position: relative;
     }
 
     .lpContent {
-        background: $color-surface;
-        box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(14px);
+        background: $color-surface-elevated;
+        border: 1px solid $color-border;
+        border-radius: $radius-md;
+        box-shadow: $shadow-popover;
         color: $color-text;
         left: 50%;
-        margin-top: 15px;
+        margin-top: 18px;
         min-width: 100%;
         opacity: 0;
-        padding: 12px;
+        padding: 16px;
         pointer-events: none;
         position: absolute;
         top: 100%;
-        transform: translateX(-50%);
-        transition: all 0.15s;
+        transform: translateX(-50%) translateY(6px);
+        transition:
+            opacity $transitionDurationFast ease,
+            transform $transitionDurationFast ease,
+            margin-top $transitionDurationFast ease;
         white-space: nowrap;
         z-index: $dialog;
 
         &::before {
-            background-color: $color-surface;
-            box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
+            background-color: $color-surface-elevated;
+            border-left: 1px solid $color-border;
+            border-top: 1px solid $color-border;
+            border-radius: 4px 0 0 0;
             content: "";
             display: block;
-            height: 20px;
+            height: 18px;
             left: 50%;
-            margin-left: -10px;
+            margin-left: -9px;
             position: absolute;
-            top: -10px;
+            top: -9px;
             transform: rotate(45deg);
-            width: 20px;
+            width: 18px;
             z-index: $dialog - 1;
         }
 
         &::after {
-            background: $color-surface;
+            background: $color-surface-elevated;
             content: "";
             display: block;
-            height: 15px;
+            height: 18px;
             left: 0;
+            border-radius: $radius-md $radius-md 0 0;
             position: absolute;
             top: 0;
             width: 100%;
@@ -70,12 +79,12 @@
         }
 
         ul, a {
-            line-height: 25px;
+            line-height: 1.45;
         }
 
         hr {
             border-color: $border1;
-            margin: 7px -0;
+            margin: 14px 0;
             padding: 0;
         }
     }
@@ -86,9 +95,10 @@
         }
 
         .lpContent {
-            margin-top: 10px;
+            margin-top: 12px;
             opacity: 1;
             pointer-events: all;
+            transform: translateX(-50%) translateY(0);
         }
     }
 }

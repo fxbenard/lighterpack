@@ -183,8 +183,10 @@
                     </div>
                 </div>
             </div>
-            <a id="importConfirm" class="lpButton" @click="importList">Import List</a>
-            <a class="lpButton close" @click="shown = false">Cancel Import</a>
+            <div class="lpModalActions">
+                <a class="lpButton close" @click="shown = false">Cancel Import</a>
+                <a id="importConfirm" class="lpButton" @click="importList">Import List</a>
+            </div>
         </modal>
         <form id="csvUpload">
             <input id="csv" ref="csvInput" type="file" name="csv">

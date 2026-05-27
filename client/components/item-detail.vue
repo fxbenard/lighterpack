@@ -420,13 +420,13 @@
 .itemDetailAddCreateInput {
     background: rgba(var(--color-accent-rgb), 0.04);
     border: 1px solid rgba(var(--color-accent-rgb), 0.14);
-    border-radius: 12px;
+    border-radius: $radius-md;
     color: $color-text;
     flex: 1;
-    font-size: $fontSize-md;
-    min-height: 46px;
+    font-size: $fontSize-sm;
+    min-height: $control-height-sm;
     min-width: 0;
-    padding: 0 16px;
+    padding: 0 10px;
 
     &:focus {
         border-color: $color-accent;
@@ -442,7 +442,7 @@
 }
 
 .itemDetailAddCreateBtn {
-    min-height: 46px;
+    min-height: $control-height-sm;
     white-space: nowrap;
 }
 

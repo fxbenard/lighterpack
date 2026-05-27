@@ -78,12 +78,11 @@ test.describe("Smart Gear Library", () => {
     await expect(page.locator(".lpLibraryFilterSelect")).toBeVisible();
     await page.locator(".lpLibraryFilterSelect").selectOption("Sleep");
     await expect(page.locator(".lpLibraryFilterSelect")).toHaveValue("Sleep");
-    await expect(page.locator("#library .lpLibraryItem")).toHaveCount(1);
-    await expect(page.locator("#library .lpLibraryItem .lpName")).toContainText([
-      "Sleeping Bag",
-    ]);
+    await expect(page.locator(".library .lpLibraryItem")).toHaveCount(1);
+    await expect(page.locator(".library .lpLibraryItem .lpName")).toContainText(
+      ["Sleeping Bag"],
+    );
   });
-<<<<<<< HEAD
 
   test("typing a new item name and tabbing creates the item then focuses description", async ({
     page,
@@ -181,8 +180,8 @@ test.describe("Smart Gear Library", () => {
 
     await expect(page.locator("#itemDetailDialog")).toBeHidden();
     await expect(page.locator(".lpCategoryName").last()).toHaveValue("Kitchen");
-    await expect(page.locator(".lpItem .lpName").last()).toHaveValue("Camp cup");
+    await expect(page.locator(".lpItem .lpName").last()).toHaveValue(
+      "Camp cup",
+    );
   });
-=======
->>>>>>> origin/main
 });

@@ -37,14 +37,14 @@
     appearance: none;
     background: $color-surface;
     border: 1px solid $color-border;
-    border-radius: 999px;
+    border-radius: $radius-md;
     box-sizing: border-box;
     color: $color-text;
     font-size: $fontSize-md;
     line-height: 1.2;
     margin: 0;
-    min-height: 60px;
-    padding: 0 52px 0 26px;
+    min-height: $control-height-md;
+    padding: 0 36px 0 12px;
     width: 100%;
 
     &::placeholder {
@@ -180,13 +180,13 @@
     appearance: none;
     background: $color-surface;
     border: 1px solid $color-border;
-    border-radius: 999px;
+    border-radius: $radius-md;
     box-sizing: border-box;
     color: $color-text;
     font-size: $fontSize-md;
     line-height: 1.2;
-    min-height: 60px;
-    padding: 0 54px 0 26px;
+    min-height: $control-height-md;
+    padding: 0 36px 0 12px;
     width: 100%;
     &:focus {
         border-color: $color-accent;
@@ -215,13 +215,13 @@
     align-items: center;
     background: $color-surface;
     border: 1px solid $color-border;
-    border-radius: 999px;
+    border-radius: $radius-md;
     box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    min-height: 60px;
-    padding: 10px 26px;
+    min-height: $control-height-md;
+    padding: 6px 12px;
     width: 100%;
     &:focus-within {
         border-color: $color-accent;

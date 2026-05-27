@@ -218,7 +218,7 @@
         align-items: center;
         background: rgba(var(--color-accent-rgb), 0.05);
         border: 1px solid rgba(var(--color-accent-rgb), 0.12);
-        border-radius: 999px;
+        border-radius: $radius-md;
         color: $color-text-muted;
         cursor: pointer;
         display: inline-flex;
@@ -238,23 +238,23 @@
 
     .itemDetailDelete {
         align-items: center;
-        background: rgba(206, 24, 54, 0.06);
-        border: 1px solid rgba(206, 24, 54, 0.16);
-        border-radius: 999px;
+        background: rgba(var(--color-danger-rgb), 0.06);
+        border: 1px solid rgba(var(--color-danger-rgb), 0.16);
+        border-radius: $radius-md;
         color: $color-danger;
         cursor: pointer;
         display: flex;
         font-size: $fontSize-sm;
         font-weight: $fontWeight-medium;
-        min-height: 44px;
+        min-height: $control-height-lg;
         padding: 0 14px;
         text-decoration: none;
         transition: background-color $transitionDurationFast ease, border-color $transitionDurationFast ease, color $transitionDurationFast ease;
 
         &:hover {
-            background: rgba(206, 24, 54, 0.1);
-            border-color: rgba(206, 24, 54, 0.22);
-            color: #b41431;
+            background: rgba(var(--color-danger-rgb), 0.1);
+            border-color: rgba(var(--color-danger-rgb), 0.22);
+            color: $color-danger-hover;
         }
     }
 

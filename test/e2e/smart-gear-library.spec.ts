@@ -83,6 +83,7 @@ test.describe("Smart Gear Library", () => {
       "Sleeping Bag",
     ]);
   });
+<<<<<<< HEAD
 
   test("typing a new item name and tabbing creates the item then focuses description", async ({
     page,
@@ -182,4 +183,6 @@ test.describe("Smart Gear Library", () => {
     await expect(page.locator(".lpCategoryName").last()).toHaveValue("Kitchen");
     await expect(page.locator(".lpItem .lpName").last()).toHaveValue("Camp cup");
   });
+=======
+>>>>>>> origin/main
 });

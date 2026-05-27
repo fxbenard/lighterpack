@@ -130,8 +130,20 @@ $sidebarPadding: 20px;
 }
 
 .lpThemeToggle {
+    align-items: center;
+    background: $color-bg;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    color: $color-text-muted;
+    cursor: pointer;
+    display: flex;
+    font-family: $font-family-base;
+    font-size: $fontSize-sm;
+    gap: 6px;
     justify-content: flex-start;
     margin-top: auto;
+    padding: 8px 12px;
+    transition: color $transitionDurationFast, border-color $transitionDurationFast;
     width: 100%;
 }
 

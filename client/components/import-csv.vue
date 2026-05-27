@@ -45,6 +45,12 @@
             border-color: rgba(var(--color-warning-rgb), 0.32);
             color: $color-text;
         }
+
+        &.isAmbiguous {
+            background: #fff3cd;
+            border-color: #e6c84a;
+            color: #7a5c00;
+        }
     }
 
     #importData {

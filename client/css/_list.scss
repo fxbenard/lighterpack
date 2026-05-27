@@ -312,17 +312,12 @@ input.lpCategoryName { /* specificity */
     .lpLink,
     .lpTag,
     .lpStar {
-        align-items: center;
         border-radius: $radius-sm;
         cursor: pointer;
-        display: inline-flex;
-        height: $icon-hit-size;
-        justify-content: center;
         margin-right: 0;
         opacity: 0.32;
         transition: background $transitionDurationFast ease, opacity $transitionDurationFast ease, transform $transitionDurationFast ease;
         visibility: hidden;
-        width: $icon-hit-size;
 
         &:hover {
             background: $color-control-muted;

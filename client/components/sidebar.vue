@@ -110,6 +110,25 @@ $sidebarPadding: 20px;
     }
 }
 
+.lpGearSectionHeader {
+    align-items: center;
+    color: $color-text;
+    display: flex;
+    font-size: $fontSize-md;
+    font-weight: $fontWeight-bold;
+    justify-content: space-between;
+    margin: 0 0 10px;
+}
+
+.lpGearRoomBtn {
+    white-space: nowrap;
+}
+
+.lpGearRoomModal {
+    padding: 16px;
+    width: min(520px, 92vw);
+}
+
 .lpThemeToggle {
     align-items: center;
     background: $color-bg;
@@ -121,15 +140,11 @@ $sidebarPadding: 20px;
     font-family: $font-family-base;
     font-size: $fontSize-sm;
     gap: 6px;
+    justify-content: flex-start;
     margin-top: auto;
     padding: 8px 12px;
     transition: color $transitionDurationFast, border-color $transitionDurationFast;
     width: 100%;
-
-    &:hover {
-        border-color: $color-accent;
-        color: $color-text;
-    }
 }
 
 </style>
@@ -142,19 +157,32 @@ $sidebarPadding: 20px;
             <h1>LighterPack <span>+</span></h1>
 
             <libraryLists />
-            <libraryItems />
+            <section class="lpGearSection">
+                <h2 class="lpGearSectionHeader">
+                    Gear
+                    <button class="lpButton lpSmall lpButtonSecondary lpGearRoomBtn" @click="gearRoomOpen = true">Gear Room</button>
+                </h2>
+                <libraryItems :show-title="false" />
+            </section>
 
-            <button class="lpThemeToggle" @click="cycleTheme">
-                {{ themeIcon }} {{ themeLabel }}
+            <button class="lpButton lpSmall lpButtonGhost lpThemeToggle" @click="cycleTheme">
+                <span aria-hidden="true">{{ themeIcon }}</span>
+                <span>{{ themeLabel }}</span>
             </button>
         </div>
         </div>
+        <modal v-if="gearRoomOpen" :shown="gearRoomOpen" @hide="gearRoomOpen = false">
+            <div class="lpGearRoomModal">
+                <libraryItems />
+            </div>
+        </modal>
     </div>
 </template>
 
 <script>
 import libraryItems from './library-items.vue';
 import libraryLists from './library-lists.vue';
+import modal from './modal.vue';
 import { useTheme } from '../composables/useTheme.js';
 
 export default {
@@ -162,10 +190,16 @@ export default {
     components: {
         libraryItems,
         libraryLists,
+        modal,
     },
     setup() {
         const { mode, cycleTheme } = useTheme();
         return { mode, cycleTheme };
+    },
+    data() {
+        return {
+            gearRoomOpen: false,
+        };
     },
     computed: {
         themeIcon() {

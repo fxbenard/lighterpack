@@ -2,22 +2,26 @@
 @import "../css/_globals";
 
 .lpModal {
-    background: $background1;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+    background: $color-surface-elevated;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-modal;
     left: 50%;
-    max-height: calc(90% - (#{$spacingLarge} * 2));
+    max-height: calc(100dvh - 48px);
     overflow-y: auto;
-    padding: $spacingLarge;
+    padding: 24px;
     position: fixed;
     text-align: left;
     top: 50%;
     transform: translateX(-50%) translateY(-50%);
-    transition: all $transitionDuration;
-    width: 420px;
+    transition:
+        opacity $transitionDuration ease,
+        transform $transitionDuration ease;
+    width: min(560px, calc(100vw - 32px));
     z-index: $dialog;
 
     .lpHalf {
-        padding: 0 20px;
+        padding: 0 14px;
 
         &:first-child {
             padding-left: 0;
@@ -28,12 +32,141 @@
         }
     }
 
+    h2 {
+        font-size: 22px;
+        font-weight: $fontWeight-bold;
+        letter-spacing: 0;
+        line-height: 1.2;
+        margin: 0 0 18px;
+        max-width: none;
+    }
+
+    h3 {
+        font-size: $fontSize-md;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin: 0 0 10px;
+    }
+
     p {
-        margin: 5px 0 10px;
+        color: $color-text-muted;
+        margin: 0 0 14px;
     }
 
     ul {
         padding-left: 15px;
+    }
+
+    label {
+        color: $color-text-muted;
+        display: block;
+        font-size: $fontSize-sm;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+    }
+
+    input[type=text],
+    input[type=email],
+    input[type=password],
+    select,
+    textarea {
+        background: $color-control;
+        border: 1px solid $color-border;
+        border-radius: $radius-md;
+        color: $color-text;
+        min-height: $control-height-lg;
+        padding: 10px 12px;
+        transition:
+            border-color $transitionDurationFast ease,
+            box-shadow $transitionDurationFast ease,
+            background-color $transitionDurationFast ease;
+        width: 100%;
+
+        &:focus {
+            background: $color-surface;
+            border-color: $color-accent;
+            box-shadow: 0 0 0 4px rgba(var(--color-accent-rgb), 0.18);
+            outline: none;
+        }
+    }
+
+    select {
+        padding-right: 36px;
+    }
+
+    textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    form {
+        margin: 0;
+    }
+
+    .lpModalBody {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .lpModalSplit {
+        display: grid;
+        gap: 18px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .lpModalPanel {
+        background: $color-surface;
+        border: 1px solid $color-border;
+        border-radius: $radius-md;
+        padding: 18px;
+    }
+
+    .lpModalActions {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
+
+    .lpButton.close,
+    .lpButton.lpButtonSecondary {
+        background: $color-control;
+        border: 1px solid $color-border;
+        box-shadow: none;
+        color: $color-text;
+
+        &:hover:not(:disabled),
+        &:active {
+            background: rgba(var(--color-accent-rgb), 0.08);
+            box-shadow: none;
+            color: $color-accent;
+        }
+    }
+
+    .lpHref.close {
+        color: $color-text-muted;
+        font-weight: 600;
+        margin-left: 0;
+        padding: 10px 4px;
+
+        &:hover {
+            color: $color-text;
+            text-decoration: none;
+        }
+    }
+
+    .lpWarning {
+        background: rgba(var(--color-warning-rgb), 0.12);
+        border: 1px solid rgba(var(--color-warning-rgb), 0.32);
+        border-radius: $radius-md;
+        color: $color-text;
+        margin: 0;
+        padding: 14px 16px;
     }
 
     .lpContent {
@@ -49,7 +182,8 @@
 }
 
 .lpModalOverlay {
-    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+    background: $color-overlay;
     height: 100%;
     left: 0;
     position: fixed;
@@ -75,7 +209,20 @@
     opacity: 0;
 
     &.lpModal {
-        transform: translateX(-50%) translateY(-50%) scale(0.95);
+        transform: translateX(-50%) translateY(-48%) scale(0.97);
+    }
+}
+
+@media (max-width: 640px) {
+    .lpModal {
+        .lpModalActions {
+            justify-content: stretch;
+
+            > * {
+                flex: 1 1 auto;
+                text-align: center;
+            }
+        }
     }
 }
 

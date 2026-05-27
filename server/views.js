@@ -12,6 +12,7 @@ const { escapeCsvField } = require('./csv.js');
 const db = require('./db.js');
 
 const weightUtils = require('../client/utils/weight.js');
+const { formatDisplayPrice } = require('../client/utils/currency.js');
 const dataTypes = require('../client/dataTypes.js');
 
 const Item = dataTypes.Item;
@@ -38,6 +39,8 @@ const vueRoutes = [ /* TODO - get this from same data source as Vue */
     { path: '/register' },
     { path: '/forgot-password' },
     { path: '/moderation' },
+    { path: '/u/:username' },
+    { path: '/p/:externalId' },
 ];
 
 let index = fs.readFileSync(path.join(__dirname, '../_index.html'), 'utf8');
@@ -345,7 +348,7 @@ const renderItem = function (item, args) {
 
     const displayWeight = weightUtils.MgToWeight(item.weight, unit);
 
-    const displayPrice = item.price ? item.price.toFixed(2) : '0.00';
+    const displayPrice = formatDisplayPrice(item.price || 0, args.currencySymbol);
 
     const unitSelect = renderUnitSelect(unit, args.unitSelectTemplate, item.weight);
 
@@ -359,7 +362,6 @@ const renderItem = function (item, args) {
         showPrices: args.showPrices,
         starClass,
         displayPrice,
-        currencySymbol: args.currencySymbol,
     });
 
     return Mustache.render(args.itemTemplate, out);
@@ -381,9 +383,9 @@ const renderCategory = function (category, args) {
 
     category.calculateSubtotal();
     category.subtotalWeightDisplay = weightUtils.MgToWeight(category.subtotalWeight, args.totalUnit);
-    category.subtotalPriceDisplay = category.subtotalPrice ? category.subtotalPrice.toFixed(2) : '0.00';
+    category.subtotalPriceDisplay = formatDisplayPrice(category.subtotalPrice || 0, args.currencySymbol);
     const temp = Object.assign({}, category, {
-        items, subtotalUnit: args.totalUnit, currencySymbol: args.currencySymbol, showPrices: args.showPrices,
+        items, subtotalUnit: args.totalUnit, showPrices: args.showPrices,
     });
 
     return Mustache.render(args.categoryTemplate, temp);
@@ -448,11 +450,10 @@ const renderListTotals = function (list, totalsTemplate, unitSelectTemplate, uni
     out.shouldDisplayPackWeight = totalPackWeight !== totalWeight;
     out.totalQty = totalQty;
     out.totalPrice = totalPrice;
-    out.totalPriceDisplay = totalPrice ? totalPrice.toFixed(2) : '';
+    out.totalPriceDisplay = formatDisplayPrice(totalPrice || 0, list.library.currencySymbol);
     out.totalConsumablePrice = totalConsumablePrice;
-    out.totalConsumablePriceDisplay = totalConsumablePrice ? totalConsumablePrice.toFixed(2) : '';
+    out.totalConsumablePriceDisplay = formatDisplayPrice(totalConsumablePrice || 0, list.library.currencySymbol);
     out.showPrices = list.library.optionalFields.price;
-    out.currencySymbol = list.library.currencySymbol;
 
     return Mustache.render(totalsTemplate, out);
 };

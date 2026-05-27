@@ -2,6 +2,8 @@ const assignIn = require('lodash/assignIn');
 
 const colorUtils = require('./utils/color.js');
 const weightUtils = require('./utils/weight.js');
+const { PLAN_FREE, getPlanFeatures } = require('./services/entitlements.js');
+const { VISIBILITY_PRIVATE, normalizeVisibility } = require('./services/public-visibility.js');
 
 const defaultOptionalFields = {
     images: false,
@@ -24,6 +26,10 @@ const Item = function ({ id, unit }) {
     this.image = '';
     this.imageUrl = '';
     this.url = '';
+    this.shop = '';
+    this.affiliateUrl = '';
+    this.promoCode = '';
+    this.promoLabel = '';
     this.brand = '';
     this.category = '';
     this.tags = [];
@@ -163,6 +169,9 @@ const List = function ({ id, library }) {
     this.categoryIds = [];
     this.chart = null;
     this.description = '';
+    this.summary = '';
+    this.visibility = VISIBILITY_PRIVATE;
+    this.allowSearchIndexing = false;
     this.externalId = '';
 
     this.totalWeight = 0;
@@ -345,6 +354,34 @@ const Library = function () {
     this.showImages = false;
     this.optionalFields = assignIn({}, defaultOptionalFields);
     this.currencySymbol = '$';
+    this.publicProfile = {
+        displayName: '',
+        trailName: '',
+        bio: '',
+        location: '',
+        avatarUrl: '',
+        links: [],
+        gearPhilosophy: [],
+        featuredListIds: [],
+        visibility: VISIBILITY_PRIVATE,
+        allowSearchIndexing: false,
+    };
+    this.entitlements = {
+        plan: PLAN_FREE,
+        source: 'self-hosted',
+        features: getPlanFeatures(PLAN_FREE),
+    };
+    this.creator = {
+        affiliateRules: [],
+        disclosure: '',
+    };
+    this.insights = {
+        profileViews: 0,
+        listViews: {},
+        listCopies: {},
+        gearClicks: {},
+        promoClicks: {},
+    };
     this.firstRun();
     return this;
 };
@@ -547,6 +584,10 @@ Library.prototype.save = function () {
     out.showSidebar = this.showSidebar;
     out.optionalFields = this.optionalFields;
     out.currencySymbol = this.currencySymbol;
+    out.publicProfile = this.publicProfile;
+    out.entitlements = this.entitlements;
+    out.creator = this.creator;
+    out.insights = this.insights;
 
     out.items = [];
     for (var i in this.items) {
@@ -578,6 +619,20 @@ Library.prototype.load = function (serializedLibrary) {
     this.items = [];
 
     assignIn(this.optionalFields, serializedLibrary.optionalFields);
+    if (serializedLibrary.publicProfile) {
+        assignIn(this.publicProfile, serializedLibrary.publicProfile);
+        this.publicProfile.visibility = normalizeVisibility(this.publicProfile.visibility);
+    }
+    if (serializedLibrary.entitlements) {
+        assignIn(this.entitlements, serializedLibrary.entitlements);
+    }
+    if (serializedLibrary.creator) {
+        assignIn(this.creator, serializedLibrary.creator);
+        if (!Array.isArray(this.creator.affiliateRules)) this.creator.affiliateRules = [];
+    }
+    if (serializedLibrary.insights) {
+        assignIn(this.insights, serializedLibrary.insights);
+    }
 
     for (var i in serializedLibrary.items) {
         var temp = new Item({ id: serializedLibrary.items[i].id });

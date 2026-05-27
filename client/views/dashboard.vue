@@ -81,6 +81,7 @@
     height: 100%;
     padding: 10px 12px;
     position: relative;
+    transition: color $transitionDurationFast ease;
 
     &:first-child {
         padding-left: 12px;
@@ -93,9 +94,32 @@
     }
 
     .lpTarget {
-        border-radius: 4px;
+        align-items: center;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        display: inline-flex;
         font-weight: 600;
-        padding: 10px 12px;
+        gap: 8px;
+        padding: 10px 14px;
+        transition:
+            background-color $transitionDurationFast ease,
+            border-color $transitionDurationFast ease,
+            box-shadow $transitionDurationFast ease,
+            color $transitionDurationFast ease,
+            transform $transitionDurationFast ease;
+
+        i {
+            opacity: 0.95;
+        }
+    }
+
+    .lpPopover:hover .lpTarget,
+    .lpPopover.lpPopoverShown .lpTarget {
+        background: rgba(var(--color-accent-rgb), 0.08);
+        border-color: rgba(var(--color-accent-rgb), 0.14);
+        box-shadow: 0 8px 18px rgba(17, 24, 39, 0.08);
+        color: $color-accent;
+        transform: translateY(-1px);
     }
 
     &#lpListName {
@@ -159,6 +183,9 @@
         <itemImage />
         <itemViewImage />
         <itemLink />
+        <itemMeta />
+        <itemDetail />
+        <gearPicker />
         <help />
         <account />
         <accountDelete />
@@ -180,6 +207,9 @@ import list from '../components/list.vue';
 import itemImage from '../components/item-image.vue';
 import itemViewImage from '../components/item-view-image.vue';
 import itemLink from '../components/item-link.vue';
+import itemMeta from '../components/item-meta.vue';
+import itemDetail from '../components/item-detail.vue';
+import gearPicker from '../components/gear-picker.vue';
 import importCSV from '../components/import-csv.vue';
 import copyList from '../components/copy-list.vue';
 import speedbump from '../components/speedbump.vue';
@@ -198,6 +228,9 @@ export default {
         help,
         list,
         itemLink,
+        itemMeta,
+        itemDetail,
+        gearPicker,
         copyList,
         importCSV,
         itemImage,

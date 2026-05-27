@@ -1,4 +1,7 @@
 import weightUtils from '../utils/weight.js';
+import currencyUtils from '../utils/currency.js';
+
+const { formatDisplayPrice } = currencyUtils;
 
 export function useUtils() {
     function displayWeight(mg, unit) {
@@ -6,11 +9,7 @@ export function useUtils() {
     }
 
     function displayPrice(price, symbol) {
-        let amount = '0.00';
-        if (typeof price === 'number') {
-            amount = price.toFixed(2);
-        }
-        return symbol + amount;
+        return formatDisplayPrice(price, symbol);
     }
 
     return { displayWeight, displayPrice };

@@ -39,7 +39,7 @@
                         {{ displayPrice(category.subtotalPrice, library.currencySymbol) }}
                     </span>
                     <span class="lpCell lpNumber">
-                        <span class="lpDisplaySubtotal" :mg="category.subtotalWeight">{{ displayWeight(category.subtotalWeight, library.totalUnit) }}</span> <span class="lpSubtotalUnit">{{ library.totalUnit }}</span>
+                        <span class="lpDisplaySubtotal" :mg="category.subtotalWeight">{{ displayWeight(category.subtotalWeight, displayUnit) }}</span> <span class="lpSubtotalUnit">{{ displayUnit }}</span>
                     </span>
                 </li>
                 <li class="lpRow lpFooter lpTotal">
@@ -52,9 +52,9 @@
                     </span>
                     <span class="lpCell lpNumber lpSubtotal">
                         <span class="lpTotalValue" :title="list.totalQty + ' items'">
-                            {{ displayWeight(list.totalWeight, library.totalUnit) }}
+                            {{ displayWeight(list.totalWeight, displayUnit) }}
                         </span>
-                        <span class="lpTotalUnit"><unitSelect :unit="library.totalUnit" @change="setTotalUnit" /></span>
+                        <span class="lpTotalUnit"><unitSelect :unit="displayUnit" @change="setTotalUnit" /></span>
                     </span>
                 </li>
                 <li v-if="list.totalConsumableWeight" data-weight-type="consumable" class="lpRow lpFooter lpBreakdown lpConsumableWeight">
@@ -66,8 +66,8 @@
                         {{ displayPrice(list.totalConsumablePrice, library.currencySymbol) }}
                     </span>
                     <span class="lpCell lpNumber lpSubtotal">
-                        <span class="lpDisplaySubtotal" :mg="list.totalConsumableWeight">{{ displayWeight(list.totalConsumableWeight, library.totalUnit) }}</span>
-                        <span class="lpSubtotalUnit">{{ library.totalUnit }}</span>
+                        <span class="lpDisplaySubtotal" :mg="list.totalConsumableWeight">{{ displayWeight(list.totalConsumableWeight, displayUnit) }}</span>
+                        <span class="lpSubtotalUnit">{{ displayUnit }}</span>
                     </span>
                 </li>
                 <li v-if="list.totalWornWeight" data-weight-type="worn" class="lpRow lpFooter lpBreakdown lpWornWeight">
@@ -77,21 +77,21 @@
                     </span>
                     <span v-if="library.optionalFields['price']" class="lpCell lpNumber" />
                     <span class="lpCell lpNumber lpSubtotal">
-                        <span class="lpDisplaySubtotal" :mg="list.totalWornWeight">{{ displayWeight(list.totalWornWeight, library.totalUnit) }}</span>
-                        <span class="lpSubtotalUnit">{{ library.totalUnit }}</span>
+                        <span class="lpDisplaySubtotal" :mg="list.totalWornWeight">{{ displayWeight(list.totalWornWeight, displayUnit) }}</span>
+                        <span class="lpSubtotalUnit">{{ displayUnit }}</span>
                     </span>
                 </li>
                 <li v-if="list.totalWornWeight || list.totalConsumableWeight" data-weight-type="base" class="lpRow lpFooter lpBreakdown lpBaseWeight">
                     <span class="lpCell" />
-                    <span class="lpCell lpSubtotal" :title="displayWeight(list.totalPackWeight, library.totalUnit) + ' ' + library.totalUnit + ' pack weight (consumable + base weight)'">
+                    <span class="lpCell lpSubtotal" :title="displayWeight(list.totalPackWeight, displayUnit) + ' ' + displayUnit + ' pack weight (consumable + base weight)'">
                         Base Weight
                     </span>
                     <span v-if="library.optionalFields['price']" class="lpCell lpNumber" />
                     <span class="lpCell lpNumber lpSubtotal">
-                        <span class="lpDisplaySubtotal" :mg="list.totalBaseWeight" :title="displayWeight(list.totalPackWeight, library.totalUnit) + ' ' + library.totalUnit + ' pack weight (consumable + base weight)'">
-                            {{ displayWeight(list.totalBaseWeight, library.totalUnit) }}
+                        <span class="lpDisplaySubtotal" :mg="list.totalBaseWeight" :title="displayWeight(list.totalPackWeight, displayUnit) + ' ' + displayUnit + ' pack weight (consumable + base weight)'">
+                            {{ displayWeight(list.totalBaseWeight, displayUnit) }}
                         </span>
-                        <span class="lpSubtotalUnit">{{ library.totalUnit }}</span>
+                        <span class="lpSubtotalUnit">{{ displayUnit }}</span>
                     </span>
                 </li>
             </ul>
@@ -131,6 +131,24 @@ export default {
                 category.activeHover = (this.hoveredCategoryId === category.id);
                 return category;
             });
+        },
+        displayUnit() {
+            if (this.library.totalUnit !== 'oz') {
+                return this.library.totalUnit;
+            }
+
+            const units = {};
+            this.categories.forEach((category) => {
+                category.categoryItems.forEach((categoryItem) => {
+                    const item = this.library.getItemById(categoryItem.itemId);
+                    if (item && item.authorUnit) {
+                        units[item.authorUnit] = true;
+                    }
+                });
+            });
+
+            const unitList = Object.keys(units);
+            return unitList.length === 1 ? unitList[0] : this.library.totalUnit;
         },
     },
     watch: {

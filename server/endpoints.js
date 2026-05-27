@@ -10,6 +10,7 @@ const formidable = require('formidable');
 const config = require('config');
 const { logWithRequest } = require('./log.js');
 const { sendMail } = require('./mailgun.js');
+const { buildPublicProfile, buildPublicList } = require('./public-sharing.js');
 
 const { authenticateUser, verifyPassword } = require('./auth.js');
 
@@ -438,5 +439,116 @@ function imageUpload(req, res, user) {
         }
     });
 }
+
+const { scrapeGear } = require('./gear-scraper.js');
+
+router.post('/scrapeGear', async (req, res) => {
+    const { url } = req.body;
+    if (!url || typeof url !== 'string') {
+        return res.status(400).json({ error: 'url required' });
+    }
+    try {
+        const parsed = new URL(url);
+        if (!['http:', 'https:'].includes(parsed.protocol)) {
+            return res.status(400).json({ error: 'invalid url' });
+        }
+        const data = await scrapeGear(url);
+        return res.json(data);
+    } catch (err) {
+        return res.status(502).json({ error: err.message || 'fetch failed' });
+    }
+});
+
+router.get('/api/public/profile/:username', (req, res) => {
+    const username = String(req.params.username || '').toLowerCase().trim();
+    if (!username) {
+        return res.status(404).json({ message: 'Profile not found' });
+    }
+
+    db.users.findOne({ username }, (err, user) => {
+        if (err) {
+            logWithRequest(req, { message: 'Public profile lookup error', username, error: err.message });
+            return res.status(500).json({ message: 'An error occurred' });
+        }
+
+        const payload = buildPublicProfile(user);
+        if (!payload) {
+            return res.status(404).json({ message: 'Profile not found' });
+        }
+
+        return res.json(payload);
+    });
+});
+
+router.get('/api/public/list/:externalId', (req, res) => {
+    const externalId = String(req.params.externalId || '').trim();
+    if (!externalId) {
+        return res.status(404).json({ message: 'List not found' });
+    }
+
+    db.users.findOne({ 'library.lists.externalId': externalId }, (err, user) => {
+        if (err) {
+            logWithRequest(req, { message: 'Public list lookup error', externalId, error: err.message });
+            return res.status(500).json({ message: 'An error occurred' });
+        }
+
+        const payload = buildPublicList(user, externalId);
+        if (!payload) {
+            return res.status(404).json({ message: 'List not found' });
+        }
+
+        return res.json(payload);
+    });
+});
+
+router.post('/api/public/insight', (req, res) => {
+    const externalId = String(req.body.externalId || '').trim();
+    const itemId = typeof req.body.itemId === 'undefined' ? '' : req.body.itemId;
+    const type = String(req.body.type || '').trim();
+    const allowedTypes = ['listView', 'listCopy', 'gearClick', 'promoClick'];
+
+    if (!externalId || !allowedTypes.includes(type) || typeof itemId !== 'string') {
+        return res.status(400).json({ message: 'Invalid insight event' });
+    }
+
+    db.users.findOne({ 'library.lists.externalId': externalId }, (err, user) => {
+        if (err || !user || !user.library) {
+            return res.status(200).json({ message: 'ok' });
+        }
+
+        if (!buildPublicList(user, externalId)) {
+            return res.status(200).json({ message: 'ok' });
+        }
+
+        if (!user.library.insights) {
+            user.library.insights = {};
+        }
+
+        const insights = user.library.insights;
+        if (typeof insights.profileViews !== 'number') insights.profileViews = 0;
+        if (!insights.listViews || typeof insights.listViews !== 'object') insights.listViews = {};
+        if (!insights.listCopies || typeof insights.listCopies !== 'object') insights.listCopies = {};
+        if (!insights.gearClicks || typeof insights.gearClicks !== 'object') insights.gearClicks = {};
+        if (!insights.promoClicks || typeof insights.promoClicks !== 'object') insights.promoClicks = {};
+
+        if (type === 'listView') {
+            insights.listViews[externalId] = (insights.listViews[externalId] || 0) + 1;
+        } else if (type === 'listCopy') {
+            insights.listCopies[externalId] = (insights.listCopies[externalId] || 0) + 1;
+        } else if (type === 'gearClick' && itemId) {
+            insights.gearClicks[itemId] = (insights.gearClicks[itemId] || 0) + 1;
+        } else if (type === 'promoClick' && itemId) {
+            insights.promoClicks[itemId] = (insights.promoClicks[itemId] || 0) + 1;
+        }
+
+        db.users.save(user, (saveErr) => {
+            if (saveErr) {
+                logWithRequest(req, { message: 'Public insight save error', externalId, error: saveErr.message });
+                return res.status(500).json({ message: 'An error occurred' });
+            }
+            return res.json({ message: 'ok' });
+        });
+    });
+});
 
 module.exports = router;

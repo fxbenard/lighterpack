@@ -1,21 +1,57 @@
 <style lang="scss">
+@import "../css/_globals";
 
+#itemImageDialog.lpModal {
+    width: min(760px, calc(100vw - 32px));
+}
+
+.imageUploadDescription {
+    margin-bottom: 16px;
+}
+
+#itemImageUrlForm {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.itemImageActions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.itemImageStatus {
+    color: $color-text-muted;
+    font-size: $fontSize-sm;
+    margin-top: 12px;
+}
 </style>
 
 <template>
     <div>
         <modal id="itemImageDialog" :shown="shown" @hide="shown = false">
-            <div class="columns">
-                <div class="lpHalf">
-                    <h2>Add image by URL</h2>
+            <h2>Add or update item image</h2>
+            <div class="lpModalSplit">
+                <div class="lpModalPanel">
+                    <h3>Add image by URL</h3>
                     <form id="itemImageUrlForm" @submit.prevent="saveImageUrl()">
-                        <input id="itemImageUrl" v-model="imageUrl" type="text" placeholder="Image URL">
-                        <input type="submit" class="lpButton" value="Save">
-                        <a class="lpHref close" @click="shown = false">Cancel</a>
+                        <div class="lpModalBody">
+                            <div>
+                                <label for="itemImageUrl">Image URL</label>
+                                <input id="itemImageUrl" v-model="imageUrl" type="text" placeholder="https://example.com/image.jpg">
+                            </div>
+                        </div>
+                        <div class="itemImageActions">
+                            <a class="lpHref close" @click="shown = false">Cancel</a>
+                            <input type="submit" class="lpButton" value="Save URL">
+                        </div>
                     </form>
                 </div>
-                <div class="lpHalf">
-                    <h2>Upload image from disk</h2>
+                <div class="lpModalPanel">
+                    <h3>Upload from disk</h3>
                     <template v-if="!item.image">
                         <p class="imageUploadDescription">
                             Your image will be hosted on imgur.
@@ -24,7 +60,7 @@
                             Upload Image
                         </button>
                         <a class="lpHref close" @click="shown = false">Cancel</a>
-                        <p v-if="uploading">
+                        <p v-if="uploading" class="itemImageStatus">
                             Uploading image...
                         </p>
                     </template>

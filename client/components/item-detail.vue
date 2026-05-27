@@ -411,10 +411,10 @@
     align-items: stretch;
     border-top: 1px solid $color-border;
     display: grid;
-    gap: 12px;
+    gap: 6px;
     grid-template-columns: minmax(0, 1fr);
-    margin-top: 6px;
-    padding: 14px 14px 14px;
+    margin-top: 0;
+    padding: 8px 10px;
 }
 
 .itemDetailAddCreateInput {
@@ -437,8 +437,8 @@
 
 .itemDetailAddCreateRow {
     display: grid;
-    gap: 12px;
-    grid-template-columns: minmax(0, 1.7fr) minmax(154px, 0.9fr);
+    gap: 6px;
+    grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .itemDetailAddCreateBtn {

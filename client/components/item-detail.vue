@@ -450,16 +450,15 @@
 .itemDetailAddDropdown {
     background: $color-surface;
     border: 1px solid rgba(var(--color-accent-rgb), 0.12);
-    border-radius: 16px;
+    border-radius: $radius-md;
     bottom: 100%;
-    box-shadow:
-        0 20px 40px rgba(15, 23, 42, 0.16),
-        0 6px 16px rgba(15, 23, 42, 0.08);
+    box-shadow: $shadow-popover;
     left: 0;
     list-style: none;
     margin: 0 0 8px;
     min-width: 320px;
     padding: 4px 0;
+    padding-left: 0;
     position: absolute;
     z-index: 10;
 }
@@ -467,6 +466,7 @@
 .itemDetailAddOption {
     cursor: pointer;
     font-size: $fontSize-sm;
+    list-style: none;
     padding: 10px 14px;
 
     &:hover {

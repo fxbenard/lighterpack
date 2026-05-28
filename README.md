@@ -3,7 +3,6 @@
 > The actively maintained fork of LighterPack — plan lighter, share better, stay open.
 
 [![License: GPL v2](https://img.shields.io/badge/License-GPL_v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
-[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](https://github.com/fxbenard/lighterpack/releases)
 
 ## Why this fork
 
@@ -46,8 +45,6 @@ npm run dev
 ```
 
 Open `http://localhost:8080`. The app expects MongoDB at `localhost/lighterpack` by default.
-
-For extended setup, ports, test commands, and the library export script, see the `docs/` folder.
 
 ## License
 

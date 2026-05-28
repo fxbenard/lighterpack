@@ -12,3 +12,5 @@ app.sublime-workspace
 /playwright/.cache/
 *.pyc
 *__pycache__*
+/.codex/
+/.superpowers/

@@ -392,6 +392,95 @@
         font-size: $fontSize-sm;
         margin-top: 4px;
     }
+
+    .itemDetailFieldOptional {
+        color: $color-text-muted;
+        font-size: $fontSize-sm;
+        font-weight: $fontWeight-normal;
+    }
+
+    .itemDetailDropZone {
+        align-items: center;
+        border: 2px dashed $color-border;
+        border-radius: $radius-md;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        justify-content: center;
+        min-height: 120px;
+        padding: 20px;
+        position: relative;
+        transition: border-color $transitionDurationFast ease, background $transitionDurationFast ease;
+
+        &:hover,
+        &.itemDetailDropZoneActive {
+            background: rgba(var(--color-accent-rgb), 0.05);
+            border-color: $color-accent;
+        }
+
+        &.itemDetailDropZoneHasImage {
+            border-style: solid;
+            min-height: auto;
+            padding: 0;
+        }
+    }
+
+    .itemDetailDropZoneIcon {
+        color: $color-text-muted;
+        height: 32px;
+        width: 32px;
+    }
+
+    .itemDetailDropZoneText {
+        color: $color-text-muted;
+        font-size: $fontSize-sm;
+        text-align: center;
+
+        strong {
+            color: $color-accent;
+        }
+    }
+
+    .itemDetailDropZoneHint {
+        color: $color-text-muted;
+        font-size: $fontSize-xs;
+    }
+
+    .itemDetailDropZoneUploading {
+        color: $color-text-muted;
+        font-size: $fontSize-sm;
+    }
+
+    .itemDetailDropZonePreview {
+        border-radius: $radius-md;
+        display: block;
+        max-height: 200px;
+        object-fit: contain;
+        width: 100%;
+    }
+
+    .itemDetailDropZoneRemove {
+        background: $color-bg;
+        border: 1px solid $color-border;
+        border-radius: 999px;
+        color: $color-text;
+        cursor: pointer;
+        font-size: 16px;
+        height: 28px;
+        line-height: 1;
+        padding: 0;
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        width: 28px;
+
+        &:hover {
+            background: $color-danger;
+            border-color: $color-danger;
+            color: #fff;
+        }
+    }
 }
 
 .itemDetailEditFooter {
@@ -677,6 +766,37 @@
                     </div>
 
                     <div class="itemDetailField">
+                        <label>Image <span class="itemDetailFieldOptional">(optional)</span></label>
+                        <div
+                            class="itemDetailDropZone"
+                            :class="{ 'itemDetailDropZoneActive': imageDragOver, 'itemDetailDropZoneHasImage': editImageUrl || editImageUploading }"
+                            @dragover.prevent="imageDragOver = true"
+                            @dragleave="imageDragOver = false"
+                            @drop.prevent="onImageDrop"
+                            @click="$refs.imageFileInput.click()"
+                        >
+                            <input ref="imageFileInput" type="file" accept="image/png,image/jpeg,image/gif,image/webp" style="display:none" @change="onImageFileChange">
+                            <template v-if="editImageUploading">
+                                <span class="itemDetailDropZoneUploading">Uploading…</span>
+                            </template>
+                            <template v-else-if="editImageUrl">
+                                <img :src="editImageUrl" class="itemDetailDropZonePreview">
+                                <button type="button" class="itemDetailDropZoneRemove" @click.stop="editImageUrl = ''">×</button>
+                            </template>
+                            <template v-else>
+                                <svg class="itemDetailDropZoneIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <path d="m21 15-5-5L5 21"/>
+                                </svg>
+                                <span class="itemDetailDropZoneText">Drop an image here, or <strong>click to browse</strong></span>
+                                <span class="itemDetailDropZoneHint">PNG, JPG up to 5MB</span>
+                            </template>
+                        </div>
+                        <span v-if="imageUploadError" class="itemDetailFetchError">{{ imageUploadError }}</span>
+                    </div>
+
+                    <div class="itemDetailField">
                         <label>Tags</label>
                         <div class="itemDetailTagsEdit">
                             <span v-for="tag in editTags" :key="tag" class="itemDetailTagChip">
@@ -709,7 +829,7 @@ const weightUtils = require('../utils/weight.js');
 
 const GEAR_CATEGORIES = [
     'Shelter', 'Sleep', 'Clothing', 'Water', 'Food', 'Cook',
-    'Navigation', 'Safety', 'Hygiene', 'Essentials', 'Other',
+    'Navigation', 'Safety', 'Hygiene', 'Electronics', 'Essentials', 'Other',
 ];
 
 const UNITS = ['oz', 'lb', 'g', 'kg'];
@@ -734,6 +854,10 @@ export default {
             editPrice: '',
             editQty: '',
             editUrl: '',
+            editImageUrl: '',
+            editImageUploading: false,
+            imageUploadError: '',
+            imageDragOver: false,
             editTags: [],
             tagInput: '',
             fetchLoading: false,
@@ -804,6 +928,10 @@ export default {
             this.editPrice = this.item.price != null ? this.item.price.toFixed(2) : '0.00';
             this.editQty = this.categoryItem ? this.categoryItem.qty : 1;
             this.editUrl = this.item.url || '';
+            this.editImageUrl = this.item.imageUrl || '';
+            this.editImageUploading = false;
+            this.imageUploadError = '';
+            this.imageDragOver = false;
             this.editTags = [...(this.item.tags || [])];
             this.tagInput = '';
             this.fetchError = '';
@@ -822,6 +950,7 @@ export default {
                 brand: this.editBrand.trim(),
                 category: this.editCategory,
                 url: this.editUrl.trim(),
+                imageUrl: this.editImageUrl.trim() || undefined,
                 tags: [...this.editTags],
                 authorUnit: this.editUnit,
                 weight: weightUtils.WeightToMg(weightFloat, this.editUnit),
@@ -903,6 +1032,42 @@ export default {
         },
         removeTag(tag) {
             this.editTags = this.editTags.filter((t) => t !== tag);
+        },
+        onImageDrop(evt) {
+            this.imageDragOver = false;
+            const file = evt.dataTransfer.files[0];
+            if (file) this.uploadImageFile(file);
+        },
+        onImageFileChange(evt) {
+            const file = evt.target.files[0];
+            if (file) this.uploadImageFile(file);
+            evt.target.value = '';
+        },
+        async uploadImageFile(file) {
+            const VALID = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
+            if (!VALID.includes(file.type)) {
+                this.imageUploadError = 'File must be PNG, JPG, GIF or WebP.';
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                this.imageUploadError = 'File must be under 5 MB.';
+                return;
+            }
+            this.imageUploadError = '';
+            this.editImageUploading = true;
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+                const res = await fetch('/imageUpload', { method: 'POST', body: formData, credentials: 'same-origin' });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Upload failed');
+                this.editImageUrl = data.data.url;
+                this.$store.commit('updateItemImageUrl', { imageUrl: data.data.url, item: this.item });
+            } catch (err) {
+                this.imageUploadError = err.message;
+            } finally {
+                this.editImageUploading = false;
+            }
         },
         addToCategory(category) {
             this.$store.commit('addItemToCategory', {

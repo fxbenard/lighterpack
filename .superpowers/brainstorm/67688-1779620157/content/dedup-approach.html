@@ -1,0 +1,40 @@
+<h2>Gear Library — quelle approche pour éviter les doublons ?</h2>
+<p class="subtitle">Deux points d'entrée : ajout manuel + import CSV. Trois façons d'attaquer le problème.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Smart add — suggestion avant création</h3>
+      <p>Quand l'utilisateur tape un nom d'item (à l'ajout manuel), une dropdown apparaît avec les items existants de la library qui matchent. S'il choisit un existant → on le réutilise (référence). S'il continue → nouvel item. À l'import CSV, même logique : avant d'importer, un écran de "review" montre les doublons détectés et propose de les fusionner.</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pour</h4><ul><li>UX naturelle et non-intrusive</li><li>L'utilisateur garde le contrôle</li><li>Rétrocompatible complet</li></ul></div>
+        <div class="cons"><h4>Contre</h4><ul><li>Matching par nom = fragile (casse, fautes)</li><li>Deux points d'entrée à implémenter</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Library first — glisser depuis la library</h3>
+      <p>On inverse le flux : au lieu d'ajouter un item dans une liste, on <em>place</em> un item de la library dans une liste (drag ou bouton "Add to list"). Créer un item directement dans une liste reste possible, mais la library devient le point de départ naturel. L'import CSV alimente la library, puis l'utilisateur choisit ce qu'il veut inclure.</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pour</h4><ul><li>Library = source de vérité</li><li>Zéro doublon par design</li><li>Cohérent avec PackStack/Lighterpack v1</li></ul></div>
+        <div class="cons"><h4>Contre</h4><ul><li>Changement de paradigme UX</li><li>Flux d'import à repenser</li><li>Plus complexe à implémenter</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Hybrid — suggestions + dédup automatique à l'import</h3>
+      <p>À l'ajout manuel : autocomplete sur les items existants (comme A). À l'import CSV : déduplication automatique par fuzzy match sur le nom + poids — les doublons détectés sont mergés silencieusement, avec un résumé "3 items fusionnés" affiché après. L'utilisateur ne voit les conflits que s'il y a ambiguïté.</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pour</h4><ul><li>Meilleur des deux mondes</li><li>Import fluide sans friction</li><li>Ajout manuel guidé</li></ul></div>
+        <div class="cons"><h4>Contre</h4><ul><li>Fuzzy match peut faire des erreurs</li><li>Scope plus large à implémenter</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -139,6 +139,7 @@ function parseImportCsv(input, name) {
             return;
         }
 
+        const imageUrl = normalizeField(getCell(row, columnIndexes, 'image_url', -1));
         importData.data.push({
             name: itemName,
             category,
@@ -151,6 +152,7 @@ function parseImportCsv(input, name) {
             worn: parseBooleanMarker(getCell(row, columnIndexes, 'worn', 8), 'worn'),
             consumable: parseBooleanMarker(getCell(row, columnIndexes, 'consumable', 9), 'consumable'),
             brand,
+            imageUrl: imageUrl || undefined,
         });
         importData.acceptedRows += 1;
     });

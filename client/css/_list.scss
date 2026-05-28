@@ -320,9 +320,10 @@ input.lpCategoryName { /* specificity */
         visibility: hidden;
 
         &:hover {
-            background: $color-control-muted;
+            background-color: rgba(var(--color-accent-rgb), 0.10);
             opacity: 1;
             transform: translateY(-1px);
+            visibility: visible;
         }
 
         &.lpActive,

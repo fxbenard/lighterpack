@@ -101,12 +101,30 @@
             transform: translateX(-50%) translateY(0);
         }
     }
+
+    &.lpPopoverRight {
+        .lpContent {
+            left: auto;
+            right: 0;
+            transform: translateX(0) translateY(6px);
+
+            &::before {
+                left: auto;
+                margin-left: 0;
+                right: 16px;
+            }
+        }
+
+        &.lpPopoverShown .lpContent {
+            transform: translateX(0) translateY(0);
+        }
+    }
 }
 
 </style>
 
 <template>
-    <div v-click-outside="hide" :class="{'lpPopover': true, 'lpPopoverShown': shown}">
+    <div v-click-outside="hide" :class="{'lpPopover': true, 'lpPopoverShown': shown, 'lpPopoverRight': placement === 'right'}">
         <div class="lpTarget">
             <slot name="target" />
         </div>
@@ -129,6 +147,10 @@ export default {
         shown: {
             type: Boolean,
             required: true,
+        },
+        placement: {
+            type: String,
+            default: 'center',
         },
     },
     mounted() {

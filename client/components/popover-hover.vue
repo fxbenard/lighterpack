@@ -4,7 +4,7 @@
 </style>
 
 <template>
-    <Popover :shown="shown" @mouseenter="show" @mouseleave="startHideTimeout">
+    <Popover :shown="shown" :placement="placement" @mouseenter="show" @mouseleave="startHideTimeout">
         <template #target>
             <slot name="target" />
         </template>
@@ -21,6 +21,12 @@ export default {
     name: 'PopoverHover',
     components: {
         Popover,
+    },
+    props: {
+        placement: {
+            type: String,
+            default: 'center',
+        },
     },
     data() {
         return {

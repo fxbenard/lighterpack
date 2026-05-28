@@ -343,7 +343,7 @@ const { displayWeight, displayPrice } = useUtils();
 
 const GEAR_CATEGORIES = [
     'Shelter', 'Sleep', 'Clothing', 'Water', 'Food', 'Cook',
-    'Navigation', 'Safety', 'Hygiene', 'Essentials', 'Other',
+    'Navigation', 'Safety', 'Hygiene', 'Electronics', 'Essentials', 'Other',
 ];
 
 export default {

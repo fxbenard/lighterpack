@@ -99,7 +99,7 @@
     <section id="listContainer">
         <div class="listContainerHeader">
             <h2>Lists</h2>
-            <PopoverHover id="addListFlyout">
+            <PopoverHover id="addListFlyout" placement="right">
                 <template #target><span><a class="lpAdd" @click="newList"><i class="lpSprite lpSpriteAdd" />Add new list</a></span></template>
                 <template #content><div style="display:flex;flex-direction:column;gap:8px;">
                     <a class="lpAdd" @click="newList"><i class="lpSprite lpSpriteAdd" />Add new list</a>

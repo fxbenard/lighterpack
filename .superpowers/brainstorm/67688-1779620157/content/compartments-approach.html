@@ -1,0 +1,40 @@
+<h2>Organisation par compartiments — quelle approche ?</h2>
+<p class="subtitle">Les items ont déjà des catégories (Shelter, Sleep...). Comment ajouter la dimension physique ?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Compartiment = vue alternative</h3>
+      <p>Les items gardent leurs catégories. On ajoute un champ <code>compartment</code> optionnel sur chaque item. Une vue "Pack view" permet de voir les items regroupés par compartiment (main body, hip belt, lid pocket...) au lieu de par catégorie.</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pour</h4><ul><li>Données existantes non cassées</li><li>Rétrocompatible</li><li>Simple à implémenter</li></ul></div>
+        <div class="cons"><h4>Contre</h4><ul><li>Un item = un compartiment max</li><li>Moins fidèle à la réalité physique</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Compartiments = couche dédiée dans la liste</h3>
+      <p>La liste a une nouvelle section "Compartments" parallèle aux catégories. Chaque compartiment est un container nommé (ex: "Main body", "Hip belt"). L'utilisateur assigne ses items à un ou plusieurs compartiments. Poids par compartiment calculé séparément.</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pour</h4><ul><li>Visuellement plus riche</li><li>Poids par compartiment = killer feature</li><li>Correspond à PackStack</li></ul></div>
+        <div class="cons"><h4>Contre</h4><ul><li>Modèle de données plus complexe</li><li>UX d'assignation à concevoir</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Compartiments = une liste dédiée avec template</h3>
+      <p>On exploite le système de templates existant : un template "Pack layout" pré-remplit les catégories avec des compartiments (Main Body, Hip Belt, Lid, etc.) au lieu de catégories gear. L'utilisateur choisit entre vue "Gear type" et vue "Pack layout" au départ.</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pour</h4><ul><li>Zéro nouveau modèle de données</li><li>S'appuie sur l'existant</li><li>Rapide à livrer</li></ul></div>
+        <div class="cons"><h4>Contre</h4><ul><li>Catégories = compartiments = confusion</li><li>Pas de double vue gear/pack</li><li>Bricolage sémantique</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

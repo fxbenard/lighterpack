@@ -375,9 +375,9 @@ router.post('/imageUpload', (req, res) => {
 });
 
 function imageUpload(req, res, user) {
-    const form = formidable({
+    const form = formidable.formidable({
         maxFiles: 1,
-        maxFileSize: 2500000,
+        maxFileSize: 5 * 1024 * 1024,
     });
 
     form.parse(req, async (err, fields, files) => {
@@ -393,47 +393,40 @@ function imageUpload(req, res, user) {
             return res.status(500).json({ message: 'An error occurred' });
         }
 
-        const imagePath = imageFile.filepath;
-
         try {
-            const imageBuffer = await readFile(imagePath);
+            const cloudName = config.get('cloudinaryCloudName');
+            const apiKey = config.get('cloudinaryApiKey');
+            const apiSecret = config.get('cloudinaryApiSecret');
+            const timestamp = Math.floor(Date.now() / 1000);
+
+            // params must be sorted alphabetically before apiSecret
+            const signatureStr = `folder=lighterpack&timestamp=${timestamp}${apiSecret}`;
+            const signature = crypto.createHash('sha1').update(signatureStr).digest('hex');
+
+            const imageBuffer = await readFile(imageFile.filepath);
             const formData = new FormData();
+            formData.append('file', new Blob([imageBuffer]), imageFile.originalFilename || 'image');
+            formData.append('api_key', apiKey);
+            formData.append('timestamp', String(timestamp));
+            formData.append('signature', signature);
+            formData.append('folder', 'lighterpack');
 
-            formData.append('image', new Blob([imageBuffer]), path.basename(imagePath));
-            formData.append('type', 'file');
-
-            const response = await fetch('https://api.imgur.com/3/image', {
+            const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
                 method: 'POST',
-                headers: { Authorization: `Client-ID ${config.get('imgurClientID')}` },
                 body: formData,
             });
-            const body = await response.text();
 
-            if (!body) {
-                logWithRequest(req, 'imgur post fail!!');
-                return res.status(500).json({ message: 'An error occurred.' });
+            const data = await response.json();
+
+            if (!response.ok || data.error) {
+                logWithRequest(req, 'cloudinary upload fail');
+                logWithRequest(req, data);
+                return res.status(500).json({ message: 'Upload failed.' });
             }
 
-            let parsedBody;
-            try {
-                parsedBody = JSON.parse(body);
-            } catch (parseError) {
-                logWithRequest(req, 'imgur post parse fail');
-                logWithRequest(req, parseError);
-                logWithRequest(req, body);
-                return res.status(500).json({ message: 'An error occurred.' });
-            }
-
-            if (!response.ok || parsedBody.error) {
-                logWithRequest(req, 'imgur post fail!!!');
-                logWithRequest(req, body);
-                return res.status(500).json({ message: 'An error occurred.' });
-            }
-
-            logWithRequest(req, body);
-            return res.send(body);
+            return res.json({ data: { id: data.public_id, url: data.secure_url } });
         } catch (uploadError) {
-            logWithRequest(req, 'imgur post fail!');
+            logWithRequest(req, 'cloudinary upload error');
             logWithRequest(req, uploadError);
             return res.status(500).json({ message: 'An error occurred.' });
         }

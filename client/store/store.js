@@ -340,6 +340,7 @@ const store = createStore({
                         item.price = row.price;
                         if (row.category) item.category = row.category;
                         if (row.brand) item.brand = row.brand;
+                        if (row.imageUrl) item.imageUrl = row.imageUrl;
                         item.weight = weightUtils.WeightToMg(parseFloat(row.weight), row.unit);
                         item.authorUnit = row.unit;
                         newCount++;
@@ -352,6 +353,7 @@ const store = createStore({
                     item.price = row.price;
                     if (row.category) item.category = row.category;
                     if (row.brand) item.brand = row.brand;
+                    if (row.imageUrl) item.imageUrl = row.imageUrl;
                     item.weight = weightUtils.WeightToMg(parseFloat(row.weight), row.unit);
                     item.authorUnit = row.unit;
                     newCount++;

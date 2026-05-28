@@ -256,7 +256,7 @@ router.get('/csv/:id', (req, res) => {
         const fullUnits = {
             oz: 'ounce', lb: 'pound', g: 'gram', kg: 'kilogram',
         };
-        let out = 'Item Name,Category,desc,qty,weight,unit,url,price,worn,consumable\n';
+        let out = 'Item Name,Category,desc,qty,weight,unit,url,price,worn,consumable,image_url\n';
 
         for (var i in list.categoryIds) {
             const category = library.getCategoryById(list.categoryIds[i]);
@@ -277,6 +277,10 @@ router.get('/csv/:id', (req, res) => {
                         itemRow.push(`${item.price}`);
                         itemRow.push(categoryItem.worn ? 'Worn' : '');
                         itemRow.push(categoryItem.consumable ? 'Consumable' : '');
+                        const imageUrl = item.image
+                            ? `https://i.imgur.com/${item.image}.jpg`
+                            : (item.imageUrl || '');
+                        itemRow.push(imageUrl);
 
                         out += itemRow.map(escapeCsvField).join(',');
                         out += '\n';

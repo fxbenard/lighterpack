@@ -311,7 +311,8 @@ input.lpCategoryName { /* specificity */
     .lpCamera,
     .lpLink,
     .lpTag,
-    .lpStar {
+    .lpStar,
+    .lpEdit {
         border-radius: $radius-sm;
         cursor: pointer;
         margin-right: 0;

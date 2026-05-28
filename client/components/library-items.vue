@@ -151,6 +151,30 @@
         right: 14px;
     }
 
+    .lpLibraryItemEdit {
+        background: transparent;
+        border: none;
+        bottom: 0;
+        color: $color-text-muted;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+        opacity: 0;
+        padding: 4px 6px;
+        position: absolute;
+        right: 38px;
+        top: 0;
+        transition: opacity $transitionDurationFast ease, color $transitionDurationFast ease;
+
+        &:hover {
+            color: $color-accent;
+        }
+    }
+
+    &:hover .lpLibraryItemEdit {
+        opacity: 1;
+    }
+
     .library.lpSearching & {
         display: none;
     }
@@ -326,6 +350,7 @@
                     {{ item.description }}
                 </span>
                 <a class="lpRemove lpRemoveLibraryItem speedbump" title="Delete this item permanently" @click="removeItem(item)"><i class="lpSprite lpSpriteRemove" /></a>
+                <button class="lpLibraryItemEdit" title="Edit item details" @click.stop="openDetail(item)">⋯</button>
                 <div v-if="!item.inCurrentList" class="lpHandle lpLibraryItemHandle" title="Reorder this item" />
             </li>
         </ul>

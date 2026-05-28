@@ -350,7 +350,7 @@
                     {{ item.description }}
                 </span>
                 <a class="lpRemove lpRemoveLibraryItem speedbump" title="Delete this item permanently" @click="removeItem(item)"><i class="lpSprite lpSpriteRemove" /></a>
-                <button class="lpLibraryItemEdit" title="Edit item details" @click.stop="openDetail(item, true)">⋯</button>
+                <button class="lpLibraryItemEdit" title="View item details" @click.stop="openDetail(item)">⋯</button>
                 <div v-if="!item.inCurrentList" class="lpHandle lpLibraryItemHandle" title="Reorder this item" />
             </li>
         </ul>

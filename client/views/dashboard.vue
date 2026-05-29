@@ -139,8 +139,9 @@
 
 <template>
     <div v-if="isLoaded" id="main" :class="{lpHasSidebar: library.showSidebar}">
-        <sidebar />
-        <div class="lpList lpTransition">
+        <sidebar @open-gear-room="gearRoomOpen = true" />
+        <gear-room v-if="gearRoomOpen" @close="gearRoomOpen = false" />
+        <div v-show="!gearRoomOpen" class="lpList lpTransition">
             <div id="header" class="clearfix">
                 <span class="headerItem">
                     <a id="hamburger" class="lpTransition" @click="toggleSidebar">
@@ -213,6 +214,7 @@ import gearPicker from '../components/gear-picker.vue';
 import importCSV from '../components/import-csv.vue';
 import copyList from '../components/copy-list.vue';
 import speedbump from '../components/speedbump.vue';
+import gearRoom from '../components/gear-room.vue';
 import { push } from '../services/navigation';
 
 export default {
@@ -237,10 +239,12 @@ export default {
         itemViewImage,
         speedbump,
         globalAlerts,
+        gearRoom,
     },
     data() {
         return {
             isLoaded: false,
+            gearRoomOpen: false,
         };
     },
     computed: {

@@ -124,10 +124,6 @@ $sidebarPadding: 20px;
     white-space: nowrap;
 }
 
-.lpGearRoomModal {
-    padding: 16px;
-    width: min(520px, 92vw);
-}
 
 .lpThemeToggle {
     align-items: center;
@@ -160,7 +156,7 @@ $sidebarPadding: 20px;
             <section class="lpGearSection">
                 <h2 class="lpGearSectionHeader">
                     Gear
-                    <button class="lpButton lpSmall lpButtonSecondary lpGearRoomBtn" @click="gearRoomOpen = true">Gear Room</button>
+                    <button class="lpButton lpSmall lpButtonSecondary lpGearRoomBtn" @click="$emit('open-gear-room')">Gear Room</button>
                 </h2>
                 <libraryItems :show-title="false" />
             </section>
@@ -171,18 +167,12 @@ $sidebarPadding: 20px;
             </button>
         </div>
         </div>
-        <modal v-if="gearRoomOpen" :shown="gearRoomOpen" @hide="gearRoomOpen = false">
-            <div class="lpGearRoomModal">
-                <libraryItems />
-            </div>
-        </modal>
     </div>
 </template>
 
 <script>
 import libraryItems from './library-items.vue';
 import libraryLists from './library-lists.vue';
-import modal from './modal.vue';
 import { useTheme } from '../composables/useTheme.js';
 
 export default {
@@ -190,17 +180,13 @@ export default {
     components: {
         libraryItems,
         libraryLists,
-        modal,
     },
+    emits: ['open-gear-room'],
     setup() {
         const { mode, cycleTheme } = useTheme();
         return { mode, cycleTheme };
     },
-    data() {
-        return {
-            gearRoomOpen: false,
-        };
-    },
+
     computed: {
         themeIcon() {
             return { auto: '⚙', light: '☀', dark: '☾' }[this.mode];

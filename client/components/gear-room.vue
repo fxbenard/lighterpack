@@ -726,7 +726,8 @@ export default {
             }
         },
         openItemDetail(item) {
-            openDialog('itemDetail', { item, categoryItem: null, category: null });
+            const liveItem = this.library.getItemById(item.id);
+            openDialog('itemDetail', { item: liveItem, categoryItem: null, category: null });
         },
         createItem() {
             this.$store.commit('newItem', { _isNew: true, name: '' });

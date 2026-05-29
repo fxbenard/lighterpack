@@ -350,17 +350,27 @@ const store = createStore({
                         newCount++;
                     }
                 } else {
-                    item = state.library.newItem({ category, _isNew: false });
-                    item.name = row.name;
-                    item.description = row.description;
-                    item.url = row.url;
-                    item.price = row.price;
-                    if (row.category) item.category = row.category;
-                    if (row.brand) item.brand = row.brand;
-                    if (row.imageUrl) item.imageUrl = row.imageUrl;
-                    item.weight = weightUtils.WeightToMg(parseFloat(row.weight), row.unit);
-                    item.authorUnit = row.unit;
-                    newCount++;
+                    const rowNameLower = (row.name || '').toLowerCase().trim();
+                    const existing = rowNameLower
+                        ? state.library.items.find(i => (i.name || '').toLowerCase().trim() === rowNameLower)
+                        : null;
+                    if (existing) {
+                        item = existing;
+                        category.addItem({ itemId: item.id, _isNew: false, qty: parseFloat(row.qty) || 1 });
+                        mergedCount++;
+                    } else {
+                        item = state.library.newItem({ category, _isNew: false });
+                        item.name = row.name;
+                        item.description = row.description;
+                        item.url = row.url;
+                        item.price = row.price;
+                        if (row.category) item.category = row.category;
+                        if (row.brand) item.brand = row.brand;
+                        if (row.imageUrl) item.imageUrl = row.imageUrl;
+                        item.weight = weightUtils.WeightToMg(parseFloat(row.weight), row.unit);
+                        item.authorUnit = row.unit;
+                        newCount++;
+                    }
                 }
 
                 categoryItem = category.getCategoryItemById(item.id);

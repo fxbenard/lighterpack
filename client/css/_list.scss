@@ -225,6 +225,12 @@ input.lpCategoryName { /* specificity */
         padding-bottom: 2px;
     }
 
+    .lpItemStarred {
+        color: #f59e0b;
+        font-size: 12px;
+        margin-right: 4px;
+    }
+
     .lpItemBrand {
         font-weight: $fontWeight-medium;
     }

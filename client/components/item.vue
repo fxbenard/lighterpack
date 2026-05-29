@@ -81,6 +81,7 @@
             <img class="lpItemImage" :src="thumbnailImage" @click="viewItemImage()">
         </span>
         <span class="lpNameCell">
+            <span v-if="item.starred" class="lpItemStarred" title="Favorite">★</span>
             <input v-model="item.name" v-focus-on-create="categoryItem._isNew" type="text" class="lpName lpSilent" placeholder="Name" @input="saveItem">
             <input v-model="item.description" type="text" class="lpDescription lpSilent" placeholder="Description" @input="saveItem">
             <span v-if="item.brand || item.category" class="lpItemMeta">

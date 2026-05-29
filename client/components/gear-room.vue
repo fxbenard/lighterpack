@@ -515,7 +515,7 @@
                                 </td>
                                 <td class="lpGRImgCol" @click="openItemDetail(item)">
                                     <img v-if="itemThumb(item)" :src="itemThumb(item)" class="lpGearRoomThumb" :alt="item.name">
-                                    <div v-else class="lpGearRoomThumbPlaceholder">□</div>
+                                    <div v-else class="lpGearRoomThumbPlaceholder"></div>
                                 </td>
                                 <td @click="openItemDetail(item)">
                                     <div class="lpGearRoomItemName">{{ itemDisplayName(item) }}</div>

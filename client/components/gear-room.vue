@@ -187,6 +187,7 @@
 
         &.lpGRCheckCol { width: 36px; }
         &.lpGRImgCol { width: 56px; }
+        &.lpGRStarCol { text-align: center; width: 36px; }
         &.lpGRWeightCol, &.lpGRPriceCol { text-align: right; width: 90px; }
         &.lpGRCategoryCol { width: 130px; }
     }
@@ -198,6 +199,7 @@
 
         &.lpGRCheckCol { text-align: center; width: 36px; }
         &.lpGRImgCol { width: 56px; }
+        &.lpGRStarCol { text-align: center; width: 36px; }
         &.lpGRWeightCol, &.lpGRPriceCol { text-align: right; }
     }
 
@@ -687,6 +689,9 @@
                                 <th class="lpGRSortable" @click="setSort('name')">
                                     Item {{ sortKey === 'name' ? (sortAsc ? '↑' : '↓') : '' }}
                                 </th>
+                                <th class="lpGRSortable lpGRStarCol" @click="setSort('starred')" title="Sort by favorites">
+                                    ★ {{ sortKey === 'starred' ? (sortAsc ? '↑' : '↓') : '' }}
+                                </th>
                                 <th class="lpGRCategoryCol">Category</th>
                                 <th class="lpGRWeightCol lpGRSortable" @click="setSort('weight')">
                                     Weight {{ sortKey === 'weight' ? (sortAsc ? '↑' : '↓') : '' }}
@@ -706,8 +711,11 @@
                                     <div v-else class="lpGearRoomThumbPlaceholder"></div>
                                 </td>
                                 <td @click="openItemDetail(item)">
-                                    <div class="lpGearRoomItemName"><span v-if="item.starred" class="lpGearRoomStarBadge" title="Favorite">★</span>{{ itemDisplayName(item) }}</div>
+                                    <div class="lpGearRoomItemName">{{ itemDisplayName(item) }}</div>
                                     <div v-if="item.description" class="lpGearRoomItemDesc">{{ item.description }}</div>
+                                </td>
+                                <td class="lpGRStarCol" @click="openItemDetail(item)">
+                                    <span v-if="item.starred" class="lpGearRoomStarBadge">★</span>
                                 </td>
                                 <td class="lpGRCategoryCol" @click="openItemDetail(item)">
                                     <span v-if="item.category" class="lpGearRoomCategoryBadge">{{ item.category }}</span>
@@ -964,6 +972,9 @@ export default {
                 } else if (this.sortKey === 'price') {
                     va = a.price || 0;
                     vb = b.price || 0;
+                } else if (this.sortKey === 'starred') {
+                    va = a.starred ? 1 : 0;
+                    vb = b.starred ? 1 : 0;
                 } else {
                     va = this.itemDisplayName(a).toLowerCase();
                     vb = this.itemDisplayName(b).toLowerCase();

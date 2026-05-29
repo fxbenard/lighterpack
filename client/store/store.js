@@ -254,7 +254,7 @@ const store = createStore({
         },
         updateItem(state, item) {
             state.library.updateItem(item);
-            state.library.getListById(state.library.defaultListId).calculateTotals();
+            state.library.lists.forEach(list => list.calculateTotals());
         },
         mergeItems(state, { keepId, removeId }) {
             for (const list of state.library.lists) {

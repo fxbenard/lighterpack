@@ -692,7 +692,9 @@
                                 <th class="lpGRSortable lpGRStarCol" @click="setSort('starred')" title="Sort by favorites">
                                     ★ {{ sortKey === 'starred' ? (sortAsc ? '↑' : '↓') : '' }}
                                 </th>
-                                <th class="lpGRCategoryCol">Category</th>
+                                <th class="lpGRCategoryCol lpGRSortable" @click="setSort('category')">
+                                    Category {{ sortKey === 'category' ? (sortAsc ? '↑' : '↓') : '' }}
+                                </th>
                                 <th class="lpGRWeightCol lpGRSortable" @click="setSort('weight')">
                                     Weight {{ sortKey === 'weight' ? (sortAsc ? '↑' : '↓') : '' }}
                                 </th>
@@ -976,6 +978,9 @@ export default {
                 } else if (this.sortKey === 'starred') {
                     va = a.starred ? 1 : 0;
                     vb = b.starred ? 1 : 0;
+                } else if (this.sortKey === 'category') {
+                    va = (a.category || '').toLowerCase();
+                    vb = (b.category || '').toLowerCase();
                 } else {
                     va = this.itemDisplayName(a).toLowerCase();
                     vb = this.itemDisplayName(b).toLowerCase();

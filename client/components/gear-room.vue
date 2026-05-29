@@ -235,6 +235,12 @@
     font-weight: $fontWeight-bold;
 }
 
+.lpGearRoomStarBadge {
+    color: #f59e0b;
+    font-size: 14px;
+    margin-right: 4px;
+}
+
 .lpGearRoomItemDesc {
     color: $color-text-muted;
     font-size: $fontSize-sm;
@@ -631,16 +637,20 @@
                 <div>
                     <div class="lpGearRoomFiltersLabel">Category</div>
                     <div class="lpGearRoomCategoryChips">
-                        <button :class="['lpGearRoomChip', { active: filterCategory === '' && !filterOrphan }]" @click="filterCategory = ''; filterOrphan = false">All</button>
+                        <button :class="['lpGearRoomChip', { active: filterCategory === '' && !filterOrphan && !filterStarred }]" @click="filterCategory = ''; filterOrphan = false; filterStarred = false">All</button>
                         <button
                             :class="['lpGearRoomChip', { active: filterOrphan }]"
-                            @click="filterOrphan = !filterOrphan; filterCategory = ''"
+                            @click="filterOrphan = !filterOrphan; filterCategory = ''; filterStarred = false"
                         >No list</button>
+                        <button
+                            :class="['lpGearRoomChip', { active: filterStarred }]"
+                            @click="filterStarred = !filterStarred; filterCategory = ''; filterOrphan = false"
+                        >★ Favorites</button>
                         <button
                             v-for="cat in availableCategories"
                             :key="cat"
                             :class="['lpGearRoomChip', { active: filterCategory === cat }]"
-                            @click="filterCategory = cat; filterOrphan = false"
+                            @click="filterCategory = cat; filterOrphan = false; filterStarred = false"
                         >{{ cat }}</button>
                     </div>
                 </div>
@@ -696,7 +706,7 @@
                                     <div v-else class="lpGearRoomThumbPlaceholder"></div>
                                 </td>
                                 <td @click="openItemDetail(item)">
-                                    <div class="lpGearRoomItemName">{{ itemDisplayName(item) }}</div>
+                                    <div class="lpGearRoomItemName"><span v-if="item.starred" class="lpGearRoomStarBadge" title="Favorite">★</span>{{ itemDisplayName(item) }}</div>
                                     <div v-if="item.description" class="lpGearRoomItemDesc">{{ item.description }}</div>
                                 </td>
                                 <td class="lpGRCategoryCol" @click="openItemDetail(item)">
@@ -877,6 +887,7 @@ export default {
             search: '',
             filterCategory: '',
             filterOrphan: false,
+            filterStarred: false,
             weightMin: null,
             weightMax: null,
             selected: [],
@@ -929,6 +940,9 @@ export default {
             }
             if (this.filterOrphan) {
                 items = items.filter(i => this.orphanItemIds.has(i.id));
+            }
+            if (this.filterStarred) {
+                items = items.filter(i => i.starred);
             }
             if (this.weightMin !== null && this.weightMin !== '') {
                 const minMg = this.weightMin * 1000;

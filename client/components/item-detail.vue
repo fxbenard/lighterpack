@@ -92,6 +92,26 @@
         padding: 10px 14px;
     }
 
+    .itemDetailStar {
+        background: none;
+        border: none;
+        color: $color-text-muted;
+        cursor: pointer;
+        font-size: 20px;
+        line-height: 1;
+        padding: 4px 6px;
+        transition: color $transitionDurationFast ease, transform $transitionDurationFast ease;
+
+        &:hover {
+            color: #f59e0b;
+            transform: scale(1.15);
+        }
+
+        &.active {
+            color: #f59e0b;
+        }
+    }
+
     .itemDetailClose {
         align-items: center;
         background: rgba(var(--color-accent-rgb), 0.12);
@@ -622,6 +642,9 @@
                         <div v-if="item.brand" class="itemDetailBrand">{{ item.brand }}</div>
                         <span v-if="item.category" class="itemDetailCategoryBadge">{{ item.category }}</span>
                     </div>
+                    <button class="itemDetailStar" :class="{ active: item.starred }" :title="item.starred ? 'Remove from favorites' : 'Add to favorites'" @click="toggleStar">
+                        {{ item.starred ? '★' : '☆' }}
+                    </button>
                     <button class="lpIconButton itemDetailClose" title="Close" @click="close">×</button>
                 </div>
 
@@ -742,6 +765,9 @@
                         <div v-if="editBrand" class="itemDetailBrand">{{ editBrand }}</div>
                         <span v-if="editCategory" class="itemDetailCategoryBadge">{{ editCategory }}</span>
                     </div>
+                    <button class="itemDetailStar" :class="{ active: item.starred }" :title="item.starred ? 'Remove from favorites' : 'Add to favorites'" @click="toggleStar">
+                        {{ item.starred ? '★' : '☆' }}
+                    </button>
                     <button class="lpIconButton itemDetailClose" title="Close" @click="close">×</button>
                 </div>
 
@@ -959,6 +985,11 @@ export default {
         unregisterDialogOpener('itemDetail');
     },
     methods: {
+        toggleStar() {
+            const starred = !this.item.starred;
+            this.$store.commit('updateItem', { ...this.item, starred });
+            this.item = { ...this.item, starred };
+        },
         close() {
             this.shown = false;
             this.editing = false;

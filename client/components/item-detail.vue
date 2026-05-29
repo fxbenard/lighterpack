@@ -971,8 +971,10 @@ export default {
     mounted() {
         registerDialogOpener('itemDetail', ({ item, categoryItem, category, startEditing }) => {
             this.item = { ...item };
-            this.categoryItem = categoryItem ? { ...categoryItem } : null;
-            this.category = category || null;
+            const liveCategory = category ? this.$store.state.library.getCategoryById(category.id) : null;
+            const liveCategoryItem = liveCategory && item ? liveCategory.getCategoryItemById(item.id) : null;
+            this.categoryItem = liveCategoryItem ? { ...liveCategoryItem } : (categoryItem ? { ...categoryItem } : null);
+            this.category = liveCategory || category || null;
             this.shown = true;
             if (startEditing) {
                 this.startEdit();

@@ -631,12 +631,16 @@
                 <div>
                     <div class="lpGearRoomFiltersLabel">Category</div>
                     <div class="lpGearRoomCategoryChips">
-                        <button :class="['lpGearRoomChip', { active: filterCategory === '' }]" @click="filterCategory = ''">All</button>
+                        <button :class="['lpGearRoomChip', { active: filterCategory === '' && !filterOrphan }]" @click="filterCategory = ''; filterOrphan = false">All</button>
+                        <button
+                            :class="['lpGearRoomChip', { active: filterOrphan }]"
+                            @click="filterOrphan = !filterOrphan; filterCategory = ''"
+                        >No list</button>
                         <button
                             v-for="cat in availableCategories"
                             :key="cat"
                             :class="['lpGearRoomChip', { active: filterCategory === cat }]"
-                            @click="filterCategory = cat"
+                            @click="filterCategory = cat; filterOrphan = false"
                         >{{ cat }}</button>
                     </div>
                 </div>
@@ -872,6 +876,7 @@ export default {
         return {
             search: '',
             filterCategory: '',
+            filterOrphan: false,
             weightMin: null,
             weightMax: null,
             selected: [],
@@ -892,6 +897,20 @@ export default {
         allItems() {
             return this.library.items;
         },
+        orphanItemIds() {
+            const library = this.$store.state.library;
+            const usedIds = new Set();
+            for (const list of library.lists) {
+                for (const catId of list.categoryIds) {
+                    const cat = library.getCategoryById(catId);
+                    if (!cat) continue;
+                    for (const ci of cat.categoryItems) {
+                        usedIds.add(ci.itemId);
+                    }
+                }
+            }
+            return new Set(this.allItems.filter(i => !usedIds.has(i.id)).map(i => i.id));
+        },
         availableCategories() {
             return [...new Set(this.allItems.map(i => i.category).filter(Boolean))].sort();
         },
@@ -907,6 +926,9 @@ export default {
             }
             if (this.filterCategory) {
                 items = items.filter(i => i.category === this.filterCategory);
+            }
+            if (this.filterOrphan) {
+                items = items.filter(i => this.orphanItemIds.has(i.id));
             }
             if (this.weightMin !== null && this.weightMin !== '') {
                 const minMg = this.weightMin * 1000;

@@ -180,6 +180,7 @@ export default {
     watch: {
         item() {
             this.setDisplayWeight();
+            this.setDisplayPrice();
         },
         categoryItem() {
             this.setDisplayQty();

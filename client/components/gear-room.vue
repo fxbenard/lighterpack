@@ -11,7 +11,7 @@
     position: fixed;
     right: 0;
     top: 0;
-    z-index: $belowDialog;
+    z-index: $aboveSidebar;
 }
 
 .lpGearRoomHeader {

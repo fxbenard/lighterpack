@@ -3,10 +3,15 @@
 
 .lpGearRoom {
     background: $color-bg;
+    bottom: 0;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    left: 0;
     overflow: hidden;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: $belowDialog;
 }
 
 .lpGearRoomHeader {

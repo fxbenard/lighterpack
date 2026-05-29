@@ -914,6 +914,7 @@ export default {
             return this.$store.state.library;
         },
         allItems() {
+            void this.$store.state.itemVersion;
             return this.library.items;
         },
         orphanItemIds() {

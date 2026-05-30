@@ -1252,8 +1252,8 @@ export default {
                     if (data.weightUnit) this.editUnit = data.weightUnit;
                     filled.push('weight');
                 }
-                if (data.imageUrl && !this.item.image && !this.item.imageUrl) {
-                    this.item = { ...this.item, imageUrl: data.imageUrl };
+                if (data.imageUrl && !this.item.image && !this.editImageUrl) {
+                    this.editImageUrl = data.imageUrl;
                     filled.push('image');
                 }
                 this.fetchSuccess = filled.length

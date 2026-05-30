@@ -92,7 +92,7 @@
         <span class="lpActionsCell">
             <i class="lpSprite lpCamera" title="Upload a photo or use a photo from the web" @click="updateItemImage" />
             <i class="lpSprite lpLink" :class="{lpActive: item.url}" title="Add a link for this item" @click="updateItemLink" />
-            <i class="lpSprite lpTag" :class="{lpActive: item.brand || item.category || (item.tags && item.tags.length)}" title="Edit brand, category and tags" @click="updateItemMeta" />
+            <i class="lpSprite lpTag" title="Edit brand, type and tags" @click="updateItemMeta" />
             <i v-if="library.optionalFields['worn']" class="lpSprite lpWorn" :class="{lpActive: categoryItem.worn}" title="Mark this item as worn" @click="toggleWorn" />
             <i v-if="library.optionalFields['consumable']" class="lpSprite lpConsumable" :class="{lpActive: categoryItem.consumable}" title="Mark this item as a consumable" @click="toggleConsumable" />
             <i :class="'lpSprite lpStar lpStar' + categoryItem.star" title="Rate this item" @click="cycleStar" />

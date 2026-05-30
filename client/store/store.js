@@ -24,6 +24,7 @@ const createInitialState = () => ({
     globalAlerts: [],
     itemVersion: 0,
     categoryItemVersion: 0,
+    gearRoomOpen: false,
 });
 
 const store = createStore({
@@ -88,6 +89,9 @@ const store = createStore({
         },
         toggleSidebar(state) {
             state.library.showSidebar = !state.library.showSidebar;
+        },
+        setGearRoomOpen(state, open) {
+            state.gearRoomOpen = open;
         },
         setDefaultList(state, list) {
             state.library.defaultListId = list.id;

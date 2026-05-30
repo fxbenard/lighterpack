@@ -139,8 +139,8 @@
 
 <template>
     <div v-if="isLoaded" id="main" :class="{lpHasSidebar: library.showSidebar}">
-        <sidebar @open-gear-room="gearRoomOpen = true" />
-        <gear-room v-if="gearRoomOpen" @close="gearRoomOpen = false" />
+        <sidebar @open-gear-room="$store.commit('setGearRoomOpen', true)" />
+        <gear-room v-if="gearRoomOpen" @close="$store.commit('setGearRoomOpen', false)" />
         <div v-show="!gearRoomOpen" class="lpList lpTransition">
             <div id="header" class="clearfix">
                 <span class="headerItem">
@@ -244,12 +244,14 @@ export default {
     data() {
         return {
             isLoaded: false,
-            gearRoomOpen: false,
         };
     },
     computed: {
         library() {
             return this.$store.state.library;
+        },
+        gearRoomOpen() {
+            return this.$store.state.gearRoomOpen;
         },
         list() {
             return this.library.getListById(this.library.defaultListId);

@@ -1037,6 +1037,7 @@ export default {
         },
         navigateToList(list) {
             this.$store.commit('setDefaultList', list);
+            this.$store.commit('setGearRoomOpen', false);
             this.close();
         },
         viewImage() {

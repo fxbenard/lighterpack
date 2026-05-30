@@ -378,7 +378,7 @@ import { createDragDrop, getDatasetInt, queryContainers } from '../services/drag
 const { displayWeight, displayPrice } = useUtils();
 
 const GEAR_CATEGORIES = [
-    'Shelter', 'Sleep', 'Clothing', 'Water', 'Food', 'Cook',
+    'Pack & Bags', 'Shelter', 'Sleep', 'Clothing', 'Water', 'Food', 'Cook',
     'Navigation', 'Safety', 'Hygiene', 'Electronics', 'Essentials', 'Other',
 ];
 

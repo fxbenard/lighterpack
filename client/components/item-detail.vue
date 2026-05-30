@@ -1005,7 +1005,7 @@ import { registerDialogOpener, unregisterDialogOpener, openDialog } from '../ser
 const weightUtils = require('../utils/weight.js');
 
 const GEAR_CATEGORIES = [
-    'Shelter', 'Sleep', 'Clothing', 'Water', 'Food', 'Cook',
+    'Pack & Bags', 'Shelter', 'Sleep', 'Clothing', 'Water', 'Food', 'Cook',
     'Navigation', 'Safety', 'Hygiene', 'Electronics', 'Essentials', 'Other',
 ];
 

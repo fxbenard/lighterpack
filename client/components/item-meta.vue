@@ -219,7 +219,7 @@ import modal from './modal.vue';
 import { registerDialogOpener, unregisterDialogOpener } from '../services/dialogs';
 
 const GEAR_CATEGORIES = [
-    'Shelter', 'Sleep', 'Clothing', 'Water', 'Food', 'Cook',
+    'Pack & Bags', 'Shelter', 'Sleep', 'Clothing', 'Water', 'Food', 'Cook',
     'Navigation', 'Safety', 'Hygiene', 'Essentials', 'Other',
 ];
 

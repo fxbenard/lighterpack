@@ -829,6 +829,12 @@
                                 {{ itemDisplayName(item) }}
                             </td>
                         </tr>
+                        <tr>
+                            <td class="lpGearRoomCompareAttrCell">Brand</td>
+                            <td v-for="item in compareItems" :key="item.id" class="lpGearRoomCompareValueCell">
+                                {{ item.brand || '—' }}
+                            </td>
+                        </tr>
                         <!-- Description row -->
                         <tr>
                             <td class="lpGearRoomCompareAttrCell">Description</td>

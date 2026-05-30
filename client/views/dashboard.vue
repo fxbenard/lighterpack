@@ -75,6 +75,17 @@
     }
 }
 
+.lpThemeToggleNav {
+    cursor: pointer;
+
+    .lpThemeIcon {
+        align-items: center;
+        display: inline-flex;
+        font-size: 16px;
+        height: 60px;
+    }
+}
+
 .headerItem {
     flex: 0 0 auto;
     color: $color-text-muted;
@@ -151,6 +162,7 @@
                     </a>
                 </span>
                 <input id="lpListName" :value="list.name" type="text" class="lpListName lpSilent headerItem" value="New List" placeholder="List Name" autocomplete="off" name="lastpass-disable-search" @input="updateListName">
+                <themeToggle />
                 <share />
                 <listSettings />
                 <accountDropdown v-if="isSignedIn" />
@@ -216,11 +228,13 @@ import copyList from '../components/copy-list.vue';
 import speedbump from '../components/speedbump.vue';
 import gearRoom from '../components/gear-room.vue';
 import { push } from '../services/navigation';
+import themeToggle from '../components/theme-toggle.vue';
 
 export default {
     name: 'Dashboard',
     components: {
         sidebar,
+        themeToggle,
         share,
         listSettings,
         accountDropdown,

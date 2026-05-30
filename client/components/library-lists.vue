@@ -3,9 +3,11 @@
 
 #listContainer {
     flex: 0 0 auto;
+    margin-bottom: 20px;
 
     #lists {
-        max-height: 25vh;
+        max-height: 111px;
+        overflow-y: auto;
     }
 }
 
@@ -78,9 +80,10 @@
 }
 
 .listContainerHeader {
+    align-items: center;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 #addListFlyout {

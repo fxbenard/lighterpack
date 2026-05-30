@@ -57,6 +57,17 @@
     }
 }
 
+.accountThemeToggle {
+    color: $color-text-muted;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 8px 0 0;
+
+    &:hover {
+        color: $color-text;
+    }
+}
+
 .accountDropdownDivider {
     border: none;
     border-top: 1px solid $color-border;
@@ -89,11 +100,16 @@
 <script>
 import PopoverHover from './popover-hover.vue';
 import { openDialog } from '../services/dialogs';
+import { useTheme } from '../composables/useTheme.js';
 
 export default {
     name: 'AccountDropdown',
     components: {
         PopoverHover,
+    },
+    setup() {
+        const { mode, cycleTheme } = useTheme();
+        return { mode, cycleTheme };
     },
     computed: {
         library() {
@@ -101,6 +117,9 @@ export default {
         },
         username() {
             return this.$store.state.loggedIn;
+        },
+        themeLabel() {
+            return { auto: '⚙ Auto', light: '☀ Light', dark: '☾ Dark' }[this.mode];
         },
     },
     methods: {

@@ -27,8 +27,11 @@ $sidebarPadding: 20px;
     h1 {
         @include fullBleedLeft();
 
+        align-items: center;
         border-bottom: 1px solid $color-border;
+        display: flex;
         height: 60px;
+        justify-content: space-between;
         margin: 0 -20px 20px 0;
         padding: 20px 0 20px;
         position: relative;
@@ -39,7 +42,6 @@ $sidebarPadding: 20px;
     }
 
     section {
-        margin-bottom: 20px;
         position: relative;
     }
 
@@ -69,6 +71,7 @@ $sidebarPadding: 20px;
     flex-direction: column;
     height: 100%;
     overflow: hidden;
+    padding-bottom: 20px;
     position: relative;
     top: 0;
 
@@ -133,21 +136,19 @@ $sidebarPadding: 20px;
 
 
 .lpThemeToggle {
-    align-items: center;
-    background: $color-bg;
-    border: 1px solid $color-border;
+    background: transparent;
+    border: none;
     border-radius: $radius-md;
     color: $color-text-muted;
     cursor: pointer;
-    display: flex;
-    font-family: $font-family-base;
-    font-size: $fontSize-sm;
-    gap: 6px;
-    justify-content: flex-start;
-    margin-top: auto;
-    padding: 8px 12px;
-    transition: color $transitionDurationFast, border-color $transitionDurationFast;
-    width: 100%;
+    font-size: 16px;
+    line-height: 1;
+    padding: 2px 4px;
+    transition: color $transitionDurationFast;
+
+    &:hover {
+        color: $color-text;
+    }
 }
 
 </style>
@@ -167,11 +168,6 @@ $sidebarPadding: 20px;
                 </h2>
                 <libraryItems :show-title="false" />
             </section>
-
-            <button class="lpButton lpSmall lpButtonGhost lpThemeToggle" @click="cycleTheme">
-                <span aria-hidden="true">{{ themeIcon }}</span>
-                <span>{{ themeLabel }}</span>
-            </button>
         </div>
         </div>
     </div>
@@ -180,8 +176,6 @@ $sidebarPadding: 20px;
 <script>
 import libraryItems from './library-items.vue';
 import libraryLists from './library-lists.vue';
-import { useTheme } from '../composables/useTheme.js';
-
 export default {
     name: 'Sidebar',
     components: {
@@ -189,19 +183,6 @@ export default {
         libraryLists,
     },
     emits: ['open-gear-room'],
-    setup() {
-        const { mode, cycleTheme } = useTheme();
-        return { mode, cycleTheme };
-    },
-
-    computed: {
-        themeIcon() {
-            return { auto: '⚙', light: '☀', dark: '☾' }[this.mode];
-        },
-        themeLabel() {
-            return { auto: 'Auto', light: 'Light', dark: 'Dark' }[this.mode];
-        },
-    },
     methods: {
         closeSidebar() {
             this.$store.commit('toggleSidebar');

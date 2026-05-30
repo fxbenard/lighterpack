@@ -3,8 +3,9 @@
 
 .libraryContainer {
     display: flex;
-    flex: 2 0 30vh;
+    flex: 1;
     flex-direction: column;
+    min-height: 0;
 }
 
 .libraryHeader {
@@ -24,8 +25,9 @@
 }
 
 .library {
-    flex: 1 0 25vh;
-    overflow-y: scroll;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 .librarySearchWrap {

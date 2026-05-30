@@ -3,41 +3,65 @@
 
 .creatorLinks {
     border-top: 1px solid $color-border;
-    margin-top: 24px;
-    padding-top: 24px;
+    padding-top: 28px;
 }
 
-.creatorLinks h2 {
-    font-size: 28px;
-    letter-spacing: 0;
-    line-height: 1.1;
-    margin-bottom: 18px;
-    max-width: none;
+.creatorLinksSectionTitle {
+    font-size: 18px;
+    font-weight: $fontWeight-bold;
+    margin: 0 0 16px;
 }
 
-.creatorLinks label {
-    display: block;
-    margin-bottom: 12px;
+.creatorLinksField {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
 }
 
-.creatorLinks textarea {
-    margin-top: 4px;
+.creatorLinksLabel {
+    color: $color-text-muted;
+    font-size: $fontSize-xs;
+    font-weight: $fontWeight-bold;
+    letter-spacing: $letterSpacing-caps;
+    text-transform: uppercase;
+}
+
+.creatorLinksTextarea {
+    appearance: none;
+    background: $color-bg;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    box-sizing: border-box;
+    color: $color-text;
+    font-family: $font-family-base;
+    font-size: $fontSize-base;
+    min-height: 80px;
+    padding: 10px 12px;
+    resize: vertical;
     width: 100%;
+
+    &:focus {
+        border-color: $color-accent;
+        box-shadow: 0 0 0 4px rgba(var(--color-accent-rgb), 0.1);
+        outline: none;
+    }
 }
 
 .creatorLinksNote {
     color: $color-text-muted;
     font-size: $fontSize-sm;
+    margin: 0;
 }
 </style>
 
 <template>
     <section class="creatorLinks">
-        <h2>Creator links</h2>
-        <label>
-            Disclosure
-            <textarea :value="creator.disclosure" @input="updateDisclosure($event.target.value)" />
-        </label>
+        <h3 class="creatorLinksSectionTitle">Creator links</h3>
+        <div class="creatorLinksField">
+            <span class="creatorLinksLabel">Disclosure</span>
+            <textarea class="creatorLinksTextarea" :value="creator.disclosure" @input="updateDisclosure($event.target.value)" />
+        </div>
         <p class="creatorLinksNote">Affiliate links are shown only on your public pages.</p>
     </section>
 </template>

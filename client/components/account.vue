@@ -5,34 +5,129 @@
     width: min(640px, calc(100vw - 32px));
 }
 
+.accountSettingsTitle {
+    font-size: 20px;
+    font-weight: $fontWeight-bold;
+    margin: 0 0 24px;
+}
+
 .accountSection {
     border-bottom: 1px solid $color-border;
-    margin-bottom: 24px;
-    padding-bottom: 24px;
+    margin-bottom: 28px;
+    padding-bottom: 28px;
+}
+
+.accountFieldGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.accountFieldGroupDivider {
+    border: none;
+    border-top: 1px solid $color-border;
+    margin: 4px 0;
+}
+
+.accountField {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.accountFieldLabel {
+    color: $color-text-muted;
+    font-size: $fontSize-xs;
+    font-weight: $fontWeight-bold;
+    letter-spacing: $letterSpacing-caps;
+    text-transform: uppercase;
+}
+
+.accountFieldInput {
+    appearance: none;
+    background: $color-bg;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    box-sizing: border-box;
+    color: $color-text;
+    font-family: $font-family-base;
+    font-size: $fontSize-base;
+    min-height: 40px;
+    padding: 0 12px;
+    width: 100%;
+
+    &:focus {
+        border-color: $color-accent;
+        box-shadow: 0 0 0 4px rgba(var(--color-accent-rgb), 0.1);
+        outline: none;
+    }
+
+    &:disabled {
+        background: $color-control-muted;
+        color: $color-text-muted;
+        cursor: not-allowed;
+    }
 }
 
 .accountActions {
     align-items: center;
-    display: grid;
-    gap: 10px;
-    grid-template-columns: 1fr auto auto;
-    margin-top: 18px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
 
     .lpButton {
-        min-width: 160px;
+        min-width: 120px;
+    }
+}
+
+.accountActionsRight {
+    display: flex;
+    gap: 12px;
+    margin-left: auto;
+}
+
+.accountCancelLink {
+    align-items: center;
+    color: $color-text-muted;
+    cursor: pointer;
+    display: flex;
+    font-size: $fontSize-sm;
+    text-decoration: none;
+    transition: color $transitionDurationFast ease;
+
+    &:hover {
+        color: $color-text;
     }
 }
 
 .accountDangerLink {
-    color: $color-danger;
+    align-items: center;
+    color: $color-text-muted;
+    cursor: pointer;
+    display: flex;
+    font-size: $fontSize-sm;
+    text-decoration: none;
+    transition: color $transitionDurationFast ease;
+
+    &:hover {
+        color: $color-danger;
+    }
 }
 
 @media (max-width: 640px) {
     .accountActions {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: stretch;
 
         .lpButton {
             width: 100%;
+        }
+
+        .accountActionsRight {
+            margin-left: 0;
+            justify-content: space-between;
         }
     }
 }
@@ -40,29 +135,50 @@
 
 <template>
     <modal id="accountSettings" :shown="shown" @hide="shown = false">
-        <h2>Account Settings</h2>
+        <h2 class="accountSettingsTitle">Account Settings</h2>
 
         <section class="accountSection">
             <form id="accountForm" @submit.prevent="updateAccount()">
-                <div class="lpFields">
-                    <input type="text" name="username" class="username" disabled :value="username">
-                    <input v-model="currentPassword" type="password" placeholder="Current password" name="currentPassword" class="currentPassword">
-                    <hr>
-                    <input v-model="newEmail" type="email" placeholder="New Email" name="newEmail" class="newEmail">
-                    <hr>
-                    <input v-model="newPassword" type="password" placeholder="New Password" name="newPassword" class="newPassword">
-                    <input v-model="confirmNewPassword" type="password" placeholder="Confirm New Password" name="confirmNewPassword" class="confirmNewPassword">
+                <div class="accountFieldGroup">
+                    <div class="accountField">
+                        <span class="accountFieldLabel">Username</span>
+                        <input type="text" name="username" class="accountFieldInput" disabled :value="username">
+                    </div>
+                    <div class="accountField">
+                        <span class="accountFieldLabel">Current password</span>
+                        <input v-model="currentPassword" type="password" class="accountFieldInput" placeholder="Required to make changes" name="currentPassword">
+                    </div>
+
+                    <hr class="accountFieldGroupDivider">
+
+                    <div class="accountField">
+                        <span class="accountFieldLabel">New email</span>
+                        <input v-model="newEmail" type="email" class="accountFieldInput" placeholder="Leave blank to keep current" name="newEmail">
+                    </div>
+
+                    <hr class="accountFieldGroupDivider">
+
+                    <div class="accountField">
+                        <span class="accountFieldLabel">New password</span>
+                        <input v-model="newPassword" type="password" class="accountFieldInput" placeholder="Leave blank to keep current" name="newPassword">
+                    </div>
+                    <div class="accountField">
+                        <span class="accountFieldLabel">Confirm new password</span>
+                        <input v-model="confirmNewPassword" type="password" class="accountFieldInput" placeholder="Repeat new password" name="confirmNewPassword">
+                    </div>
                 </div>
 
                 <errors :errors="errors" />
 
                 <div class="accountActions">
                     <button class="lpButton">
-                        Submit
+                        Save changes
                         <spinner v-if="saving" />
                     </button>
-                    <a class="lpHref" @click="shown = false">Cancel</a>
-                    <a class="lpHref accountDangerLink" @click="showDeleteAccount">Delete account</a>
+                    <div class="accountActionsRight">
+                        <a class="accountCancelLink" @click="shown = false">Cancel</a>
+                        <a class="accountDangerLink" @click="showDeleteAccount">Delete account</a>
+                    </div>
                 </div>
             </form>
         </section>

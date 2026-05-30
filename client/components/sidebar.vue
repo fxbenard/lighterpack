@@ -39,7 +39,7 @@ $sidebarPadding: 20px;
     }
 
     section {
-        margin-bottom: 40px;
+        margin-bottom: 20px;
         position: relative;
     }
 
@@ -68,8 +68,7 @@ $sidebarPadding: 20px;
     display: flex;
     flex-direction: column;
     height: 100%;
-    overflow-y: auto;
-    padding-bottom: 20px;
+    overflow: hidden;
     position: relative;
     top: 0;
 
@@ -110,10 +109,18 @@ $sidebarPadding: 20px;
     }
 }
 
+.lpGearSection {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+}
+
 .lpGearSectionHeader {
     align-items: center;
     color: $color-text;
     display: flex;
+    flex: 0 0 auto;
     font-size: $fontSize-md;
     font-weight: $fontWeight-bold;
     justify-content: space-between;

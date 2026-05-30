@@ -1,18 +1,87 @@
 <style lang="scss">
-#headerPopover .lpContent {
-    min-width: 9em;
+@import "../css/_globals";
+
+.accountDropdownMenu {
+    display: flex;
+    flex-direction: column;
+    min-width: 180px;
+    padding: 4px 0;
+}
+
+.accountDropdownUser {
+    border-bottom: 1px solid $color-border;
+    color: $color-text-muted;
+    font-size: $fontSize-xs;
+    font-weight: $fontWeight-bold;
+    letter-spacing: $letterSpacing-caps;
+    margin-bottom: 4px;
+    padding: 4px 14px 10px;
+    text-transform: uppercase;
+}
+
+.accountDropdownUsername {
+    color: $color-text;
+    display: block;
+    font-size: $fontSize-base;
+    font-weight: $fontWeight-bold;
+    letter-spacing: normal;
+    margin-top: 2px;
+    text-transform: none;
+}
+
+.accountDropdownItem {
+    align-items: center;
+    border-radius: $radius-sm;
+    color: $color-text;
+    cursor: pointer;
+    display: flex;
+    font-size: $fontSize-sm;
+    gap: 8px;
+    margin: 0 4px;
+    padding: 8px 10px;
+    text-decoration: none;
+    transition: background $transitionDurationFast ease, color $transitionDurationFast ease;
+
+    &:hover {
+        background: rgba(var(--color-accent-rgb), 0.08);
+        color: $color-accent;
+    }
+
+    &.accountDropdownDanger {
+        color: $color-text-muted;
+
+        &:hover {
+            background: rgba(220, 53, 69, 0.08);
+            color: #dc3545;
+        }
+    }
+}
+
+.accountDropdownDivider {
+    border: none;
+    border-top: 1px solid $color-border;
+    margin: 4px 0;
 }
 </style>
 
 <template>
     <span class="headerItem hasPopover">
         <PopoverHover id="headerPopover">
-            <template #target><span>Signed in as <span class="username">{{ username }}</span> <i class="lpSprite lpExpand" /></span></template>
-            <template #content><div>
-                <a class="lpHref accountSettings" @click="showAccount">Account Settings</a><br>
-                <a class="lpHref" @click="showHelp">Help</a><br>
-                <a class="lpHref signout" @click="signout">Sign Out</a>
-            </div></template>
+            <template #target>
+                <span>Signed in as <strong>{{ username }}</strong> <i class="lpSprite lpExpand" /></span>
+            </template>
+            <template #content>
+                <div class="accountDropdownMenu">
+                    <div class="accountDropdownUser">
+                        Signed in as
+                        <span class="accountDropdownUsername">{{ username }}</span>
+                    </div>
+                    <a class="accountDropdownItem" @click="showAccount">Account Settings</a>
+                    <a class="accountDropdownItem" @click="showHelp">Help</a>
+                    <hr class="accountDropdownDivider">
+                    <a class="accountDropdownItem accountDropdownDanger" @click="signout">Sign Out</a>
+                </div>
+            </template>
         </PopoverHover>
     </span>
 </template>

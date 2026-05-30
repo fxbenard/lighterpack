@@ -884,12 +884,12 @@
                             autocomplete="off"
                             @focus="brandDropdownOpen = true; brandActiveIndex = -1"
                             @blur="closeBrandDropdown"
-                            @keydown.down.prevent="brandActiveIndex = Math.min(brandActiveIndex + 1, brandSuggestionsFiltered.length - 1)"
-                            @keydown.up.prevent="brandActiveIndex = Math.max(brandActiveIndex - 1, -1)"
+                            @keydown.down.prevent="moveBrandIndex(1)"
+                            @keydown.up.prevent="moveBrandIndex(-1)"
                             @keydown.enter.prevent="selectBrandSuggestion(brandActiveIndex)"
                             @keydown.escape="brandDropdownOpen = false; brandActiveIndex = -1"
                         >
-                        <ul v-if="brandDropdownOpen && brandSuggestionsFiltered.length" class="brandSuggestions">
+                        <ul v-if="brandDropdownOpen && brandSuggestionsFiltered.length" ref="brandList" class="brandSuggestions">
                             <li
                                 v-for="(brand, i) in brandSuggestionsFiltered"
                                 :key="brand"
@@ -1059,9 +1059,9 @@ export default {
             )].sort();
         },
         brandSuggestionsFiltered() {
-            if (!this.editBrand) return this.knownBrands.slice(0, 20);
+            if (!this.editBrand) return this.knownBrands;
             const q = this.editBrand.toLowerCase();
-            return this.knownBrands.filter(b => b.toLowerCase().includes(q)).slice(0, 20);
+            return this.knownBrands.filter(b => b.toLowerCase().includes(q));
         },
         thumbnailImage() {
             if (this.item.image) return `https://i.imgur.com/${this.item.image}s.jpg`;
@@ -1110,6 +1110,16 @@ export default {
     methods: {
         closeBrandDropdown() {
             setTimeout(() => { this.brandDropdownOpen = false; this.brandActiveIndex = -1; }, 150);
+        },
+        moveBrandIndex(dir) {
+            const max = this.brandSuggestionsFiltered.length - 1;
+            this.brandActiveIndex = Math.min(Math.max(this.brandActiveIndex + dir, -1), max);
+            this.$nextTick(() => {
+                const list = this.$refs.brandList;
+                if (!list) return;
+                const active = list.children[this.brandActiveIndex];
+                if (active) active.scrollIntoView({ block: 'nearest' });
+            });
         },
         selectBrandSuggestion(index) {
             if (index >= 0 && index < this.brandSuggestionsFiltered.length) {

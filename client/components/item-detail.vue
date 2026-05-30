@@ -355,6 +355,8 @@
         left: 0;
         list-style: none;
         margin: 0;
+        max-height: 188px;
+        overflow-y: auto;
         padding: 4px 0;
         position: absolute;
         right: 0;
@@ -1057,9 +1059,9 @@ export default {
             )].sort();
         },
         brandSuggestionsFiltered() {
-            if (!this.editBrand) return this.knownBrands.slice(0, 8);
+            if (!this.editBrand) return this.knownBrands.slice(0, 20);
             const q = this.editBrand.toLowerCase();
-            return this.knownBrands.filter(b => b.toLowerCase().includes(q)).slice(0, 8);
+            return this.knownBrands.filter(b => b.toLowerCase().includes(q)).slice(0, 20);
         },
         thumbnailImage() {
             if (this.item.image) return `https://i.imgur.com/${this.item.image}s.jpg`;

@@ -75,6 +75,8 @@
     padding: 4px 0;
     position: absolute;
     right: 0;
+    max-height: 188px;
+    overflow-y: auto;
     top: calc(100% + 4px);
     z-index: 10;
 }
@@ -250,9 +252,9 @@ export default {
             )].sort();
         },
         brandSuggestionsFiltered() {
-            if (!this.brand) return this.knownBrands.slice(0, 8);
+            if (!this.brand) return this.knownBrands.slice(0, 20);
             const q = this.brand.toLowerCase();
-            return this.knownBrands.filter(b => b.toLowerCase().includes(q)).slice(0, 8);
+            return this.knownBrands.filter(b => b.toLowerCase().includes(q)).slice(0, 20);
         },
     },
     mounted() {
